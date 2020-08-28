@@ -1,0 +1,4 @@
+<button bind:tap="onGetCommodityCategory">获取商品分类信息</button>
+<button bind:tap="onGetCommodityList">获取商品列表</button>
+<button bind:tap="onGetSwiperImg">获取轮播图路径</button>
+

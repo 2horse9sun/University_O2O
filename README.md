@@ -1,0 +1,33 @@
+# 文件结构
+
+├───cloudfunctions 云函数
+│   ├───category
+│   ├───commodity
+│   ├───commodity_answer
+│   ├───commodity_question
+│   ├───echo
+│   ├───login
+│   ├───node_modules
+│   ├───openapi
+│   ├───order
+│   ├───swiper
+│   ├───transaction
+│   └───user
+└───miniprogram 小程序端
+    ├───api 云函数与云调用统一接口
+    ├───components 组件
+    ├───miniprogram_npm 引入的Lin-UI组件库
+    ├───node_modules 依赖库
+    ├───pages 小程序页面
+    │   ├───commodity_detail
+    │   ├───commodity_list
+    │   ├───commodity_release
+    │   ├───home
+    │   ├───home_release
+    │   ├───home_transaction
+    │   ├───home_user_info
+    │   ├───index
+    │   ├───index_auth
+    │   ├───index_register
+    │   └───transaction
+    └───style

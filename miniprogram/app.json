@@ -1,0 +1,25 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/home_transaction/home_transaction",
+    "pages/home_release/home_release",
+    "pages/home/home",
+    "pages/transaction/transaction",
+    "pages/commodity_release/commodity_release",
+    "pages/commodity_detail/commodity_detail",
+    "pages/commodity_list/commodity_list",
+    "pages/index_auth/index_auth",
+    "pages/index_register/index_register",    
+    "pages/home_user_info/home_user_info"
+    
+  ],
+  "window": {
+    "backgroundColor": "#F6F6F6",
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#F6F6F6",
+    "navigationBarTitleText": "云开发 QuickStart",
+    "navigationBarTextStyle": "black"
+  },
+  "sitemapLocation": "sitemap.json",
+  "style": "v2"
+}

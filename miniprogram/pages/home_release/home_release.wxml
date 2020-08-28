@@ -1,0 +1,2 @@
+<button bind:tap="onGetMyCommodityList">获取我的发布商品列表</button>
+<button bind:tap="onDelCommodity">通过商品_id删除商品</button>

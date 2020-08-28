@@ -1,0 +1,2 @@
+<button bind:tap="onStudentIdAuth">学生身份验证</button>
+<button bind:tap="onDelayStudentIdAuth">暂不进行学生身份验证</button>

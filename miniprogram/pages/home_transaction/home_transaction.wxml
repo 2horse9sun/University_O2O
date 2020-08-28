@@ -1,0 +1,2 @@
+<button bind:tap="onGetTransactionList">点击获取用户交易列表</button>
+<button bind:tap="onDelTransaction">通过交易_id删除交易</button>

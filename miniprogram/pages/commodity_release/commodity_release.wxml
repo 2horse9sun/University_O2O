@@ -1,0 +1,5 @@
+<view>封面图片</view>
+<l-image-picker count="1" bind:linchange="onAddThumbnail" bind:linremove="onRemoveThumbnail" />
+<view>详情图片</view>
+<l-image-picker count="9" bind:linchange="onAddCommodityImg" bind:linremove="onRemoveCommodityImg"/>
+<button bind:tap="onCommodityRelease">点击上传</button>

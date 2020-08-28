@@ -1,0 +1,6 @@
+<button bind:tap="onGetCommodityDetail">通过id获取商品详细信息</button>
+<button bind:tap="onGetCommodityQuestion">通过id获取商品问题</button>
+<button bind:tap="onGetCommodityAnswer">通过问题id获取问题回答</button>
+<button bind:tap="onSetCommodityQuestion">通过商品id提问</button>
+<button bind:tap="onSetCommodityAnswer">通过问题id提问</button>
+
