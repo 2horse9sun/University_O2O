@@ -1,2 +1,8 @@
+<cu-custom bgColor="bg-gradual-pink" isBack="{{false}}">
+	<!-- <view slot="backText">返回</view> -->
+	<view slot="content">我发布的商品</view>
+</cu-custom>
+
+
 <button bind:tap="onGetMyCommodityList">获取我的发布商品列表</button>
 <button bind:tap="onDelCommodity">通过商品_id删除商品</button>

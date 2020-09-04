@@ -1,2 +1,8 @@
+<cu-custom bgColor="bg-gradual-pink" isBack="{{false}}">
+	<!-- <view slot="backText">返回</view> -->
+	<view slot="content">我的交易</view>
+</cu-custom>
+
+
 <button bind:tap="onGetTransactionList">点击获取用户交易列表</button>
 <button bind:tap="onDelTransaction">通过交易_id删除交易</button>

@@ -1,0 +1,129 @@
+<cu-custom bgColor="bg-gradual-orange" isBack="{{true}}">
+	<view slot="backText" catch:tap="{{fromCommodityTransaction?'onNavigateBackToCommodityDetail':'onNavigateBackToHomeTransaction'}}">返回</view>
+	<view slot="content">交易详情</view>
+</cu-custom>
+
+<view class="cu-list menu sm-border card-menu margin-top">
+
+	<view class="cu-item {{menuArrow?'arrow':''}}">
+		<view class="content">
+			<text>交易编号</text>
+		</view>
+		<view class="action">
+			<text class="text-grey text-xl">{{transaction_no}}</text>
+		</view>
+	</view>
+
+	<view class="cu-item {{menuArrow?'arrow':''}}">
+		<view class="content">
+			<text>商品标题</text>
+		</view>
+		<view class="action">
+			<text class="text-grey text-xxl">{{title}}</text>
+		</view>
+	</view>
+
+	<view class="cu-item {{menuArrow?'arrow':''}}">
+		<view class="content">
+			<text>商品单价</text>
+		</view>
+		<view class="action">
+			<text class="text-grey text-xl">￥{{price_now}}</text>
+		</view>
+	</view>
+
+	<view class="cu-item {{menuArrow?'arrow':''}}">
+		<view class="content">
+			<text>购买数量</text>
+		</view>
+		<view class="action">
+			<text class="text-grey text-xl">{{number}}</text> </view>
+	</view>
+
+	<view class="cu-item {{menuArrow?'arrow':''}}">
+		<view class="content">
+			<text>手续费</text>
+		</view>
+		<view class="action">
+			<text class="text-grey text-xl">￥0</text>
+		</view>
+	</view>
+
+	<view class="cu-item {{menuArrow?'arrow':''}}">
+		<view class="content">
+			<text>总价</text>
+		</view>
+		<view class="action">
+			<text class="text-grey text-xl">￥{{total_price}}</text>
+		</view>
+	</view>
+
+	<view class="cu-item {{menuArrow?'arrow':''}}">
+		<view class="content">
+			<text>交易发起时间</text>
+		</view>
+		<view class="action">
+			<text class="text-grey text-xl">{{create_time}}</text>
+		</view>
+	</view>
+
+	<view class="cu-item {{menuArrow?'arrow':''}}">
+		<view class="content">
+			<text>交易状态</text>
+		</view>
+		<view class="action">
+			<view wx:if="{{status==0}}">
+				<view class="cu-tag bg-green radius">进行中</view>
+			</view>
+			<view wx:if="{{status==1}}">
+				<view class="cu-tag bg-grey radius">已完成</view>
+			</view>
+			<view wx:if="{{status==2}}">
+				<view class="cu-tag bg-red radius">已取消</view>
+			</view>
+
+		</view>
+	</view>
+
+	<view class="cu-item {{menuArrow?'arrow':''}}">
+		<view class="content">
+			<text>交易结束时间</text>
+		</view>
+		<view class="action">
+			<text class="text-grey text-xl">{{end_time}}</text>
+		</view>
+	</view>
+
+</view>
+
+
+
+<view wx:if="{{!alreadyConfirmed}}">
+	<view wx:if="{{status==0}}">
+		<view class="padding flex flex-direction">
+			<button class="cu-btn bg-red margin-tb-sm lg" bind:tap="onShowContactInfo">查看对方联系方式</button>
+			<button class="cu-btn bg-red margin-tb-sm lg" bind:tap="onConfirmFinishTransaction">确认交易完成</button>
+			<button class="cu-btn bg-grey margin-tb-sm lg" bind:tap="onCancelTransaction">取消交易</button>
+		</view>
+	</view>
+</view>
+
+<view wx:if="{{alreadyConfirmed}}">
+	<view wx:if="{{status==0}}">
+		<view class="padding flex flex-direction">
+			<button class="cu-btn bg-red margin-tb-sm lg" bind:tap="onShowContactInfo">查看对方联系方式</button>
+			<button class="cu-btn block bg-red margin-tb-sm lg" disabled type="">等待对方确认</button>
+			<button class="cu-btn bg-grey margin-tb-sm lg" bind:tap="onCancelTransaction">取消交易</button>
+		</view>
+	</view>
+</view>
+
+
+
+<view wx:if="{{status==1 || status==2}}">
+	<view class="padding flex flex-direction">
+		<button class="cu-btn bg-grey margin-tb-sm lg" bind:tap="onDelTransaction">删除交易</button>
+	</view>
+</view>
+
+<van-dialog id="van-dialog" />

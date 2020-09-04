@@ -1,1 +1,20 @@
 /* miniprogram/pages/commodity_list/commodity_list.wxss */
+
+
+.commodity-card{
+  background-color: #ffffff !important;
+  border-radius: 20rpx;
+  margin:3px 6px;
+}
+
+.bar-wrapper{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.hline{
+  margin-bottom: 120rpx;
+}
+

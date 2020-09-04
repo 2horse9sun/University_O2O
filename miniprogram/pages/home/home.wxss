@@ -1,1 +1,11 @@
 /* miniprogram/pages/home/home.wxss */
+.bar-wrapper{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.hline{
+  margin-bottom: 120rpx;
+}

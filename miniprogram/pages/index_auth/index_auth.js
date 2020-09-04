@@ -1,5 +1,10 @@
 // miniprogram/pages/index_auth/index_auth.js
+import Toast from '@vant/weapp/toast/toast';
 const api = require("../../api/api")
+const cache = require("../../cache/cache")
+
+let res = {}
+let myInfoAndMyUniversityInfo = {}
 Page({
 
   /**
@@ -12,7 +17,8 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onLoad(options) {
+    
 
   },
 
@@ -65,39 +71,22 @@ Page({
 
   },
 
-  // 进行学生身份认证，目前默认都为成功，更新数据库中用户的学生认证状态
+  
   async onStudentIdAuth(){
-    const isStudent = await api.studentIdAuth()
-    // 验证成功，则写入数据库，并跳转至商品界面
-    if(isStudent){
-      const params = {
-        student_auth: true
-      }
-      const resUpdateUserInfo = await api.updateUserInfo(params)
-      console.log(resUpdateUserInfo)
 
-      // TODO: 弹出认证成功
-
-      
-
-      // TODO: 跳转至商品界面
-
-
-
-    }else{
-      // 验证失败，弹出消息框
-      // TODO: 弹出消息框
-
-
-
+    res = await cache.getMyInfoAndMyUniversityInfo()
+    if(res.errno == -1){
+      console.log("获取我的信息和我的大学信息失败！")
+      return
     }
+    const myInfoAndMyUniversityInfo = res.data
+    wx.redirectTo({
+      url: `../commodity_list/commodity_list?uid=${myInfoAndMyUniversityInfo.uid}`,
+    })
   },
 
   // 暂不进行学生身份验证， 直接跳转至商品界面
-  onDelayStudentIdAuth(){
-    // TODO: 直接跳转至商品界面
-
-
-
+  async onDelayStudentIdAuth(){
+    await this.onStudentIdAuth()
   }
 })

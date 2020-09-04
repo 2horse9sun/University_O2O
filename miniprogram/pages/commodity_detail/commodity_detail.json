@@ -1,3 +1,15 @@
 {
-  "usingComponents": {}
+  "usingComponents": {
+    "van-field": "@vant/weapp/field/index",
+    "van-uploader": "@vant/weapp/uploader/index",
+    "van-picker": "@vant/weapp/picker/index",
+    "van-overlay": "@vant/weapp/overlay/index",
+    "van-button": "@vant/weapp/button/index",
+    "van-image": "@vant/weapp/image/index",
+    "van-toast": "@vant/weapp/toast/index",
+    "van-panel": "@vant/weapp/panel/index",
+    "van-goods-action": "@vant/weapp/goods-action/index",
+    "van-goods-action-icon": "@vant/weapp/goods-action-icon/index",
+    "van-goods-action-button": "@vant/weapp/goods-action-button/index"
+  }
 }

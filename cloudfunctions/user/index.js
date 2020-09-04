@@ -2,7 +2,7 @@
 const cloud = require('wx-server-sdk')
 
 cloud.init({
-  env: cloud.DYNAMIC_CURRENT_ENV
+  env: "dreamland2-a708ef"
 })
 
 const TcbRouter = require('tcb-router')
@@ -21,7 +21,7 @@ exports.main = async (event, context) => {
   })
 
   // 获取用户信息
-  app.router('getUserInfo', async (ctx, next) => {
+  app.router('getUserInfoFromDB', async (ctx, next) => {
     ctx.body = await userCollection.where({
       openid: wxContext.OPENID,
       is_deleted: false
@@ -30,21 +30,80 @@ exports.main = async (event, context) => {
     })
   })
 
-  // 添加用户信息
-  app.router('setUserInfo', async (ctx, next) => {
-    const params = event.params
-    await userCollection.add({
-      data: {
-        ...params,
+  // 获取此用户信息和大学信息
+  app.router('getMyInfoAndMyUniversityInfo', async (ctx, next) => {
+    try{
+      ctx.body = await userCollection.aggregate()
+      .match({
         openid: wxContext.OPENID,
-        student_auth: true,
-        create_time: db.serverDate(),
-        update_time: db.serverDate(),
         is_deleted: false
+      })
+      .lookup({
+        from: 'university',
+        localField: 'uid',
+        foreignField: 'uid',
+        as: 'universityInfo'
+      })
+      .end()
+      ctx.body.errno = 0
+    }catch(e){
+      ctx.body = {
+        errno: -1,
       }
-    }).then((res) => {
-      return res
+    }
+  })
+
+  // 获取用户信息
+  app.router('getUserInfoFromDbByUserId', async (ctx, next) => {
+    const {userId} = event.params
+    ctx.body = await userCollection.where({
+      openid: userId,
+      is_deleted: false
+    }).get().then((res) => {
+      return res.data
     })
+  })
+
+  // 添加自己的信息
+  app.router('setMyInfo', async (ctx, next) => {
+    try{
+      ctx.body = await userCollection.add({
+        data: {
+          ...event.params,
+          openid: wxContext.OPENID,
+          student_auth: false,
+          create_time: db.serverDate(),
+          update_time: db.serverDate(),
+          is_deleted: false
+        }
+      })
+      ctx.body.errno = 0
+    }catch(e){
+      ctx.body = {
+        errno: -1
+      }
+    }
+    
+  })
+
+  // 更新自己的信息
+  app.router('updateMyInfo', async (ctx, next) => {
+    try{
+      ctx.body = await userCollection.where({
+        openid: wxContext.OPENID
+      }).update({
+        data: {
+          ...event.params,
+          update_time: db.serverDate()
+        }
+      })
+      ctx.body.errno = 0
+    }catch(e){
+      ctx.body = {
+        errno: -1,
+      }
+    }
+    
   })
 
   // 更新用户信息

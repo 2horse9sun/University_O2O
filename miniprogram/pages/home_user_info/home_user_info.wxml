@@ -1,2 +1,4 @@
-<!--miniprogram/pages/home_user_info/home_user_info.wxml-->
-<text>miniprogram/pages/home_user_info/home_user_info.wxml</text>
+<cu-custom bgColor="bg-gradual-pink" isBack="{{false}}">
+	<!-- <view slot="backText">返回</view> -->
+	<view slot="content">我的信息</view>
+</cu-custom>

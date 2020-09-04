@@ -1,1 +1,54 @@
 /* miniprogram/pages/commodity_detail/commodity_detail.wxss */
+
+.swiper-wrapper{
+  min-height: 600rpx;
+}
+
+.title-wrapper{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+.price-now{
+  display: inline-block;
+  font-weight: 700;
+  color: #ee0a24;
+  font-size: 50rpx;
+}
+
+.price-origin{
+  display: inline-block;
+  margin-left: 20rpx;
+  font-weight: 700;
+  text-decoration: line-through;
+  font-size: 30rpx;
+  color: #646566;
+}
+
+
+.number{
+  font-weight: 300;
+}
+
+.commodity-title{
+  font-size: 50rpx;
+}
+
+.input-panel{
+  position: fixed;
+  right: 0;
+  bottom: 100rpx;
+  left: 0;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  background-color: #fff;
+}
+
+.hline{
+  margin-bottom: 200rpx;
+}

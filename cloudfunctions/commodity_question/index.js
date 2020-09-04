@@ -2,7 +2,7 @@
 const cloud = require('wx-server-sdk')
 
 cloud.init({
-  env: cloud.DYNAMIC_CURRENT_ENV
+  env: "dreamland2-a708ef"
 })
 
 const TcbRouter = require('tcb-router')
@@ -19,15 +19,30 @@ exports.main = async (event, context) => {
   })
 
   // 通过_id获取商品提问
-  app.router('getCommodityQuestion', async (ctx, next) => {
+  app.router('getCommodityQuestionAndUserInfo', async (ctx, next) => {
     const {commodity_id, start, count} = event.params
-    
-    ctx.body = await commodityQuestionCollection.where({
-      commodity_id
-    }).skip(start).limit(count)
-    .orderBy('create_time', 'desc').get().then((res) => {
-        return res.data
+    try{
+      ctx.body = await commodityQuestionCollection.aggregate()
+      .match({
+        commodity_id
+      }).lookup({
+        from: 'user',
+        localField: 'user_id',
+        foreignField: 'openid',
+        as: 'userInfoList'
       })
+      .sort({
+        create_time: -1
+      })
+      .skip(start)
+      .limit(count)
+      .end()
+      ctx.body.errno = 0
+    }catch(e){
+      ctx.body = {
+        errno: -1
+      }
+    }
   })
 
   // 通过_id上传商品提问

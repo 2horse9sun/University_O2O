@@ -1,1 +1,28 @@
+<cu-custom bgColor="bg-gradual-pink" isBack="{{false}}">
+	<!-- <view slot="backText">返回</view> -->
+	<view slot="content">我的</view>
+</cu-custom>
+
+
 <button bind:tap="onGetUserInfo">获取用户信息</button>
+
+
+<view class="hline"></view>
+
+<view class="cu-bar tabbar bg-white bar-wrapper">
+	<view class="action {{pageIndex==0?'text-orange':'text-grey'}}" bind:tap="onCommodityListTab">
+		<view class="cuIcon-homefill"></view> 首页
+	</view>
+
+	<view class="action text-gray add-action" bind:tap="onCommodityReleaseTab">
+		<button class="cu-btn cuIcon-add bg-green shadow"></button>
+		发布
+	</view>
+
+	<view class="action {{pageIndex==1?'text-orange':'text-grey'}}" bind:tap="onHomeTab">
+		<view class="cuIcon-my">
+			<!-- <view class="cu-tag badge"></view> -->
+		</view>
+		我的
+	</view>
+</view>

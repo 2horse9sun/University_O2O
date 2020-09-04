@@ -1,1 +1,30 @@
-<button class="login" open-type="getUserInfo" bindgetuserinfo="onLogin">登录</button>
+<cu-custom bgColor="bg-gradual-orange" isBack="{{false}}">
+	<!-- <view slot="backText">返回</view> -->
+	<view slot="content">大学校园O2O</view>
+</cu-custom>
+
+
+<view class="padding" >
+	<button class="cu-btn block bg-red margin-tb-sm lg" style="bottom:-800rpx" bind:tap="onEnter">进入</button>
+</view>
+
+<!-- 登录弹出层 -->
+<!-- <van-popup closeable show="{{showLoginPopup}}" position="bottom" custom-style="height: 20%;" bind:close="onClosePopup">
+	<button class="login-button" open-type="getUserInfo" bindgetuserinfo="onAuth">获取微信授权信息</button>
+</van-popup> -->
+
+<view class="cu-modal bottom-modal {{showLoginPopup?'show':''}}">
+	<view class="cu-dialog" catchtap>
+		<view class="cu-bar bg-white">
+			<view class="action text-blue"></view>
+			<view class="action text-green" catch:tap="onCancelLoginPopup">取消</view>
+		</view>
+
+		<view class="padding">
+			<button class="cu-btn block bg-green margin-tb-sm lg" open-type="getUserInfo" bindgetuserinfo="onAuth">获取微信授权信息</button>
+		</view>
+	</view>
+</view>
+
+<!-- 轻提示 -->
+<van-toast id="van-toast" />

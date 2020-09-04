@@ -1,99 +1,179 @@
 // miniprogram/pages/index_register/index_register.js
+import Toast from '@vant/weapp/toast/toast';
 const api = require("../../api/api")
+const cache = require("../../cache/cache")
+
+let params = {}
+
+let res = {}
+let uid = 0
+
+// 二级联动表单
+let universities = [[],[]]
+let objectMultiArray = [[],[]]
+let multiIndex = [0, 0]
+
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-
+    name: "",
+    avatarUrl: "",
+    contactInfoQQ: "",
+    contactInfoWX: "",
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  async onLoad(options) {
+    // 获取用户头像，性别等信息
+    // TODO: login util 方法
+    const userInfo = wx.getStorageSync('userInfo')
+    const avatarUrl = userInfo.avatarUrl
+    const gender = userInfo.gender
 
-  },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
-  },
-
-  async onRegister(){
-    // TODO: 通过表单获取用户信息
-
-
-
-    // 将获取到的用户信息上传到数据库
-    // 测试数据，应该用真实数据替换
-    const params = {
-      "contact_info_wx":"",
-      "is_deleted":false,
-      "sex":1,
-      "avatar_url":"",
-      "contact_info_qq":"",
-      "name":"test",
-      "uid":0,
-      "commodity_collection":[],
-      "date_of_birth":"",
-      "student_auth":false
+    // 从数据库中读取大学信息，加工成合适的格式
+    params = {
+      is_mine: false
     }
-    const resSetUserInfo = await api.setUserInfo(params)
-    console.log(resSetUserInfo)
+    res = await api.getUniversityInfo(params)
+    if(res.errno == -1){
+      console.log("获取大学信息失败！")
+      return
+    }
+    const universityInfo = res.data
+    for(let i = 0;i < universityInfo.length;i++){
+      const province = universityInfo[i].province
+      const name = universityInfo[i].name
+      uid = universityInfo[i].uid
+      if(universities[0].indexOf(province) == -1){
+        universities[0].push(province)
+      }
+      universities[1].push({
+        province,
+        uid,
+        name
+      })
+    }
+    universities[0] = universities[0].map(function (item){
+      return {
+        name: item
+      }
+    })
+    console.log({"二级联动":universities})
 
-    // TODO: 弹出注册成功
+    // 渲染大学信息
+    uid = universities[1][0].uid
+    console.log({"用户uid":uid})
+    objectMultiArray = [universities[0],[]]
+    for(let i = 0;i < universities[1].length;i++){
+      if(universities[1][i].province == universities[0][0].name){
+        objectMultiArray[1].push(universities[1][i])
+      }
+    }
+    this.setData({
+      objectMultiArray,
+      multiIndex,
+      avatarUrl,
+      gender
+    }) 
+  },
 
-    
 
-    // TODO: 跳转至学生身份认证界面
+  // 导航栏
+  onNavigateBack(){
+    wx.navigateBack({
+      delta: 1
+    })
+  },
+
+  // 表单相关
+  onChangeName(event){
+    this.setData({
+      name: event.detail.value
+    })
+  },
+  onChangeContactInfoWX(event){
+    this.setData({
+      contactInfoWX: event.detail.value
+    })
+  },
+  onChangeContactInfoQQ(event){
+    this.setData({
+      contactInfoQQ: event.detail.value
+    })
+  },
+
+  // 选择大学表单 二级联动
+  onMultiColumnChange(event){
+    if(universities[0].length==0 || universities[1].length==0){
+      console.log("大学信息条数为0！")
+      return
+    }
+    objectMultiArray = [universities[0],[]]
+    const columnIndex = event.detail.column
+    const index = event.detail.value
+    multiIndex[columnIndex] = index
+    if(columnIndex == 0){
+      for(let i = 0;i < universities[1].length;i++){
+        if(universities[1][i].province == universities[0][index].name){
+          objectMultiArray[1].push(universities[1][i])
+        }
+      }
+      multiIndex[1] = 0
+      uid = objectMultiArray[1][0].uid
+      console.log({"当前选择大学uid":uid})
+      this.setData({
+        objectMultiArray,
+        multiIndex
+      })
+    }else{
+      uid = this.data.objectMultiArray[1][index].uid
+      console.log({"当前选择大学uid":uid})
+      this.setData({
+        multiIndex
+      })
+    } 
+  },
 
 
-    
+  // 提交注册信息
+  async onRegister(){
+    params = {
+      "contact_info_wx": this.data.contactInfoWX,
+      "gender": this.data.gender,
+      "avatar_url": this.data.avatarUrl,
+      "contact_info_qq": this.data.contactInfoQQ,
+      "name": this.data.name,
+      uid,
+    }
+    res = await api.setMyInfo(params)
+    if(res.errno == -1){
+      console.log("上传用户信息失败！")
+      return
+    }
+    console.log("注册成功！")
+    // 获取并缓存数据库中用户的信息
+    res = await cache.getMyInfoAndMyUniversityInfo()
+    if(res.errno == -1){
+      console.log("读取我的信息和我的大学信息失败！")
+      return
+    }
+    console.log({"我的信息和我的大学信息:":res.data})
+    wx.showToast({
+      title: '注册成功！',
+      icon: 'success',
+      duration: 2000,
+      success(res){
+        setTimeout(() => {
+          wx.redirectTo({
+            url: '../index_auth/index_auth',
+          })
+        }, 2000)
+      }
+    })
   }
 })

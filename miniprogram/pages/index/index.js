@@ -1,19 +1,31 @@
 // miniprogram/pages/index/index.js
+import Toast from '@vant/weapp/toast/toast';
 const api = require("../../api/api")
+const cache = require("../../cache/cache")
+let params = {}
+let res = {}
+let myInfoAndMyUniversityInfo = {}
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-
+    showLoginPopup: false
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
-
+  // 获取并缓存数据库中用户的信息，若数据库中无用户信息，则缓存为空
+  async onLoad(options) {
+    res = await cache.getMyInfoAndMyUniversityInfo()
+    if(res.errno == -1){
+      console.log("读取我的信息和我的大学信息失败！")
+    }else{
+      myInfoAndMyUniversityInfo = res.data
+      console.log({"我的信息和我的大学信息:":myInfoAndMyUniversityInfo})
+    }
   },
 
   /**
@@ -65,40 +77,47 @@ Page({
 
   },
 
-  /**
-   * 登录
-   * 1. 用户授权
-   * 2. 获取数据库中用户信息
-   * 3. 若数据库中存在用户， 则获取大学id，然后进入相应的商品
-   * 4. 若数据库中不存在用户， 则进入注册界面
-   */
-  async onLogin(event){
-      // 用户授权
-      const userInfo = event.detail.userInfo
-      console.log(userInfo)
 
-      // 获取数据库中用户的信息
-      const resGetUserInfoFromDB = await api.getUserInfoFromDB()
-      console.log(resGetUserInfoFromDB)
-
-      // 数据库中无此用户，则跳转到注册界面
-      if(resGetUserInfoFromDB.result.length == 0){
-      // TODO: 跳转至注册页面
+  // 弹出授权窗口
+  onEnter(){
+    this.setData({
+      showLoginPopup: true
+    })
+  },
 
 
-
-      }else{
-      // 查询此用户的大学id
-      const userInfoFromDB = resGetUserInfoFromDB.result[0]
-      const userUniversityId = userInfoFromDB.uid
-      console.log(userUniversityId)
-      
-      // TODO: 跳转至相应商品界面
-
-
-
+  // 用户授权
+  async onAuth(event){
+    const userInfo = event.detail.userInfo
+    console.log(userInfo)
+    wx.setStorageSync('userInfo', userInfo)
+    const myInfoAndMyUniversityInfo = wx.getStorageSync('myInfoAndMyUniversityInfo')
+    // 用户已注册
+    if(myInfoAndMyUniversityInfo){
+      // 更新头像
+      const avatarUrl = myInfoAndMyUniversityInfo.avatar_url
+      params = {
+        avatar_url: avatarUrl
       }
+      res = await api.updateMyInfo(params)
+ 
+      wx.redirectTo({
+        url: `../commodity_list/commodity_list?uid=${myInfoAndMyUniversityInfo.uid}`,
+      })
+    }else{
+      // 用户未注册
+      wx.navigateTo({
+        url: '../index_register/index_register',
+      })
+    }
 
   },
+
+  onCancelLoginPopup(){
+    this.setData({
+      showLoginPopup: false
+    })
+  },
+
 
 })

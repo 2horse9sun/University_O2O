@@ -2,7 +2,7 @@
 const cloud = require('wx-server-sdk')
 
 cloud.init({
-  env: cloud.DYNAMIC_CURRENT_ENV
+  env: "dreamland2-a708ef"
 })
 
 const TcbRouter = require('tcb-router')
@@ -20,11 +20,17 @@ exports.main = async (event, context) => {
 
   // 获取商品分类信息
   app.router('getCommodityCategory', async (ctx, next) => {
-    ctx.body = await categoryCollection.where({
-      is_deleted: false
-    }).get().then((res) => {
-      return res.data
-    })
+    try{
+      ctx.body = await categoryCollection.where({
+        is_deleted: false
+      }).get()
+      ctx.body.errno = 0
+    }catch(e){
+      ctx.body = {
+        errno: -1
+      }
+    }
+    
   })
 
 

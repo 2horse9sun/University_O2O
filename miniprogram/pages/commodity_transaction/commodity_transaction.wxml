@@ -1,0 +1,58 @@
+<cu-custom bgColor="bg-gradual-orange" isBack="{{true}}">
+	<view slot="backText" catch:tap="onNavigateBack">取消</view>
+	<view slot="content">确认交易</view>
+</cu-custom>
+
+
+
+<view class="cu-list menu sm-border card-menu margin-top">
+
+	<view class="cu-item {{menuArrow?'arrow':''}}">
+		<view class="content">
+			<text>商品标题</text>
+		</view>
+		<view class="action">
+			<text class="text-grey text-xxl">{{title}}</text>
+		</view>
+	</view>
+
+	<view class="cu-item {{menuArrow?'arrow':''}}">
+		<view class="content">
+			<text>商品单价</text>
+		</view>
+		<view class="action">
+			<text class="text-grey text-xl">￥{{price_now}}</text>
+		</view>
+	</view>
+
+	<view class="cu-item {{menuArrow?'arrow':''}}">
+		<view class="content">
+			<text>请选择购买数量</text>
+		</view>
+		<view class="action">
+			<van-stepper value="{{puchaseNumber}}" min="{{(1<=number)?1:0}}" max="{{number}}" integer bind:change="onChangePurchaseNumber" />
+		</view>
+	</view>
+
+	<view class="cu-item {{menuArrow?'arrow':''}}">
+		<view class="content">
+			<text>手续费</text>
+		</view>
+		<view class="action">
+			<text class="text-grey text-xl">￥0</text>
+		</view>
+	</view>
+
+</view>
+
+
+<view wx:if="{{isSubmitting}}">
+	<van-submit-bar loading class="submit-transaction-bar" price="{{totalPrice*100}}" button-text="确认交易" bind:submit="onSubmitTransaction" />
+</view>
+
+<view wx:if="{{!isSubmitting}}">
+	<van-submit-bar class="submit-transaction-bar" price="{{totalPrice*100}}" button-text="确认交易" bind:submit="onSubmitTransaction" />
+</view>
+
+
+<van-dialog id="van-dialog" />

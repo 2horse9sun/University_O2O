@@ -1,16 +1,23 @@
 {
   "pages": [
+    "pages/commodity_detail/commodity_detail",
+    "pages/commodity_list/commodity_list",
+    "pages/commodity_search/commodity_search",
+    "pages/commodity_release/commodity_release",
+    
+    "pages/index_register/index_register",
     "pages/index/index",
+    
+    
+    "pages/index_auth/index_auth",
+    "pages/transaction_detail/transaction_detail",
+    "pages/commodity_transaction/commodity_transaction",
     "pages/home_transaction/home_transaction",
     "pages/home_release/home_release",
     "pages/home/home",
-    "pages/transaction/transaction",
-    "pages/commodity_release/commodity_release",
-    "pages/commodity_detail/commodity_detail",
-    "pages/commodity_list/commodity_list",
-    "pages/index_auth/index_auth",
-    "pages/index_register/index_register",    
+    
     "pages/home_user_info/home_user_info"
+    
     
   ],
   "window": {
@@ -18,8 +25,12 @@
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#F6F6F6",
     "navigationBarTitleText": "云开发 QuickStart",
-    "navigationBarTextStyle": "black"
+    "navigationBarTextStyle": "black",
+    "navigationStyle": "custom",
+    "enablePullDownRefresh": true
   },
-  "sitemapLocation": "sitemap.json",
-  "style": "v2"
+  "usingComponents": {
+    "cu-custom": "/colorui/components/cu-custom"
+  },
+  "sitemapLocation": "sitemap.json"
 }

@@ -1,6 +1,194 @@
-<button bind:tap="onGetCommodityDetail">通过id获取商品详细信息</button>
-<button bind:tap="onGetCommodityQuestion">通过id获取商品问题</button>
-<button bind:tap="onGetCommodityAnswer">通过问题id获取问题回答</button>
-<button bind:tap="onSetCommodityQuestion">通过商品id提问</button>
-<button bind:tap="onSetCommodityAnswer">通过问题id提问</button>
+<cu-custom bgColor="bg-gradual-orange" isBack="{{true}}">
+	<view slot="backText" catch:tap="onNavigateBack">返回首页</view>
+	<view slot="content">详情</view>
+</cu-custom>
 
+<swiper class="screen-swiper round-dot swiper-wrapper" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
+	<swiper-item wx:for="{{swiperImgUrl}}" wx:key="_id" data-id="{{index}}" bind:tap="onPreviewImg">
+		<image src="{{item}}" mode="aspectFill"></image>
+	</swiper-item>
+</swiper>
+
+<view class="cu-card article no-card">
+	<view class="cu-item shadow">
+		<view class="title">
+			<view class="text-cut text-xxl">
+				{{title}}
+			</view>
+		</view>
+		<view class="content">
+			<view class="desc">
+				<view class="flex align-center justify-between">
+					<view>
+						<view class="cu-tag bg-{{item.status==0?'green':(item.status==1?'red':'grey')}} round">{{item.status==0?'正在出售':(item.status==1?'交易中':'已下架')}}</view>
+					</view>
+					<view class="flex align-center">
+						<view class="price-now">
+							￥{{priceNow}}
+						</view>
+						<view class="price-origin">
+							{{priceOrigin}}
+						</view>
+					</view>
+				</view>
+
+
+				<view class="cu-bar bg-white">
+					<view class="action">
+						<text>
+						{{content}}
+						</text>
+					</view>
+				</view>
+
+				<view class="cu-bar bg-white">
+					<view class="action">
+						<text>
+						数量：×{{number}}
+						</text>
+					</view>
+				</view>
+
+			</view>
+		</view>
+	</view>
+</view>
+
+
+
+
+
+<view class="cu-bar bg-white margin-top padding-left">
+	<view class="action">
+		<text>
+		备注：{{remark}}
+		</text>
+	</view>
+</view>
+<view class="cu-bar bg-white padding-bottom padding-left">
+	<view class="action">
+		<text>
+		商品原始购买链接：{{origin_url}}
+		</text>
+	</view>
+</view>
+
+
+<view class="cu-bar bg-white margin-top">
+	<view class="action">
+		<text class="cuIcon-title text-orange"></text>
+		<text class="text-border text-xl">问答区({{commodityQuestion.length}})</text>
+	</view>
+</view>
+
+
+
+<view wx:for="{{commodityQuestion}}" wx:key="_id">
+
+	<view class="cu-card dynamic">
+
+		<view class="cu-item shadow">
+
+			<view>
+				<view class="cu-list menu-avatar">
+					<view class="cu-item">
+						<image class="cu-avatar round lg" src="{{item.userInfoList[0].avatar_url}}"></image>
+						<view class="content flex-sub">
+							<view class="flex align-center justify-between">
+								<view>
+									{{item.userInfoList[0].name}}
+								</view>
+								<view>
+									<view class="cu-tag line-grey radius" bindtap="onAnswerQuestion" data-questionid="{{item._id}}">回复</view>
+								</view>
+							</view>
+							<view class="text-gray text-sm flex justify-between">
+								{{item.create_time}}
+							</view>
+						</view>
+					</view>
+				</view>
+				<view class="text-content margin-left margin-bottom">
+					{{item.content}}
+				</view>
+			</view>
+
+			<view wx:for="{{item.commodityAnswer}}" wx:key="_id">
+				<view class="cu-list menu-avatar comment solids-top">
+					<view class="cu-item">
+						<image class="cu-avatar round" src="{{item.userInfoList[0].avatar_url}}"></image>
+						<view class="content">
+							<view class="text-grey">{{item.userInfoList[0].name}}</view>
+							<view class="text-gray text-content text-df">
+								{{item.content}}
+							</view>
+							<view class="margin-top-sm flex justify-between">
+								<view class="text-gray text-df">{{item.create_time}}</view>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+
+			<view wx:if="{{item.hasMoreAnswer}}">
+				<view class="solids-top padding text-center" bind:tap="onEnterQuestionDetail" data-questionid="{{item._id}}">
+					查看更多回答
+				</view>
+			</view>
+			<view wx:if="{{item.commodityAnswer.length == 0}}">
+				<view class="solids-top padding text-center">
+					暂无回答
+				</view>
+			</view>
+		</view>
+	</view>
+</view>
+
+
+<view class="cu-load {{isLoading?'loading':'over'}}"></view>
+
+
+<view class="hline"></view>
+
+
+
+<view class="cu-modal {{showAskPanel?'show':''}}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">提问</view>
+    </view>
+    <view class="padding-xl bg-white">
+      <input type="text" value="{{questionContent}}" placeholder="请输入问题" bindinput="onChangeQuestionContent"></input>
+    </view>
+    <view class="cu-bar bg-white justify-end">
+      <view class="action">
+        <button class="cu-btn line-green text-green" bindtap="onCancelAskPanel">取消</button>
+        <button class="cu-btn bg-green margin-left" bindtap="onSubmitQuestion">确定</button>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view class="cu-modal {{showAnswerPanel?'show':''}}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">回复</view>
+    </view>
+    <view class="padding-xl bg-white">
+      <input type="text" value="{{answerContent}}" placeholder="请输入回答" bindinput="onChangeAnswerContent"></input>
+    </view>
+    <view class="cu-bar bg-white justify-end">
+      <view class="action">
+        <button class="cu-btn line-green text-green" bindtap="onCancelAnswerPanel">取消</button>
+        <button class="cu-btn bg-green margin-left" bindtap="onSubmitAnswer">确定</button>
+      </view>
+    </view>
+  </view>
+</view>
+
+
+
+<van-goods-action>
+	<van-goods-action-icon icon="chat-o" text="提问" bind:click="onAskQuestion" />
+	<van-goods-action-button text="发起交易" bind:click="onEnterTransaction" />
+</van-goods-action>

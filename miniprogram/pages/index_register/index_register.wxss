@@ -1,1 +1,15 @@
 /* miniprogram/pages/index_register/index_register.wxss */
+.avatar{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  margin-top: 50rpx;
+  margin-bottom: 50rpx;
+}
+
+.wrapper{
+  position:fixed;
+  bottom:0;
+  width: 100%
+}

@@ -1,1 +1,58 @@
 /* miniprogram/pages/commodity_release/commodity_release.wxss */
+input{
+  text-align: right;
+}
+
+.commodity-number-wrapper{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 38rpx;
+  margin-right: 38rpx;
+  padding-top: 20rpx;
+  padding-bottom: 20rpx;
+}
+
+.commodity-expire-time-wrapper{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 38rpx;
+  margin-right: 38rpx;
+  padding-top: 20rpx;
+  padding-bottom: 20rpx;
+}
+
+.thumbnail-wrapper{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 38rpx;
+  margin-right: 38rpx;
+  padding-top: 20rpx;
+  padding-bottom: 20rpx;
+}
+
+.commodity-img-wrapper{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 38rpx;
+  margin-right: 38rpx;
+  padding-top: 20rpx;
+  padding-bottom: 20rpx;
+}
+
+.wrapper{
+  position:fixed;
+  bottom:0;
+  width: 100%
+}
+
+.release-button{
+  font-size: 40rpx;
+  height: 100rpx;
+  background-color: #d43c33;
+  color: #fff;
+  margin: 30rpx;
+}

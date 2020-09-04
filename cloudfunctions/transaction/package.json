@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "async-lock": "^1.2.4",
     "tcb-router": "^1.1.2",
     "wx-server-sdk": "~2.2.0"
   }

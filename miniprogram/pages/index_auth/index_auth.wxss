@@ -1,1 +1,16 @@
 /* miniprogram/pages/index_auth/index_auth.wxss */
+.student-auth-button {
+  font-size: 32rpx;
+  height: 80rpx;
+  background-color: #d43c33;
+  color: #fff;
+  margin: 110rpx;
+}
+
+.delay-student-auth-button {
+  font-size: 32rpx;
+  height: 80rpx;
+  background-color: #d43c33;
+  color: #fff;
+  margin: 110rpx;
+}

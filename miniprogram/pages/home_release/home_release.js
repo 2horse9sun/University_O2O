@@ -66,7 +66,7 @@ Page({
 
   },
 
-  // 获取我发布的商品列表s
+  // 获取我发布的商品列表
   async onGetMyCommodityList(){
     const params = {
       keyword: "",

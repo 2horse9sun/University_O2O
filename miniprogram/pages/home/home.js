@@ -6,7 +6,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    pageIndex: 1,
   },
 
   /**
@@ -69,5 +69,17 @@ Page({
   async onGetUserInfo(){
     const resGetUserInfo = await api.getUserInfoFromDB()
     console.log(resGetUserInfo)
-  }
+  },
+
+  onCommodityReleaseTab(){
+    wx.navigateTo({
+      url: '../commodity_release/commodity_release',
+    })
+  },
+
+  onCommodityListTab(){
+    wx.redirectTo({
+      url: '../commodity_list/commodity_list',
+    })
+  },
 })

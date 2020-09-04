@@ -1,5 +1,103 @@
-<view>封面图片</view>
-<l-image-picker count="1" bind:linchange="onAddThumbnail" bind:linremove="onRemoveThumbnail" />
-<view>详情图片</view>
-<l-image-picker count="9" bind:linchange="onAddCommodityImg" bind:linremove="onRemoveCommodityImg"/>
-<button bind:tap="onCommodityRelease">点击上传</button>
+<cu-custom bgColor="bg-gradual-orange" isBack="{{true}}">
+	<view slot="backText" bind:tap="onNavigateBack">返回</view>
+	<view slot="content">发布商品</view>
+</cu-custom>
+
+<form>
+	<view class="cu-item shadow margin-top">
+
+		<view class="cu-form-group">
+			<view class="title">商品名称</view>
+			<input value="{{commodityTitle}}" maxlength="14" placeholder="请输入商品名称，必填" bindinput="onChangeCommodityTitle"></input>
+		</view>
+		<view class="cu-form-group margin-top">
+			<view class="title">商品分类</view>
+			<picker bindchange="onChangeCommodityCategory" value="{{categoryIndex}}" range="{{categories}}" range-key="{{'name'}}">
+				<view class="picker">
+					{{categories[categoryIndex].name}}
+				</view>
+			</picker>
+		</view>
+		<view class="cu-form-group">
+			<view class="title">商品数量</view>
+			<input value="{{commodityNumber}}" maxlength="5" type="commodityNumber" placeholder="请输入商品的数量，必填" bindinput="onChangeCommodityNumber"></input>
+		</view>
+		<view class="cu-form-group">
+			<view class="title">有效期(天)</view>
+			<input value="{{commodityExpireTime}}" maxlength="1" type="number" placeholder="至少1天，至多7天，必填" bindinput="onChangeCommodityExpireTime"></input>
+		</view>
+		<view class="cu-form-group">
+			<view class="title">商品原价</view>
+			<input value="{{commodityOriginPrice}}" maxlength="10" type="digit" placeholder="请输入单个商品的原价，必填" bindinput="onChangeCommodityOriginPrice"></input>
+		</view>
+		<view class="cu-form-group">
+			<view class="title">商品现价</view>
+			<input value="{{commodityCurrentPrice}}" maxlength="10" type="digit" placeholder="请输入单个商品的现价，必填" bindinput="onChangeCommodityCurrentPrice"></input>
+		</view>
+		<view class="cu-form-group">
+			<view class="title">商品链接</view>
+			<input value="{{commodityPurchaseUrl}}" placeholder="初次购买时的链接，选填" bindinput="onChangeCommodityPurchaseUrl"></input>
+		</view>
+		<view class="cu-form-group">
+			<view class="title">添加备注</view>
+			<input value="{{commodityRemark}}" placeholder="选填" bindinput="onChangeCommodityRemark"></input>
+		</view>
+
+		<view class="cu-form-group margin-top">
+			<textarea value="{{commodityContent}}" maxlength="-1" bindinput="onChangeCommodityContent" placeholder="请输入商品详情介绍，必填"></textarea>
+		</view>
+
+
+
+	</view>
+
+	<view class="cu-item shadow margin-top">
+		<view class="cu-bar bg-white margin-top">
+			<view class="action">
+				上传商品缩略图
+			</view>
+			<view class="action">
+				{{thumbnail.length}}/1
+			</view>
+		</view>
+		<view class="cu-form-group">
+			<view class="grid col-4 grid-square flex-sub">
+				<view class="bg-img" wx:for="{{thumbnail}}" wx:key="index" bindtap="onViewThumbnail" data-url="{{thumbnail[index]}}">
+					<image src='{{thumbnail[index]}}' mode='aspectFill'></image>
+					<view class="cu-tag bg-red" catchtap="onDelThumbnail" data-index="{{index}}">
+						<text class="cuIcon-close"></text>
+					</view>
+				</view>
+				<view class="solids" bindtap="onUpdateThumbnail" wx:if="{{thumbnail.length<1}}">
+					<text class="cuIcon-cameraadd"></text>
+				</view>
+			</view>
+		</view>
+
+		<view class="cu-bar bg-white margin-top">
+			<view class="action">
+				上传商品详情图
+			</view>
+			<view class="action">
+				{{commodityImg.length}}/9
+			</view>
+		</view>
+		<view class="cu-form-group">
+			<view class="grid col-4 grid-square flex-sub">
+				<view class="bg-img" wx:for="{{commodityImg}}" wx:key="index" bindtap="onViewCommodityImg" data-url="{{commodityImg[index]}}">
+					<image src='{{commodityImg[index]}}' mode='aspectFill'></image>
+					<view class="cu-tag bg-red" catchtap="onDelCommodityImg" data-index="{{index}}">
+						<text class="cuIcon-close"></text>
+					</view>
+				</view>
+				<view class="solids" bindtap="onUpdateCommodityImg" wx:if="{{commodityImg.length<9}}">
+					<text class="cuIcon-cameraadd"></text>
+				</view>
+			</view>
+		</view>
+	</view>
+</form>
+
+
+
+<button bind:tap="onCommodityRelease" loading="{{isUploading}}" class="release-button">点击上传</button>

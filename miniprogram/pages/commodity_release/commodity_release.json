@@ -1,5 +1,16 @@
 {
   "usingComponents": {
-    "l-image-picker": "../../miniprogram_npm/lin-ui/image-picker"
+    "van-uploader": "@vant/weapp/uploader/index",
+    "van-field": "@vant/weapp/field/index",
+    "van-picker": "@vant/weapp/picker/index",
+    "van-overlay": "@vant/weapp/overlay/index",
+    "van-button": "@vant/weapp/button/index",
+    "van-image": "@vant/weapp/image/index",
+    "van-toast": "@vant/weapp/toast/index",
+    "van-stepper": "@vant/weapp/stepper/index",
+    "van-panel": "@vant/weapp/panel/index",
+    "van-radio": "@vant/weapp/radio/index",
+    "van-radio-group": "@vant/weapp/radio-group/index"
+
   }
 }

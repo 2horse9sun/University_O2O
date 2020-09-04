@@ -1,0 +1,14 @@
+{
+  "usingComponents": {
+    "van-uploader": "@vant/weapp/uploader/index",
+    "van-field": "@vant/weapp/field/index",
+    "van-picker": "@vant/weapp/picker/index",
+    "van-overlay": "@vant/weapp/overlay/index",
+    "van-button": "@vant/weapp/button/index",
+    "van-image": "@vant/weapp/image/index",
+    "van-toast": "@vant/weapp/toast/index",
+    "van-stepper": "@vant/weapp/stepper/index",
+    "van-submit-bar": "@vant/weapp/submit-bar/index",
+    "van-dialog": "@vant/weapp/dialog/index"
+  }
+}

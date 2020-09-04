@@ -1,2 +1,15 @@
-<button bind:tap="onStudentIdAuth">学生身份验证</button>
-<button bind:tap="onDelayStudentIdAuth">暂不进行学生身份验证</button>
+<cu-custom bgColor="bg-gradual-orange" isBack="{{false}}">
+	<!-- <view slot="backText" bind:tap="onNavigateBack">返回登录</view> -->
+	<view slot="content">学生身份认证</view>
+</cu-custom>
+
+
+<view class="padding">
+	<button bind:tap="onStudentIdAuth" class="cu-btn block bg-red margin-top lg">学生身份验证</button>
+	<button bind:tap="onDelayStudentIdAuth" class="cu-btn block bg-grey margin-top lg">暂不进行学生身份验证</button>
+</view>
+
+
+
+<!-- 轻提示 -->
+<van-toast id="van-toast" />

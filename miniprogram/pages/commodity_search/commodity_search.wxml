@@ -1,0 +1,45 @@
+<cu-custom bgColor="bg-gradual-orange" isBack="{{true}}">
+	<view slot="backText" bind:tap="onNavigateBack">返回首页</view>
+	<view slot="content">搜索结果</view>
+</cu-custom>
+
+
+  <view class="cu-bar bg-white search margin-bottom">
+	<view class="action">
+      <text class="cuIcon-search text-orange"></text>
+      <text>"{{keyword}}"的搜索结果：</text>
+    </view>
+  </view>
+
+
+
+<view wx:for="{{commodityList}}" wx:key="_id">
+	<van-card custom-class="commodity-card shadow-warp"
+	thumb-mode="aspectFill"
+	desc-class="text-cut"
+	title-class="text-cut"
+	num="{{item.number}}" 
+	price="{{item.price_now}}" 
+	origin-price="{{item.price_origin}}" 
+	desc="{{item.content}}" 
+	title="{{item.title}}" 
+	thumb="{{item.thumbnail_url[0]}}" 
+	data-id="{{item._id}}" 
+	bind:tap="onEnterCommodityDetail">
+
+
+	<view slot="tags">
+    <view class="cu-tag bg-{{item.status==0?'green':(item.status==1?'red':'grey')}} round">{{item.status==0?'正在出售':(item.status==1?'交易中':'已下架')}}</view>
+  </view>
+
+	</van-card>
+
+
+
+</view>
+
+<!-- 加载更多 -->
+<view class="cu-load margin-top {{isLoading?'loading':'over'}}"></view>
+
+
+

@@ -1,1 +1,0 @@
-<button bind:tap="onSetTransaction">通过商品_id发起交易</button>

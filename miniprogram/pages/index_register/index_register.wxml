@@ -1,1 +1,44 @@
-<button bind:tap="onRegister">注册</button>
+<cu-custom bgColor="bg-gradual-orange" isBack="{{true}}">
+	<view slot="backText" catch:tap="onNavigateBack">返回登录</view>
+	<view slot="content">新用户注册</view>
+</cu-custom>
+
+<form>
+	<view class="cu-card">
+		<view class="cu-item shadow margin-top">
+			<view class="cu-form-group">
+				<view class="title">头像</view>
+				<image class="cu-avatar radius bg-gray" src="{{avatarUrl}}"></image>
+			</view>
+
+			<view class="cu-form-group">
+				<view class="title">昵称</view>
+				<input value="{{name}}" placeholder="请输入昵称" bind:change="onChangeName"></input>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">性别</view>
+				<switch class="switch-sex" checked="{{gender}}" disabled></switch>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">微信联系方式</view>
+				<input value="{{contactInfoWX}}" placeholder="选填" bind:change="onChangeContactInfoWX"></input>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">QQ联系方式</view>
+				<input value="{{contactInfoQQ}}" placeholder="选填" bind:change="onChangeContactInfoQQ"></input>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">选择大学</view>
+				<picker mode="multiSelector" bindcolumnchange="onMultiColumnChange" value="{{multiIndex}}" range="{{objectMultiArray}}" range-key="{{'name'}}">
+					<view class="picker">
+						{{objectMultiArray[0][multiIndex[0]].name}}，{{objectMultiArray[1][multiIndex[1]].name}}
+					</view>
+				</picker>
+			</view>
+		</view>
+	</view>
+</form>
+
+<view class="padding">
+	<button bind:tap="onRegister" class="cu-btn block bg-red margin-tb-sm lg">注册</button>
+</view>

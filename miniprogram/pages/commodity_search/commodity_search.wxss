@@ -1,0 +1,6 @@
+/* miniprogram/pages/commodity_search/commodity_search.wxss */
+.commodity-card{
+  background-color: #ffffff !important;
+  border-radius: 20rpx;
+  margin:3px 6px;
+}
