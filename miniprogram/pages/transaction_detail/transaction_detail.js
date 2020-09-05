@@ -2,6 +2,11 @@
 import Dialog from '@vant/weapp/dialog/dialog';
 
 const api = require('../../api/api')
+const cache = require('../../cache/cache')
+const fmt = require('../../utils/formatTime')
+let res = {}
+let params = {}
+let opts = {}
 let fromCommodityTransaction = false;
 let transactionNumber = ""
 let isSeller = false
@@ -22,26 +27,41 @@ Page({
    * 生命周期函数--监听页面加载
    */
   async onLoad(options) {
+    opts = options
     fromCommodityTransaction = options.fromCommodityTransaction
     transactionNumber = options.transactionNumber
-    // 测试数据
-    // transactionNumber = "1599039422558-9651789"
-    const params = {
+    params = {
       transaction_no: transactionNumber
     }
-    const resGetTransactionByTransactionNumber = await api.getTransactionByTransactionNumber(params)
-    console.log(resGetTransactionByTransactionNumber)
-    const transactionDetail = resGetTransactionByTransactionNumber.result[0]
-    const userInfoFromDB = wx.getStorageSync('userInfoFromDB')
-    const openid = userInfoFromDB.openid
+    res = await api.getTransactionByTransactionNumber(params)
+    if(res.errno == -1){
+      console.log("获取交易详情失败！")
+      return
+    }
+    const transactionDetail = res.data
+    console.log(transactionDetail)
+    transactionDetail.create_time = fmt(new Date(transactionDetail.create_time))
+    if(transactionDetail.end_time!=""){
+      transactionDetail.end_time = fmt(new Date(transactionDetail.end_time))
+    }else{
+      transactionDetail.end_time = "未结束"
+    }
+
+    // 获取我的信息和大学信息
+    res = await cache.getMyInfoAndMyUniversityInfo()
+    if(res.errno == -1){
+      console.log("获取我的信息和大学信息失败！")
+      return
+    }
+    const myInfoAndMyUniversityInfo = res.data
+    const openid = myInfoAndMyUniversityInfo.openid
     if(openid == transactionDetail.seller_id){
       isSeller = true
     }
     if(openid == transactionDetail.buyer_id){
       isBuyer = true
     }
-    console.log(isSeller)
-    console.log(isBuyer)
+
     seller_status = transactionDetail.seller_status
     buyer_status = transactionDetail.buyer_status
     alreadyConfirmed = isSeller&&seller_status==1 || isBuyer&&buyer_status==1
@@ -50,55 +70,6 @@ Page({
       fromCommodityTransaction,
       alreadyConfirmed
     })
-
-  },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
 
   },
 
@@ -114,71 +85,69 @@ Page({
     })
   },
 
-
-
   async onShowContactInfo(){
-    let params = {
-      userId: this.data.seller_id
-    }
-    let resGetUserInfoFromDbByUserId = await api.getUserInfoFromDbByUserId(params)
-    const sellerContactInfoWX = resGetUserInfoFromDbByUserId.result[0].contact_info_wx
-    const sellerContactInfoQQ = resGetUserInfoFromDbByUserId.result[0].contact_info_qq
+    if(isSeller){
+      params = {
+        userId: this.data.buyer_id
+      }
+      res = await api.getUserInfoFromDbByUserId(params)
+      if(res.errno == -1){
+        console.log("获取用户信息失败！")
+        return
+      }
+      const buyerContactInfoWX = res.data.contact_info_wx?res.data.contact_info_wx:"暂无"
+      const buyerContactInfoQQ = res.data.contact_info_qq?res.data.contact_info_qq:"暂无"
 
-    params = {
-      userId: this.data.buyer_id
-    }
-    resGetUserInfoFromDbByUserId = await api.getUserInfoFromDbByUserId(params)
-    const buyerContactInfoWX = resGetUserInfoFromDbByUserId.result[0].contact_info_wx
-    const buyerContactInfoQQ = resGetUserInfoFromDbByUserId.result[0].contact_info_qq
+      Dialog.alert({
+        message: `
+        买家微信联系方式：${buyerContactInfoWX}
+        买家QQ联系方式：${buyerContactInfoQQ}`,
+        theme: 'round-button',
+      })
 
-    Dialog.alert({
-      message: `卖家微信联系方式：${sellerContactInfoWX}
-      卖家QQ联系方式：${sellerContactInfoQQ}
-      买家微信联系方式：${buyerContactInfoWX}
-      买家QQ联系方式：${buyerContactInfoQQ}`,
-      theme: 'round-button',
-    })
-    
-    console.log(sellerContactInfoWX,sellerContactInfoQQ,buyerContactInfoWX,buyerContactInfoQQ)
+    }
+
+
+    if(isBuyer){
+      params = {
+        userId: this.data.seller_id
+      }
+      res = await api.getUserInfoFromDbByUserId(params)
+      if(res.errno == -1){
+        console.log("获取用户信息失败！")
+        return
+      }
+      const sellerContactInfoWX = res.data.contact_info_wx?res.data.contact_info_wx:"暂无"
+      const sellerContactInfoQQ = res.data.contact_info_qq?res.data.contact_info_qq:"暂无"
+
+      Dialog.alert({
+        message: `卖家微信联系方式：${sellerContactInfoWX}
+        卖家QQ联系方式：${sellerContactInfoQQ}`,
+        theme: 'round-button',
+      })
+    }
+
   },
 
   // 确认交易完成
   async onConfirmFinishTransaction(){
-    let params = {
+    params = {
       id: this.data._id,
       isSeller,
       seller_status,
       buyer_status
     }
-    const resConfirmFinishTransaction = await api.confirmFinishTransaction(params)
-    console.log(resConfirmFinishTransaction)
+    res = await api.confirmFinishTransaction(params)
+    if(res.errno != 0){
+      Dialog.alert({
+        message: res.message,
+        theme: 'round-button',
+      })
+    }
 
-    params = {
-      transaction_no: transactionNumber
-    }
-    const resGetTransactionByTransactionNumber = await api.getTransactionByTransactionNumber(params)
-    console.log(resGetTransactionByTransactionNumber)
-    const transactionDetail = resGetTransactionByTransactionNumber.result[0]
-    const userInfoFromDB = wx.getStorageSync('userInfoFromDB')
-    const openid = userInfoFromDB.openid
-    if(openid == transactionDetail.seller_id){
-      isSeller = true
-    }
-    if(openid == transactionDetail.buyer_id){
-      isBuyer = true
-    }
-    seller_status = transactionDetail.seller_status
-    buyer_status = transactionDetail.buyer_status
-    alreadyConfirmed = isSeller&&seller_status==1 || isBuyer&&buyer_status==1
-    console.log(isSeller)
-    console.log(isBuyer)
-    this.setData({
-      ...transactionDetail,
-      isBuyer,
-      isSeller,
-      alreadyConfirmed
-    })
+    await this.onLoad(opts)
 
+   
   },
 
   // 取消交易
@@ -188,59 +157,36 @@ Page({
       message: '确认取消此次交易吗？',
     })
       .then(async() => {
-        let params = {
+        params = {
           id: this.data._id,
         }
-        const resCancelTransaction = await api.cancelTransaction(params)
-        console.log(resCancelTransaction)
-
-
-        params = {
-          transaction_no: transactionNumber
+        res = await api.cancelTransaction(params)
+        if(res.errno != 0){
+          Dialog.alert({
+            message: res.message,
+            theme: 'round-button',
+          })
         }
-        const resGetTransactionByTransactionNumber = await api.getTransactionByTransactionNumber(params)
-        console.log(resGetTransactionByTransactionNumber)
-        const transactionDetail = resGetTransactionByTransactionNumber.result[0]
-        const userInfoFromDB = wx.getStorageSync('userInfoFromDB')
-        const openid = userInfoFromDB.openid
-        if(openid == transactionDetail.seller_id){
-          isSeller = true
-        }
-        if(openid == transactionDetail.buyer_id){
-          isBuyer = true
-        }
-        console.log(isSeller)
-        console.log(isBuyer)
-        seller_status = transactionDetail.seller_status
-        buyer_status = transactionDetail.buyer_status
-        alreadyConfirmed = isSeller&&seller_status==1 || isBuyer&&buyer_status==1
-        this.setData({
-          ...transactionDetail,
-          isBuyer,
-          isSeller,
-          alreadyConfirmed
-        })
-      })
-      .catch(() => {
+        await this.onLoad(opts)
 
       })
   },
 
-  async onDelTransaction(){
-    Dialog.confirm({
-      title: '删除交易',
-      message: '确认删除此次交易吗？',
-    })
-      .then(async() => {
-        let params = {
-          id: this.data._id,
-        }
-        const resDelTransaction = await api.delTransaction(params)
-        console.log(resDelTransaction)
+  // async onDelTransaction(){
+  //   Dialog.confirm({
+  //     title: '删除交易',
+  //     message: '确认删除此次交易吗？',
+  //   })
+  //     .then(async() => {
+  //       let params = {
+  //         id: this.data._id,
+  //       }
+  //       const resDelTransaction = await api.delTransaction(params)
+  //       console.log(resDelTransaction)
 
-      })
-      .catch(() => {
+  //     })
+  //     .catch(() => {
 
-      })
-  }
+  //     })
+  // }
 })

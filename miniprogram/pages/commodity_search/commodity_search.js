@@ -1,7 +1,7 @@
 // miniprogram/pages/commodity_search/commodity_search.js
 const api = require("../../api/api")
 const cache = require("../../cache/cache")
-const MAX_COMMODITY_LIMIT_SIZE = 5
+const MAX_COMMODITY_LIMIT_SIZE = 10
 let res = {}
 let params = {}
 let uid = 0

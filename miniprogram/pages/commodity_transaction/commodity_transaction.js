@@ -1,9 +1,14 @@
 // miniprogram/pages/transaction/transaction.js
 import Dialog from '@vant/weapp/dialog/dialog';
 const api = require('../../api/api')
+const cache = require('../../cache/cache')
+let res = {}
+let params = {}
 let commodity_id = ""
 let commodityDetail = {}
 let seller_id = ""
+let sellerPrimaryKey = ""
+let buyerPrimaryKey = ""
 Page({
 
   /**
@@ -21,16 +26,18 @@ Page({
    */
   async onLoad(options) {
 
-    console.log(getCurrentPages())
-
     // 获取商品详情信息
     commodity_id = options.commodity_id
-    // commodity_id = "b5416b755f4d1ec400d462d6699ae2f3"
-    const paramsCommodityDetail = {
+    commodity_id = "74b3e15b5f4fa9a600145ea93bfe7d8d"
+    params = {
       id: commodity_id
     }
-    const resGetCommodityDetail = await api.getCommodityDetail(paramsCommodityDetail)
-    commodityDetail = resGetCommodityDetail.result[0]
+    res = await api.getCommodityDetail(params)
+    if(res.errno == -1){
+      console.log("获取商品详情信息失败！")
+      return
+    }
+    const commodityDetail = res.data
     const {
       content,
       img_url,
@@ -44,6 +51,29 @@ Page({
       user_id
     } = commodityDetail
     seller_id = user_id
+
+    // 获取我的信息和大学信息
+    res = await cache.getMyInfoAndMyUniversityInfo()
+    if(res.errno == -1){
+      console.log("获取我的信息和大学信息失败！")
+      return
+    }
+    const myInfoAndMyUniversityInfo = res.data
+    buyerPrimaryKey = myInfoAndMyUniversityInfo._id
+
+    // 获取卖家信息和大学信息
+    params = {
+      user_id
+    }
+    res = await api.getUserInfoFromDbByUserId(params)
+    if(res.errno == -1){
+      console.log("获取我的信息和大学信息失败！")
+      return
+    }
+    const userInfoFromDbByUserId = res.data
+    sellerPrimaryKey = userInfoFromDbByUserId._id
+
+
     this.setData({
       title,
       number,
@@ -127,38 +157,41 @@ Page({
     this.setData({
       isSubmitting: true
     })
-    const params = {
+    params = {
       commodity_id,
       number: this.data.purchaseNumber,
       price_origin: this.data.price_now,
       price_now: this.data.price_now,
       total_price: this.data.totalPrice,
       seller_id,
-      title: this.data.title
+      title: this.data.title,
+      sellerPrimaryKey,
+      buyerPrimaryKey
     }
-    const resSetTransaction = await api.setTransaction(params)
-    console.log(resSetTransaction)
-    if(resSetTransaction.result.errno == 0){
+    res = await api.setTransaction(params)
+    this.setData({
+      isSubmitting: false
+    })
+    if(res.errno != 0){
+      const errMsg = res.message
+      Dialog.alert({
+        message: errMsg,
+        theme: 'round-button',
+      }).then(() => {
+        this.onNavigateBack()
+      })
+    }else{
+      const transactionNumber = res.data.transactionNumber
       Dialog.alert({
         message: '已经成功发起交易，可以到我的交易中查看',
         theme: 'round-button',
       }).then(() => {
-        const transactionNumber = resSetTransaction.result.transactionNumber
         wx.navigateTo({
           url: `../transaction_detail/transaction_detail?fromCommodityTransaction=${true}&transactionNumber=${transactionNumber}`,
         })
+      })
 
-      });
-    }else{
-      Dialog.alert({
-        message: '发起交易失败，商品正在进行交易或库存不足！',
-        theme: 'round-button',
-      }).then(() => {
-        this.onNavigateBack()
-      });
     }
-    this.setData({
-      isSubmitting: false
-    })
+    
   }
 })

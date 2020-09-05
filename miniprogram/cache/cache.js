@@ -24,6 +24,14 @@ const cache = {
       return new RespSuccess(myInfoAndMyUniversityInfo)
     },
 
+    // 把数据写入缓存
+    setMyInfoAndMyUniversityInfo(params){
+      const {myInfoAndMyUniversityInfo} = params
+      wx.setStorageSync("myInfoAndMyUniversityInfo", myInfoAndMyUniversityInfo)
+      console.log({"新数据写入商品列表缓存":myInfoAndMyUniversityInfo})
+      return new RespSuccess()
+    },
+
       // 获取商品分类信息
   async getCommodityCategory(){
     let commodityCategory = wx.getStorageSync('commodityCategory')
@@ -65,7 +73,7 @@ const cache = {
     },
 
     // 把数据写入缓存
-    async setCommodityListByCid(params){
+    setCommodityListByCid(params){
       const {cid, commodityList} = params
       wx.setStorageSync(`commodityList?cid=${cid}`, commodityList)
       console.log({"新数据写入商品列表缓存":commodityList})

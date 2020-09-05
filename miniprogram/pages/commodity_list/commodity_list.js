@@ -170,7 +170,7 @@ Page({
       count: MAX_COMMODITY_LIMIT_SIZE,
       is_mine: false
     }
-    res = await api.getCommodityListByUidAndCidRefresh(params)
+    res = await api.getCommodityListByUidAndCid(params)
     if(res.errno == -1){
       console.log("刷新商品列表失败！")
       return

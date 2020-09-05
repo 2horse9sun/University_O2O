@@ -246,45 +246,45 @@ Page({
     res = await api.uploadImgAndGetFileID(params)
     if(res.errno == -1){
       console.log("上传图片到云存储失败！")
-    }else{
+      return
+    }
       const fileIDs = res.data
 
-      // 上传数据到云数据库
-      const thumbnailFileID = fileIDs.splice(0,1)
-      const commodityImgFileID = fileIDs
-      res = await cache.getMyInfoAndMyUniversityInfo()
-      if(res.errno == -1){
-        console.log("获取我的信息和我的大学信息失败！")
-      }else{
-        console.log(res)
-        const myInfoAndMyUniversityInfo = res.data
-        uid = myInfoAndMyUniversityInfo.uid
-        params = {
-          thumbnail_url: thumbnailFileID,
-          img_url: commodityImgFileID,
-          cid: cid,
-          content: this.data.commodityContent,
-          title: this.data.commodityTitle,
-          number: this.data.commodityNumber,
-          origin_url: this.data.commodityPurchaseUrl?this.data.commodityPurchaseUrl:"",
-          price_origin: this.data.commodityOriginPrice,
-          price_now: this.data.commodityCurrentPrice,
-          expire_time: this.data.expire_time,
-          remark: this.data.remark?this.data.remark:"",
-          uid: uid
-        }
-        res = await api.setCommodityDetail(params)
-        if(res.errno == -1){
-          console.log("上传商品信息失败!")
-        }else{
-          this.setData({
-            isUploading: false
-          })    
-          wx.redirectTo({
-            url: `../commodity_list/commodity_list?uid=${uid}`,
-          })
-        }
-      }  
+    // 上传数据到云数据库
+    const thumbnailFileID = fileIDs.splice(0,1)
+    const commodityImgFileID = fileIDs
+    res = await cache.getMyInfoAndMyUniversityInfo()
+    if(res.errno == -1){
+      console.log("获取我的信息和我的大学信息失败！")
     }
+    console.log(res)
+    const myInfoAndMyUniversityInfo = res.data
+    const userPrimaryKey = myInfoAndMyUniversityInfo._id
+    uid = myInfoAndMyUniversityInfo.uid
+    params = {
+      thumbnail_url: thumbnailFileID,
+      img_url: commodityImgFileID,
+      cid: cid,
+      content: this.data.commodityContent,
+      title: this.data.commodityTitle,
+      number: this.data.commodityNumber,
+      origin_url: this.data.commodityPurchaseUrl?this.data.commodityPurchaseUrl:"",
+      price_origin: this.data.commodityOriginPrice,
+      price_now: this.data.commodityCurrentPrice,
+      expire_time: this.data.expire_time,
+      remark: this.data.remark?this.data.remark:"",
+      uid: uid,
+      userPrimaryKey
+    }
+    res = await api.setCommodityDetail(params)
+    if(res.errno == -1){
+      console.log("上传商品信息失败!")
+    }
+    this.setData({
+      isUploading: false
+    })    
+    wx.redirectTo({
+      url: `../commodity_list/commodity_list?uid=${uid}`,
+    })
   }
 })

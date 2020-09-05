@@ -1,6 +1,9 @@
 // miniprogram/pages/commodity_detail/commodity_detail.js
+import Dialog from '@vant/weapp/dialog/dialog';
 const api = require('../../api/api')
-const MAX_QUESTION_LIMIT_SIZE = 2
+const cache = require('../../cache/cache')
+const fmt = require('../../utils/formatTime')
+const MAX_QUESTION_LIMIT_SIZE = 10
 const MAX_ANSWER_LIMIT_SIZE = 3
 const MAX_ANSWER_SHOW_LIMIT_SIZE = 2
 let res = {}
@@ -23,7 +26,9 @@ Page({
     questionContent: "",
     answerContent: "",
     commodityQuestion: [],
-    showAnswerPanel: false
+    commodityQuestionCount: 0,
+    showAnswerPanel: false,
+    showFailPanel: false
   },
 
   /**
@@ -32,16 +37,31 @@ Page({
   async onLoad(options) {
     opts = options
     start = 0
+
+    // 获取我的信息和大学信息
+    res = await cache.getMyInfoAndMyUniversityInfo()
+    if(res.errno == -1){
+      console.log("获取我的信息和大学信息失败！")
+      return
+    }
+    const myInfoAndMyUniversityInfo = res.data
+    const myUserId = myInfoAndMyUniversityInfo.openid
     
     // 获取商品详情信息
     commodity_id = options.id
-    commodity_id = "b5416b755f4d1ec400d462d6699ae2f3"
+    // commodity_id = "b5416b755f4d1ec400d462d6699ae2f3"
     params = {
       id: commodity_id
     }
     res = await api.getCommodityDetail(params)
     if(res.errno == -1){
       console.log("商品详情获取失败！")
+      Dialog.alert({
+        title: '出错了！',
+        message:res.message,
+      }).then(() => {
+        wx.navigateBack()
+      })
       return
     }
     commodityDetail = res.data
@@ -66,9 +86,25 @@ Page({
       originUrl:origin_url,
       priceNow: price_now,
       priceOrigin: price_origin,
-      status
+      status,
+      user_id,
+      myUserId
     })
     console.log(commodityDetail)
+
+    // 获取商品提问的数量
+    params = {
+      commodity_id,
+    }
+    res = await api.getCommodityQuestionCount(params)
+    if(res.errno == -1){
+      console.log("获取商品问题数量失败！")
+      return
+    }
+    const commodityQuestionCount = res.data
+    this.setData({
+      commodityQuestionCount
+    })
 
     // 获取商品提问
     params = {
@@ -87,6 +123,19 @@ Page({
 
     // 获取每个问题的回答，并加入到commodityQuestion中
     for(let i = 0;i < commodityQuestion.length;i++){
+      // 问题日期格式化
+      commodityQuestion[i].create_time = fmt(new Date(commodityQuestion[i].create_time))
+      // 回答数量
+      params = {
+        question_id: commodityQuestion[i]._id,
+      }
+      res = await api.getCommodityAnswerCount(params)
+      if(res.errno == -1){
+        console.log("获取问题回答数量失败！")
+        return
+      }
+      commodityQuestion[i]["commodityAnswerCount"] = res.data
+      // 回答详情
       params = {
         question_id: commodityQuestion[i]._id,
         start: 0,
@@ -97,7 +146,7 @@ Page({
         console.log("获取问题的回答失败！")
         return
       }
-      const commodityAnswer = res.data
+      let commodityAnswer = res.data
       commodityQuestion[i]["hasMoreAnswer"] = commodityAnswer.length > MAX_ANSWER_SHOW_LIMIT_SIZE ? true : false
       commodityQuestion[i]["commodityAnswer"] = commodityAnswer.splice(0, MAX_ANSWER_SHOW_LIMIT_SIZE)
     }
@@ -151,6 +200,20 @@ Page({
 
     // 获取每个问题的回答，并加入到commodityQuestion中
     for(let i = 0;i < newCommodityQuestion.length;i++){
+      // 问题日期格式化
+      newCommodityQuestion[i].create_time = fmt(new Date(newCommodityQuestion[i].create_time))
+
+      // 回答数量
+      params = {
+        question_id: newCommodityQuestion[i]._id,
+      }
+      res = await api.getCommodityAnswerCount(params)
+      if(res.errno == -1){
+        console.log("获取问题回答数量失败！")
+        return
+      }
+      newCommodityQuestion[i]["commodityAnswerCount"] = res.data
+      // 回答详情
       params = {
         question_id: newCommodityQuestion[i]._id,
         start: 0,
@@ -161,7 +224,7 @@ Page({
         console.log("获取问题的回答失败！")
         return
       }
-      const newCommodityAnswer = res.data
+      let newCommodityAnswer = res.data
       newCommodityQuestion[i]["hasMoreAnswer"] = newCommodityAnswer.length > MAX_ANSWER_SHOW_LIMIT_SIZE ? true : false
       newCommodityQuestion[i]["commodityAnswer"] = newCommodityAnswer.splice(0, MAX_ANSWER_SHOW_LIMIT_SIZE)
     }
@@ -195,35 +258,6 @@ Page({
       urls: this.data.swiperImgUrl
     })
   },
-
-
-
-
-
-  // 获取问题回答
-  async onGetCommodityAnswer(){
-    // 测试数据
-    const params = {
-      question_id: "ac5f38825f48712b008283406e7ea8f3",
-      start: 0,
-      count: MAX_ANSWER_LIMIT_SIZE
-    }
-    const resGetCommodityAnswer = await api.getCommodityAnswer(params)
-    const commodityAnswer = resGetCommodityAnswer.result
-    console.log(commodityAnswer)
-  },
-
-  // 上传问题回答
-  async onSetCommodityAnswer(){
-    // 测试数据
-    const params = {
-      question_id: "ac5f38825f48712b008283406e7ea8f3",
-      content: "对ipad的提问的又一次回答"
-    }
-    const resSetCommodityAnswer = await api.setCommodityAnswer(params)
-    console.log(resSetCommodityAnswer)
-  },
-
 
   onAskQuestion(){
     this.setData({
@@ -263,40 +297,96 @@ Page({
   },
 
   async onSubmitQuestion(){
-    const params = {
+    params = {
       commodity_id,
       content: this.data.questionContent
     }
-    console.log(params)
-    const resSetCommodityQuestion = await api.setCommodityQuestion(params)
-    console.log(resSetCommodityQuestion)
+    res = await api.setCommodityQuestion(params)
+    if(res.errno == -1){
+      console.log("上传商品问题失败！")
+      return
+    }
     this.setData({
       questionContent: "",
       showAskPanel: false
     })
-
     await this.onPullDownRefresh()
   },
 
   async onSubmitAnswer(){
-    const params = {
+    params = {
       question_id,
+      commodity_id,
       content: this.data.answerContent
     }
-    console.log(params)
-    const resSetCommodityAnswer = await api.setCommodityAnswer(params)
-    console.log(resSetCommodityAnswer)
+    res = await api.setCommodityAnswer(params)
+    if(res.errno == -1){
+      console.log("上传问题回答失败！")
+      return
+    }
     this.setData({
       answerContent: "",
       showAnswerPanel: false
     })
-
     await this.onPullDownRefresh()
   },
 
-  onEnterTransaction(){
+  onEnterQuestionDetail(event){
+    question_id = event.currentTarget.dataset.questionid
     wx.navigateTo({
-      url: `../commodity_transaction/commodity_transaction?commodity_id=${commodity_id}`,
+      url: `../question_detail/question_detail?questionid=${question_id}&userid=${this.data.user_id}`,
+    })
+  },
+
+
+  onEnterTransaction(){
+    if(this.data.status != 0){
+      console.log("该商品已下架或者正在交易中！")
+      this.setData({
+        showFailPanel: true
+      })
+      return
+    }
+    wx.navigateTo({
+      url: `../commodity_transaction/commodity_transaction?commodityid=${commodity_id}`,
+    })
+  },
+
+  async onDelCommodity(){
+    params = {
+      commodity_id
+    }
+    res = await api.delCommodity(params)
+    if(res.errno == -1){
+      Dialog.alert({
+        title: '出错了！',
+        message:res.message,
+      }).then(() => {
+        wx.navigateBack()
+      })
+      return
+    }else if(res.errno == -2){
+      Dialog.alert({
+        title: '出错了！',
+        message:res.message,
+      }).then(() => {
+        wx.navigateBack()
+      })
+      return
+    }else{
+      Dialog.alert({
+        title: '成功',
+        message:'成功删除商品！',
+      }).then(() => {
+        wx.navigateBack()
+      })
+      return
+    }
+  },
+
+  onCancelFailPanel(){
+    this.setData({
+      showFailPanel: false
     })
   }
 

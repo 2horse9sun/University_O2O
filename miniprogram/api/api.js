@@ -15,7 +15,6 @@ const api = {
 
   // 获取此用户信息和大学信息
   async getMyInfoAndMyUniversityInfo(){
-
       res = await wx.cloud.callFunction({
         name: 'user',
         data: {
@@ -37,14 +36,22 @@ const api = {
       return new RespSuccess(myInfoAndMyUniversityInfo)
   },
 
-  getUserInfoFromDbByUserId(params){
-    return wx.cloud.callFunction({
+  async getUserInfoFromDbByUserId(params){
+    res = await wx.cloud.callFunction({
       name: 'user',
       data: {
         $url: 'getUserInfoFromDbByUserId',
         params
       }
     })
+    if(res.result.errno == -1){
+      console.log("获取用户信息失败！")
+      return new RespError("获取用户信息失败！")
+    }
+    const userInfo = res.result.data[0]
+    console.log({"获取用户信息成功！": userInfo})
+    return new RespSuccess(userInfo)
+
   },
   
   // 上传用户信息
@@ -114,11 +121,10 @@ const api = {
     if(res.result.errno == -1){
       console.log("获取大学信息失败！")
       return new RespError("获取大学信息失败！")
-    }else{
-      const universityInfo = res.result.data
-      console.log({"获取大学信息成功！": universityInfo})
-      return new RespSuccess(universityInfo)
     }
+    const universityInfo = res.result.data
+    console.log({"获取大学信息成功！": universityInfo})
+    return new RespSuccess(universityInfo)
   },
 
   // 从云数据库中获取大学信息
@@ -246,17 +252,96 @@ const api = {
 
 
   // 删除商品(soft-del)
-  // params = {
-  //   id string NOT NULL // 删除商品的_id
-  // }
-  delCommodity(params){
-    return wx.cloud.callFunction({
+  // 需要获取与商品相关的问题，回答，交易的主键，以及图片的fileIDs
+  async delCommodity(params){
+    const {commodity_id} = params
+    const cid = commodity_id
+
+    // 获取图片
+    res = await this.getCommodityDetail({id: commodity_id})
+    if(res.errno == -1){
+      return
+    }
+    const fileIDs = res.data.img_url.concat(res.data.thumbnail_url)
+    console.log(fileIDs)
+
+    // 获取问题
+    res = await wx.cloud.callFunction({
+      name: 'commodity_question',
+      data: {
+        $url: 'getCommodityQuestionByCidAll',
+       params
+      }
+    })
+    if(res.result.errno == -1){
+      return
+    }
+    const commodityQuestion = res.result.data
+    const qids = commodityQuestion.map(function(item){
+      return item._id
+    })
+    console.log(qids)
+
+    // 获取回答
+    res = await wx.cloud.callFunction({
+      name: 'commodity_answer',
+      data: {
+        $url: 'getCommodityAnswerByCidAll',
+        params
+      }
+    })
+    if(res.result.errno == -1){
+      return
+    }
+    const commodityAnswer = res.result.data
+    const aids = commodityAnswer.map(function(item){
+      return item._id
+    })
+    console.log(aids)
+
+    // 获取交易
+    res = await wx.cloud.callFunction({
+      name: 'transaction',
+      data: {
+        $url: 'getTransactionByCidAll',
+        params
+      }
+    })
+    if(res.result.errno == -1){
+      return
+    }
+    const commodityTransaction = res.result.data
+    const tids = commodityTransaction.map(function(item){
+      return item._id
+    })
+    console.log(tids)
+    params = {
+      cid,
+      qids,
+      aids,
+      tids,
+      fileIDs
+    }
+    console.log(params)
+
+    res = await wx.cloud.callFunction({
       name: 'commodity',
       data: {
         $url: 'delCommodity',
         params
       }
     })
+
+    if(res.result.errno == -1){
+      console.log("删除商品失败！")
+      return new RespError("删除商品失败！")
+    }else if(res.result.errno == -2){
+      console.log("商品还有未完成的交易")
+      return new RespError("商品还有未完成的交易")
+    }
+    console.log("删除商品成功！")
+    return new RespSuccess()
+    
   },
 
   // 上传图片并返回fileID
@@ -332,19 +417,59 @@ const api = {
     return new RespSuccess(commodityQuestionAndUserInfo)
   },
 
+  async getCommodityQuestionAndUserInfoByQid(params){
+    res = await wx.cloud.callFunction({
+      name: 'commodity_question',
+      data: {
+        $url: 'getCommodityQuestionAndUserInfoByQid',
+        params
+      }
+    })
+    if(res.result.errno == -1){
+      console.log("获取指定商品问题失败！")
+      return new RespError("获取指定商品问题失败！")
+    }
+    const commodityQuestionAndUserInfoByQid = res.result.list[0]
+    console.log({"获取商品问题成功":commodityQuestionAndUserInfoByQid})
+    return new RespSuccess(commodityQuestionAndUserInfoByQid)
+  },
+
+  async getCommodityQuestionCount(params){
+    res = await wx.cloud.callFunction({
+      name: 'commodity_question',
+      data: {
+        $url: 'getCommodityQuestionCount',
+        params
+      }
+    })
+    if(res.result.errno == -1){
+      console.log("获取商品问题数量失败！")
+      return new RespError("获取商品问题数量失败！")
+    }
+    const commodityQuestionCount = res.result.total
+    console.log({"获取商品问题数量成功":commodityQuestionCount})
+    return new RespSuccess(commodityQuestionCount)
+  },
+
   // 上传对商品的提问
   // params = {
   //   commodity_id string NOT NULL // 商品的_id
   //   content string NOT NULL // 提问内容
   // }
-  setCommodityQuestion(params){
-    return wx.cloud.callFunction({
+  async setCommodityQuestion(params){
+    res = await wx.cloud.callFunction({
       name: 'commodity_question',
       data: {
         $url: 'setCommodityQuestion',
         params
       }
     })
+    if(res.result.errno == -1){
+      console.log("上传商品问题失败！")
+      return new RespError("上传商品问题失败！")
+    }
+    console.log("上传商品问题成功！")
+    return new RespSuccess()
   },
 
   // 获取对问题的回答
@@ -370,19 +495,44 @@ const api = {
     return new RespSuccess(commodityAnswerAndUserInfo)
   },
 
+  
+
+  async getCommodityAnswerCount(params){
+    res = await wx.cloud.callFunction({
+      name: 'commodity_answer',
+      data: {
+        $url: 'getCommodityAnswerCount',
+        params
+      }
+    })
+    if(res.result.errno == -1){
+      console.log("获取问题回答数量失败！")
+      return new RespError("获取问题回答数量失败！")
+    }
+    const commodityAnswerCount = res.result.total
+    console.log({"获取问题回答数量成功！":commodityAnswerCount})
+    return new RespSuccess(commodityAnswerCount)
+  },
+
   // 上传对问题的回答
   // params = {
   //   question_id string NOT NULL // 问题的_id
   //   content string NOT NULL // 回答内容
   // }
-  setCommodityAnswer(params){
-    return wx.cloud.callFunction({
+  async setCommodityAnswer(params){
+    res = await wx.cloud.callFunction({
       name: 'commodity_answer',
       data: {
         $url: 'setCommodityAnswer',
         params
       }
     })
+    if(res.result.errno == -1){
+      console.log("上传问题回答失败！")
+      return new RespError("上问题回答失败！")
+    }
+    console.log("上传问题回答成功！")
+    return new RespSuccess()
   },
 
   // 上传交易信息
@@ -394,24 +544,43 @@ const api = {
   //   total_price number NOT NULL // 实际价格，加上手续费
   //   transaction_no string NOT NULL // 按某种规则生成交易编号
   // }
-  setTransaction(params){
-    return wx.cloud.callFunction({
+  async setTransaction(params){
+    res = await wx.cloud.callFunction({
       name: 'transaction',
       data: {
         $url: 'setTransaction',
         params
       }
     })
+    if(res.result.errno == -1){
+      console.log("生成交易失败！")
+      return new RespError("生成交易失败！")
+    }else if(res.result.errno == -2){
+      console.log("商品正在交易中或者库存不足！")
+      return new RespError("商品正在交易中或者库存不足！")
+    }
+    console.log("上传问题回答成功！")
+    const transactionNumber = res.result.transactionNumber
+    console.log({"交易号":transactionNumber})
+    return new RespSuccess({transactionNumber})
   },
 
-  getTransactionByTransactionNumber(params){
-    return wx.cloud.callFunction({
+  async getTransactionByTransactionNumber(params){
+    res = await wx.cloud.callFunction({
       name: 'transaction',
       data: {
         $url: 'getTransactionByTransactionNumber',
         params
       }
     })
+    if(res.result.errno == -1){
+      console.log("查询交易失败！")
+      return new RespError("查询交易失败！")
+    }
+    console.log("查询交易成功！")
+    const transactionDetail = res.result.data[0]
+    console.log({"交易详情":transactionDetail})
+    return new RespSuccess(transactionDetail)
   },
 
   // 获取关于自己的交易列表
@@ -429,39 +598,57 @@ const api = {
     })
   },
 
-  cancelTransaction(params){
-    return wx.cloud.callFunction({
+  async cancelTransaction(params){
+    res = await wx.cloud.callFunction({
       name: 'transaction',
       data: {
         $url: 'cancelTransaction',
         params
       }
     })
+    if(res.result.errno == -1){
+      console.log("取消交易失败！")
+      return new RespError("取消交易失败！")
+    }else if(res.result.errno == -2){
+      console.log("交易已经被取消或已经完成")
+      return new RespError("交易已经被取消或已经完成")
+    }
+    console.log("取消交易成功！")
+    return new RespSuccess()
   },
 
-  confirmFinishTransaction(params){
-    return wx.cloud.callFunction({
+  async confirmFinishTransaction(params){
+    res = await wx.cloud.callFunction({
       name: 'transaction',
       data: {
         $url: 'confirmFinishTransaction',
         params
       }
     })
+    if(res.result.errno == -1){
+      console.log("确认交易完成失败！")
+      return new RespError("确认交易完成失败！")
+    }else if(res.result.errno == -2){
+      console.log("交易已经被取消或已经完成")
+      return new RespError("交易已经被取消或已经完成")
+    }
+    console.log("确认交易完成成功！")
+    return new RespSuccess()
   },
 
   // 删除交易(soft-del)
   // params = {
   //   id string NOT NULL // 交易_id
   // }
-  delTransaction(params){
-    return wx.cloud.callFunction({
-      name: 'transaction',
-      data: {
-        $url: 'delTransaction',
-        params
-      }
-    })
-  },
+  // delTransaction(params){
+  //   return wx.cloud.callFunction({
+  //     name: 'transaction',
+  //     data: {
+  //       $url: 'delTransaction',
+  //       params
+  //     }
+  //   })
+  // },
 
 }
 

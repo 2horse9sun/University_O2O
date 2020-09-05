@@ -1,0 +1,90 @@
+<cu-custom bgColor="bg-gradual-orange" isBack="{{true}}">
+	<view slot="backText" catch:tap="onNavigateBack">返回</view>
+	<view slot="content">问题详情</view>
+</cu-custom>
+
+
+
+
+<view class="cu-bar bg-white margin-top">
+	<view class="action">
+		<text class="cuIcon-title text-orange"></text>
+		<text class="text-border text-xl">全部回答({{commodityQuestionCount}})</text>
+	</view>
+</view>
+
+
+<view class="cu-card dynamic">
+	<view class="cu-item shadow">
+		<view>
+			<view class="cu-list menu-avatar">
+				<view class="cu-item">
+					<image class="cu-avatar round lg" src="{{commodityQuestion.userInfoList[0].avatar_url}}"></image>
+					<view class="content flex-sub">
+						<view class="flex align-center justify-between">
+							<view class="flex align-center">
+								<view>{{commodityQuestion.userInfoList[0].name}}</view>
+								<view wx:if="{{user_id == commodityQuestion.user_id}}">
+									<view class="cu-tag bg-green round margin-left" bindtap="onAnswerQuestion" data-questionid="{{item._id}}">卖家</view>
+								</view>
+							</view>
+							<view>
+								<view class="cu-tag line-grey radius" bindtap="onAnswerQuestion" data-questionid="{{item._id}}">回复</view>
+							</view>
+						</view>
+						<view class="text-gray text-sm flex justify-between">
+							{{commodityQuestion.create_time}}
+						</view>
+					</view>
+				</view>
+			</view>
+			<view class="text-content margin-left margin-bottom">
+				{{commodityQuestion.content}}
+			</view>
+		</view>
+
+		<view wx:for="{{commodityQuestion.commodityAnswer}}" wx:key="_id">
+			<view class="cu-list menu-avatar comment solids-top">
+				<view class="cu-item">
+					<image class="cu-avatar round" src="{{item.userInfoList[0].avatar_url}}"></image>
+					<view class="content">
+						<view class="flex align-center">
+							<view>{{item.userInfoList[0].name}}</view>
+							<view wx:if="{{user_id == item.user_id}}">
+								<view class="cu-tag sm bg-green round margin-left" bindtap="onAnswerQuestion" data-questionid="{{item._id}}">卖家</view>
+							</view>
+						</view>
+						<view class="text-content text-df">
+							{{item.content}}
+						</view>
+						<!-- <view class="margin-top-sm flex justify-between">
+								<view class="text-gray text-df">{{item.create_time}}</view>
+							</view> -->
+					</view>
+				</view>
+			</view>
+		</view>
+	</view>
+</view>
+
+<view class="cu-modal {{showAnswerPanel?'show':''}}">
+	<view class="cu-dialog">
+		<view class="cu-bar bg-white justify-end">
+			<view class="content">回复</view>
+		</view>
+		<view class="padding-xl bg-white">
+			<input type="text" value="{{answerContent}}" placeholder="请输入回答" bindinput="onChangeAnswerContent"></input>
+		</view>
+		<view class="cu-bar bg-white justify-end">
+			<view class="action">
+				<button class="cu-btn line-green text-green" bindtap="onCancelAnswerPanel">取消</button>
+				<button class="cu-btn bg-green margin-left" bindtap="onSubmitAnswer">确定</button>
+			</view>
+		</view>
+	</view>
+</view>
+
+
+
+
+<view class="cu-load {{isLoading?'loading':'over'}}"></view>

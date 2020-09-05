@@ -56,12 +56,18 @@ exports.main = async (event, context) => {
   // 获取用户信息
   app.router('getUserInfoFromDbByUserId', async (ctx, next) => {
     const {userId} = event.params
-    ctx.body = await userCollection.where({
-      openid: userId,
-      is_deleted: false
-    }).get().then((res) => {
-      return res.data
-    })
+    try{
+      ctx.body = await userCollection.where({
+        openid: userId,
+        is_deleted: false
+      }).get()
+      ctx.body.errno = 0
+    }catch(e){
+      ctx.body = {
+        errno: -1
+      }
+    }
+   
   })
 
   // 添加自己的信息
@@ -71,7 +77,10 @@ exports.main = async (event, context) => {
         data: {
           ...event.params,
           openid: wxContext.OPENID,
-          student_auth: false,
+          student_auth: true,
+          total_transaction: 0,
+          total_sell: 0,
+          total_buy: 0,
           create_time: db.serverDate(),
           update_time: db.serverDate(),
           is_deleted: false

@@ -7,25 +7,25 @@
 
 <view class="cu-list menu sm-border card-menu margin-top">
 
-	<view class="cu-item {{menuArrow?'arrow':''}}">
+	<view class="cu-item">
 		<view class="content">
 			<text>商品标题</text>
 		</view>
 		<view class="action">
-			<text class="text-grey text-xxl">{{title}}</text>
+			<text class="text-black text-border text-xxl">{{title}}</text>
 		</view>
 	</view>
 
-	<view class="cu-item {{menuArrow?'arrow':''}}">
+	<view class="cu-item">
 		<view class="content">
 			<text>商品单价</text>
 		</view>
 		<view class="action">
-			<text class="text-grey text-xl">￥{{price_now}}</text>
+			<text class="text-black text-border text-xl">￥{{price_now}}</text>
 		</view>
 	</view>
 
-	<view class="cu-item {{menuArrow?'arrow':''}}">
+	<view class="cu-item">
 		<view class="content">
 			<text>请选择购买数量</text>
 		</view>
@@ -34,12 +34,12 @@
 		</view>
 	</view>
 
-	<view class="cu-item {{menuArrow?'arrow':''}}">
+	<view class="cu-item">
 		<view class="content">
 			<text>手续费</text>
 		</view>
 		<view class="action">
-			<text class="text-grey text-xl">￥0</text>
+			<text class="text-black text-border text-xl">￥0</text>
 		</view>
 	</view>
 

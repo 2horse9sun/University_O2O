@@ -1,5 +1,5 @@
 <cu-custom bgColor="bg-gradual-orange" isBack="{{true}}">
-	<view slot="backText" catch:tap="onNavigateBack">返回首页</view>
+	<view slot="backText" catch:tap="onNavigateBack">返回</view>
 	<view slot="content">详情</view>
 </cu-custom>
 
@@ -20,7 +20,7 @@
 			<view class="desc">
 				<view class="flex align-center justify-between">
 					<view>
-						<view class="cu-tag bg-{{item.status==0?'green':(item.status==1?'red':'grey')}} round">{{item.status==0?'正在出售':(item.status==1?'交易中':'已下架')}}</view>
+						<view class="cu-tag bg-{{status==0?'green':(status==1?'red':'grey')}} round">{{status==0?'正在出售':(status==1?'交易中':'已售罄')}}</view>
 					</view>
 					<view class="flex align-center">
 						<view class="price-now">
@@ -77,26 +77,26 @@
 <view class="cu-bar bg-white margin-top">
 	<view class="action">
 		<text class="cuIcon-title text-orange"></text>
-		<text class="text-border text-xl">问答区({{commodityQuestion.length}})</text>
+		<text class="text-border text-xl">问答区({{commodityQuestionCount}})</text>
 	</view>
 </view>
 
 
 
 <view wx:for="{{commodityQuestion}}" wx:key="_id">
-
 	<view class="cu-card dynamic">
-
 		<view class="cu-item shadow">
-
 			<view>
 				<view class="cu-list menu-avatar">
 					<view class="cu-item">
 						<image class="cu-avatar round lg" src="{{item.userInfoList[0].avatar_url}}"></image>
 						<view class="content flex-sub">
 							<view class="flex align-center justify-between">
-								<view>
-									{{item.userInfoList[0].name}}
+								<view class="flex align-center">
+									<view>{{item.userInfoList[0].name}}</view>
+									<view wx:if="{{user_id == item.user_id}}">
+										<view class="cu-tag bg-green round margin-left" bindtap="onAnswerQuestion" data-questionid="{{item._id}}">卖家</view>
+									</view>
 								</view>
 								<view>
 									<view class="cu-tag line-grey radius" bindtap="onAnswerQuestion" data-questionid="{{item._id}}">回复</view>
@@ -118,8 +118,13 @@
 					<view class="cu-item">
 						<image class="cu-avatar round" src="{{item.userInfoList[0].avatar_url}}"></image>
 						<view class="content">
-							<view class="text-grey">{{item.userInfoList[0].name}}</view>
-							<view class="text-gray text-content text-df">
+							<view class="flex align-center">
+								<view>{{item.userInfoList[0].name}}</view>
+								<view wx:if="{{user_id == item.user_id}}">
+									<view class="cu-tag sm bg-green round margin-left" bindtap="onAnswerQuestion" data-questionid="{{item._id}}">卖家</view>
+								</view>
+							</view>
+							<view class="text-content text-df">
 								{{item.content}}
 							</view>
 							<view class="margin-top-sm flex justify-between">
@@ -132,7 +137,7 @@
 
 			<view wx:if="{{item.hasMoreAnswer}}">
 				<view class="solids-top padding text-center" bind:tap="onEnterQuestionDetail" data-questionid="{{item._id}}">
-					查看更多回答
+					查看全部回答({{item.commodityAnswerCount}})
 				</view>
 			</view>
 			<view wx:if="{{item.commodityAnswer.length == 0}}">
@@ -140,6 +145,7 @@
 					暂无回答
 				</view>
 			</view>
+
 		</view>
 	</view>
 </view>
@@ -153,42 +159,73 @@
 
 
 <view class="cu-modal {{showAskPanel?'show':''}}">
-  <view class="cu-dialog">
-    <view class="cu-bar bg-white justify-end">
-      <view class="content">提问</view>
-    </view>
-    <view class="padding-xl bg-white">
-      <input type="text" value="{{questionContent}}" placeholder="请输入问题" bindinput="onChangeQuestionContent"></input>
-    </view>
-    <view class="cu-bar bg-white justify-end">
-      <view class="action">
-        <button class="cu-btn line-green text-green" bindtap="onCancelAskPanel">取消</button>
-        <button class="cu-btn bg-green margin-left" bindtap="onSubmitQuestion">确定</button>
-      </view>
-    </view>
-  </view>
+	<view class="cu-dialog">
+		<view class="cu-bar bg-white justify-end">
+			<view class="content">提问</view>
+		</view>
+		<view class="padding-xl bg-white">
+			<input type="text" value="{{questionContent}}" placeholder="请输入问题" bindinput="onChangeQuestionContent"></input>
+		</view>
+		<view class="cu-bar bg-white justify-end">
+			<view class="action">
+				<button class="cu-btn line-green text-green" bindtap="onCancelAskPanel">取消</button>
+				<button class="cu-btn bg-green margin-left" bindtap="onSubmitQuestion">确定</button>
+			</view>
+		</view>
+	</view>
 </view>
 
 <view class="cu-modal {{showAnswerPanel?'show':''}}">
-  <view class="cu-dialog">
-    <view class="cu-bar bg-white justify-end">
-      <view class="content">回复</view>
-    </view>
-    <view class="padding-xl bg-white">
-      <input type="text" value="{{answerContent}}" placeholder="请输入回答" bindinput="onChangeAnswerContent"></input>
-    </view>
-    <view class="cu-bar bg-white justify-end">
-      <view class="action">
-        <button class="cu-btn line-green text-green" bindtap="onCancelAnswerPanel">取消</button>
-        <button class="cu-btn bg-green margin-left" bindtap="onSubmitAnswer">确定</button>
-      </view>
-    </view>
-  </view>
+	<view class="cu-dialog">
+		<view class="cu-bar bg-white justify-end">
+			<view class="content">回复</view>
+		</view>
+		<view class="padding-xl bg-white">
+			<input type="text" value="{{answerContent}}" placeholder="请输入回答" bindinput="onChangeAnswerContent"></input>
+		</view>
+		<view class="cu-bar bg-white justify-end">
+			<view class="action">
+				<button class="cu-btn line-green text-green" bindtap="onCancelAnswerPanel">取消</button>
+				<button class="cu-btn bg-green margin-left" bindtap="onSubmitAnswer">确定</button>
+			</view>
+		</view>
+	</view>
+</view>
+
+<view class="cu-modal {{showFailPanel?'show':''}}">
+	<view class="cu-dialog">
+		<view class="cu-bar bg-white justify-end">
+			<view class="content">无法进行交易</view>
+		</view>
+		<view class="padding-xl bg-white">
+			<text>该商品已下架或者正在交易中！</text>
+		</view>
+		<view class="cu-bar bg-white justify-end">
+			<view class="action">
+				<button class="cu-btn line-green text-green" bindtap="onCancelFailPanel">取消</button>
+				<button class="cu-btn bg-green margin-left" bindtap="onCancelFailPanel">确定</button>
+			</view>
+		</view>
+	</view>
 </view>
 
 
 
-<van-goods-action>
-	<van-goods-action-icon icon="chat-o" text="提问" bind:click="onAskQuestion" />
-	<van-goods-action-button text="发起交易" bind:click="onEnterTransaction" />
-</van-goods-action>
+
+<view wx:if="{{!(myUserId==user_id)}}">
+	<van-goods-action>
+		<van-goods-action-icon icon="chat-o" text="提问" bind:click="onAskQuestion" />
+		<van-goods-action-button text="发起交易" bind:click="onEnterTransaction" />
+	</van-goods-action>
+</view>
+
+<view wx:if="{{myUserId==user_id}}">
+	<van-goods-action>
+		<van-goods-action-icon icon="chat-o" text="提问" bind:click="onAskQuestion" />
+		<van-goods-action-button color="#aaaaaa" text="删除商品" bind:click="onDelCommodity" />
+	</van-goods-action>
+</view>
+
+
+
+<van-dialog id="van-dialog" />

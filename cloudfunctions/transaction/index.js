@@ -10,11 +10,10 @@ const TcbRouter = require('tcb-router')
 const db = cloud.database()
 const _ = db.command
 
+const MAX_LIMIT = 50
+
 const transactionCollection = db.collection('transaction')
 const commodityCollection = db.collection('commodity')
-
-let AsyncLock = require('async-lock');
-let lock = new AsyncLock();
 
 // 云函数入口函数
 exports.main = async (event, context) => {
@@ -39,48 +38,84 @@ exports.main = async (event, context) => {
   // 根据交易编号获取交易详情
   app.router('getTransactionByTransactionNumber', async (ctx, next) => {
     const {transaction_no} = event.params
-    ctx.body = await transactionCollection.where({
-      transaction_no,
-      is_deleted: false
-    }).get().then((res) => {
-        return res.data
-      })
+    try{
+      ctx.body = await transactionCollection.where({
+        transaction_no,
+        is_deleted: false
+      }).get()
+      ctx.body.errno = 0
+    }catch(e){
+      ctx.body = {
+        errno: -1
+      }
+    }
   })
 
 
-  // 发起交易
+  // 发起交易，涉及多张表，使用事务
   app.router('setTransaction', async (ctx, next) => {
     const params = event.params
     const commodity_id = params.commodity_id
     const purchaseNumber = params.number
-    console.log(params)
+    const sellerPrimaryKey = params.sellerPrimaryKey
+    const buyerPrimaryKey = params.buyerPrimaryKey
 
-    // 查询库存并修改库存(原子操作)，若修改失败则说明库存不足，无法进行交易
-    const resModifyCommodifyNumber = await commodityCollection.where({
-      _id: commodity_id,
-      number: _.gte(parseInt(purchaseNumber))
-    }).update({
-      data:{
-        number: _.inc(-parseInt(purchaseNumber))
+    // 创建事务
+    const transaction = await db.startTransaction()
+    try{
+    
+      // 查询库存并修改库存(原子操作)，若修改失败则说明库存不足，无法进行交易
+      const resGetCommodityDetail = await transaction
+      .collection("commodity")
+      .doc(commodity_id)
+      .get()
+      const commodityDetail = resGetCommodityDetail.data
+      const commodityNumber = commodityDetail.number
+      if(purchaseNumber > commodityNumber){
+        ctx.body = {
+          errno: -2
+        }
+        return
       }
-    })
-    console.log(resModifyCommodifyNumber)
-    if(resModifyCommodifyNumber.stats.updated == 0){
-      ctx.body = {
-        errno: -1
-      }
-    }else{
-      const resModifyCommodifyStatus = await commodityCollection.where({
-        _id: commodity_id,
-        number: 0
-      }).update({
+
+      // 修改商品数量，若数量为0，则改为交易中状态
+      const newNumber = commodityNumber - purchaseNumber
+      const newStatus = newNumber==0 ? 1 : 0
+      await transaction
+      .collection("commodity")
+      .doc(commodity_id)
+      .update({
         data:{
-          status: 1
+          number: newNumber,
+          status: newStatus
         }
       })
-      console.log(resModifyCommodifyStatus)
+
+      // 更新用户的总交易数
+      await transaction
+      .collection("user")
+      .doc(sellerPrimaryKey)
+      .update({
+        data:{
+          total_transaction: _.inc(1),
+          update_time: db.serverDate()
+        }
+      })
+      await transaction
+      .collection("user")
+      .doc(buyerPrimaryKey)
+      .update({
+        data:{
+          total_transaction: _.inc(1),
+          update_time: db.serverDate()
+        }
+      })
+
+      // 写入订单
       const transactionNumber = Date.now() + "-" + parseInt(Math.random() * 10000000) 
-      ctx.body = await transactionCollection.add({
+      ctx.body = await transaction
+      .collection("transaction")
+      .add({
         data:{
           ...params,
           transaction_no: transactionNumber,
@@ -90,92 +125,222 @@ exports.main = async (event, context) => {
           buyer_status: 0,
           create_time: db.serverDate(),
           update_time: db.serverDate(),
-          end_time: "未结束",
+          end_time: "",
           is_deleted: false
         }
       })
-      ctx.body.errno = 0
       ctx.body.transactionNumber = transactionNumber
+      ctx.body.errno = 0
+
+      // 全部数据库操作成功后，提交事务
+      await transaction.commit()
+
+    }catch(e){
+      console.log("事务错误！")
+      // 事务回滚
+      transaction.rollback()
+      ctx.body = {
+        errno: -1
+      }
     }
-    
   })
 
+  // 取消交易，涉及多张表，使用事务
   app.router('cancelTransaction', async (ctx, next) => {
     const {id} = event.params
+    const transaction = await db.startTransaction()
 
-    const resModifyTransactionStatus = await transactionCollection.where({
-      _id: id
-    }).update({
-      data:{
-        status: 2,
-        update_time: db.serverDate(),
-        end_time: db.serverDate(),
+    try{
+      // 判断交易的状态为进行中
+      const resGetTransactionDetail = await transaction
+      .collection("transaction")
+      .doc(id)
+      .get()
+      const transactionDetail = resGetTransactionDetail.data
+      const commodity_id = transactionDetail.commodity_id
+      const purchaseNumber = transactionDetail.number
+      const transactionStatus = transactionDetail.status
+      if(transactionStatus != 0){
+        ctx.body = {
+          errno: -2
+        }
+        return
       }
-    })
-    console.log(resModifyTransactionStatus)
 
-    
-    const resGetTransactionDetail = await transactionCollection.where({
-      _id: id
-    }).get()
-    console.log(resGetTransactionDetail)
-    const purchaseNumber = resGetTransactionDetail.data[0].number
-    const commodity_id = resGetTransactionDetail.data[0].commodity_id
+      // 更新交易状态：已取消
+      await transaction
+        .collection("transaction")
+        .doc(id)
+        .update({
+          data:{
+            status: 2,
+            update_time: db.serverDate(),
+            end_time: db.serverDate()
+          }
+        })
 
-
-    const resModifyCommodifyNumber = await commodityCollection.where({
-      _id: commodity_id,
-    }).update({
-      data:{
-        number: _.inc(parseInt(purchaseNumber))
+      // 恢复商品的数量，改变商品状态
+      const resGetCommodityDetail = await transaction
+      .collection("commodity")
+      .doc(commodity_id)
+      .get()
+      const commodityDetail = resGetCommodityDetail.data
+      let commodityNumber = commodityDetail.number
+      commodityNumber += purchaseNumber
+      await transaction
+      .collection("commodity")
+      .doc(commodity_id)
+      .update({
+        data:{
+          status: 0,
+          number: commodityNumber,
+          update_time: db.serverDate()
+        }
+      })
+      transaction.commit()
+      ctx.body = {
+        errno: 0
       }
-    })
-    console.log(resModifyCommodifyNumber)
+    }catch(e){
+      transaction.rollback()
+      ctx.body = {
+        errno: -1
+      }
+    }
   })
 
-  // 更新交易状态至确认状态，若都确认，则交易完成
+  // 更新交易状态，涉及多张表，使用事务
   app.router('confirmFinishTransaction', async (ctx, next) => {
     let {id, isSeller, seller_status, buyer_status} = event.params
-    if(isSeller){
-      seller_status = 1
-      await transactionCollection.where({
-        _id: id
-      }).update({
-        data:{
-          seller_status: 1,
-          status: buyer_status==1?1:0,
-          update_time: db.serverDate()
-        }
-      })
+    const transaction = await db.startTransaction()
 
-    }else{
-      buyer_status = 1
-      await transactionCollection.where({
-        _id: id
-      }).update({
-        data:{
-          buyer_status: 1,
-          status: seller_status==1?1:0,
-          update_time: db.serverDate()
+
+    try{
+      // 判断交易的状态为进行中
+      const resGetTransactionDetail = await transaction
+      .collection("transaction")
+      .doc(id)
+      .get()
+      const transactionDetail = resGetTransactionDetail.data
+      const commodity_id = transactionDetail.commodity_id
+      const transactionStatus = transactionDetail.status
+      if(transactionStatus != 0){
+        ctx.body = {
+          errno: -2
         }
-      })
+        return
+      }
+
+      // 更新交易表
+      if(isSeller){
+        seller_status = 1
+        await transaction
+        .collection("transaction")
+        .doc(id)
+        .update({
+          data:{
+            seller_status: 1,
+            status: buyer_status==1?1:0,
+            update_time: db.serverDate(),
+            end_time: buyer_status==1?db.serverDate():""
+          }
+        })
+      }else{
+        buyer_status = 1
+        await transaction
+        .collection("transaction")
+        .doc(id)
+        .update({
+          data:{
+            buyer_status: 1,
+            status: seller_status==1?1:0,
+            update_time: db.serverDate(),
+            end_time: seller_status==1?db.serverDate():""
+          }
+        })
+      }
+
+      // 若商品数量为0，则更新为下架状态
+      const resGetCommodityDetail = await transaction
+      .collection("commodity")
+      .doc(commodity_id)
+      .get()
+      const commodityDetail = resGetCommodityDetail.data
+      const commodityNumber = commodityDetail.number
+      if(commodityNumber == 0){
+        await transaction
+        .collection("commodity")
+        .doc(commodity_id)
+        .update({
+          data:{
+            status: 2,
+            update_time: db.serverDate()
+          }
+        })
+      }
+      transaction.commit()
+      ctx.body = {
+        errno: 0
+      }
+    }catch(e){
+      transaction.rollback()
+      ctx.body = {
+        errno: -1
+      }
     }
-
-
     
+  })
+
+
+
+  // 获取所有交易
+  app.router('getTransactionByCidAll', async (ctx, next) => {
+    const {commodity_id} = event.params
+    try{
+      const countResult = await transactionCollection.where({
+        commodity_id,
+        is_deleted: false
+      }).count()
+      const total = countResult.total
+      const batchTimes = Math.ceil(total / MAX_LIMIT)
+      let res = {}
+      ctx.body = {
+        data: []
+      }
+      for (let i = 0; i < batchTimes; i++) {
+        res = await transactionCollection.where({
+          commodity_id,
+          is_deleted: false
+        }).skip(i * MAX_LIMIT).limit(MAX_LIMIT).get()
+        ctx.body.data = ctx.body.data.concat(res.data)
+      }
+      ctx.body.errno = 0
+    }catch(e){
+      ctx.body = {
+        errno: -1
+      }
+    }
   })
 
   // 根据交易_id删除交易(soft-del)
-  app.router('delTransaction', async (ctx, next) => {
-    const {id} = event.params
-    ctx.body = await transactionCollection.where({
-      _id: id
-    }).update({
-      data:{
-        is_deleted: true
-      }
-    })
-  })
+  // app.router('delTransaction', async (ctx, next) => {
+  //   const {id} = event.params
+  //   try{
+  //     ctx.body = await transactionCollection.where({
+  //       _id: id
+  //     }).update({
+  //       data:{
+  //         is_deleted: true
+  //       }
+  //     })
+  //     ctx.body.errno = 0
+  //   }catch(e){
+  //     ctx.body = {
+  //       errno: -1
+  //     }
+  //   }
+    
+  // })
 
 
   return app.serve()

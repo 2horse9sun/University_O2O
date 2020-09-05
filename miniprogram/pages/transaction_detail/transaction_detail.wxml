@@ -120,10 +120,10 @@
 
 
 
-<view wx:if="{{status==1 || status==2}}">
+<!-- <view wx:if="{{status==1 || status==2}}">
 	<view class="padding flex flex-direction">
 		<button class="cu-btn bg-grey margin-tb-sm lg" bind:tap="onDelTransaction">删除交易</button>
 	</view>
-</view>
+</view> -->
 
 <van-dialog id="van-dialog" />
