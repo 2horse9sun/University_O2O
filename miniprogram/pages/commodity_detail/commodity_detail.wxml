@@ -212,19 +212,11 @@
 
 
 
-<view wx:if="{{!(myUserId==user_id)}}">
 	<van-goods-action>
 		<van-goods-action-icon icon="chat-o" text="提问" bind:click="onAskQuestion" />
 		<van-goods-action-button text="发起交易" bind:click="onEnterTransaction" />
 	</van-goods-action>
-</view>
 
-<view wx:if="{{myUserId==user_id}}">
-	<van-goods-action>
-		<van-goods-action-icon icon="chat-o" text="提问" bind:click="onAskQuestion" />
-		<van-goods-action-button color="#aaaaaa" text="删除商品" bind:click="onDelCommodity" />
-	</van-goods-action>
-</view>
 
 
 

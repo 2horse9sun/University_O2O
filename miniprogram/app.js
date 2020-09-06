@@ -28,5 +28,8 @@ App({
         this.globalData.CustomBar = custom.bottom + custom.top - e.statusBarHeight;
       }
     })
+
+    // 清空缓存
+    // wx.clearStorageSync()
   }
 })

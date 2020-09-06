@@ -23,25 +23,19 @@
   <view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg radius">
     
     <view class="cu-item arrow">
-      <navigator class="content" url="/pages/about/about/about" hover-class="none">
+      <view class="content" bindtap="onEnterHomeTransaction" hover-class="none">
         <text class="cuIcon-rechargefill text-red"></text>
         <text class="text-grey">我的交易</text>
-      </navigator>
+      </view>
     </view>
     <view class="cu-item arrow">
-      <navigator class="content" url="/pages/about/log/log" hover-class="none">
+      <view class="content" bindtap="onEnterHomeRelease" hover-class="none">
         <text class="cuIcon-formfill text-blue"></text>
         <text class="text-grey">我发布的商品</text>
-      </navigator>
-    </view>
-    <view class="cu-item arrow">
-      <view class="content" bindtap="showQrcode">
-        <text class="cuIcon-cartfill text-green"></text>
-        <text class="text-grey">我购买的商品</text>
       </view>
     </view>
 		<view class="cu-item arrow">
-      <view class="content" bindtap="CopyLink" data-link="https://github.com/weilanwl/ColorUI">
+      <view class="content" bindtap="copyLink" data-link="https://github.com/weilanwl/ColorUI">
         <text class="cuIcon-github text-grey"></text>
         <text class="text-grey">复制此小程序的GitHub地址</text>
       </view>
@@ -53,10 +47,10 @@
       </button>
     </view>
     <view class="cu-item arrow">
-      <navigator class="content" url="/pages/about/test/list" hover-class="none">
+      <view class="content" url="/pages/home_info/home_info" hover-class="none">
         <text class="cuIcon-infofill text-orange"></text>
         <text class="text-grey">关于此小程序</text>
-      </navigator>
+      </view>
     </view>
 		
   </view>

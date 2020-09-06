@@ -73,17 +73,18 @@ Page({
 
   },
 
-  onNavigateBackToCommodityDetail(){
-    wx.navigateBack({
-      delta: 2,
-    })
+  onNavigateBack(){
+    if(fromCommodityTransaction == true){
+      const commodity_id = this.data.commodity_id
+      wx.redirectTo({
+        url: `../commodity_detail/commodity_detail?id=${commodity_id}`,
+      })
+    }else{
+      wx.navigateBack()
+    }
+    
   },
 
-  onNavigateBackToHomeTransaction(){
-    wx.navigateBack({
-      delta: 1,
-    })
-  },
 
   async onShowContactInfo(){
     if(isSeller){
@@ -146,8 +147,13 @@ Page({
     }
 
     await this.onLoad(opts)
+  },
 
-   
+  onEnterCommodityDetail(){
+    const commodity_id = this.data.commodity_id
+    wx.navigateTo({
+      url: `../commodity_detail/commodity_detail?id=${commodity_id}`,
+    })
   },
 
   // 取消交易

@@ -588,14 +588,40 @@ const api = {
   //   start number NOT NULL
   //   count number NOT NULL
   // }
-  getTransactionList(params){
-    return wx.cloud.callFunction({
+  async getMySellTransactionList(params){
+    res = await wx.cloud.callFunction({
       name: 'transaction',
       data: {
-        $url: 'getTransactionList',
+        $url: 'getMySellTransactionList',
         params
       }
     })
+    if(res.result.errno == -1){
+      console.log("获取出售交易列表失败！")
+      return new RespError("获取出售交易列表失败！")
+    }
+    console.log("获取出售交易列表成功！")
+    const sellTransactionList = res.result.data
+    console.log({"出售交易列表":sellTransactionList})
+    return new RespSuccess(sellTransactionList)
+  },
+
+  async getMyBuyTransactionList(params){
+    res = await wx.cloud.callFunction({
+      name: 'transaction',
+      data: {
+        $url: 'getMyBuyTransactionList',
+        params
+      }
+    })
+    if(res.result.errno == -1){
+      console.log("获取购买交易列表失败！")
+      return new RespError("获取购买交易列表失败！")
+    }
+    console.log("获取购买交易列表成功！")
+    const buyTransactionList = res.result.data
+    console.log({"购买交易列表":buyTransactionList})
+    return new RespSuccess(buyTransactionList)
   },
 
   async cancelTransaction(params){

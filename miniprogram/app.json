@@ -2,6 +2,8 @@
   "pages": [
     "pages/home/home",
     "pages/commodity_list/commodity_list",
+
+    
     "pages/transaction_detail/transaction_detail",
     "pages/commodity_transaction/commodity_transaction",
     

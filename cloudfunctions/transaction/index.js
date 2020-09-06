@@ -23,16 +23,40 @@ exports.main = async (event, context) => {
   })
 
   // 获取交易列表
-  // TODO: 表连接，同时查到出售和购买的交易记录
-  app.router('getTransactionList', async (ctx, next) => {
+  app.router('getMySellTransactionList', async (ctx, next) => {
+    const {start, count} = event.params
+    let w = {}
+    w["is_deleted"] = false
+    w["seller_id"] = wxContext.OPENID
+    try{
+      ctx.body = await transactionCollection.where(w).skip(start).limit(count)
+      .orderBy('create_time', 'desc').get()
+      ctx.body.errno = 0
+    }catch(e){
+      ctx.body = {
+        errno: -1
+      }
+    }
+  })
+  // 获取交易列表
+  app.router('getMyBuyTransactionList', async (ctx, next) => {
     const {start, count} = event.params
     let w = {}
     w["is_deleted"] = false
     w["buyer_id"] = wxContext.OPENID
-    ctx.body = await transactionCollection.where(w).skip(start).limit(count)
-      .orderBy('create_time', 'desc').get().then((res) => {
-        return res.data
-      })
+    try{
+      ctx.body = await transactionCollection
+      .where(w)
+      .orderBy('create_time', 'desc')
+      .skip(start)
+      .limit(count)
+      .get()
+      ctx.body.errno = 0
+    }catch(e){
+      ctx.body = {
+        errno: -1
+      }
+    }
   })
 
   // 根据交易编号获取交易详情

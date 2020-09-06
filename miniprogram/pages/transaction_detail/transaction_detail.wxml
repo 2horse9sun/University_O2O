@@ -1,7 +1,9 @@
 <cu-custom bgColor="bg-gradual-orange" isBack="{{true}}">
-	<view slot="backText" catch:tap="{{fromCommodityTransaction?'onNavigateBackToCommodityDetail':'onNavigateBackToHomeTransaction'}}">返回</view>
+	<view slot="backText" catch:tap="onNavigateBack">返回</view>
 	<view slot="content">交易详情</view>
 </cu-custom>
+
+
 
 <view class="cu-list menu sm-border card-menu margin-top">
 
@@ -98,32 +100,23 @@
 
 
 
-<view wx:if="{{!alreadyConfirmed}}">
-	<view wx:if="{{status==0}}">
-		<view class="padding flex flex-direction">
-			<button class="cu-btn bg-red margin-tb-sm lg" bind:tap="onShowContactInfo">查看对方联系方式</button>
-			<button class="cu-btn bg-red margin-tb-sm lg" bind:tap="onConfirmFinishTransaction">确认交易完成</button>
-			<button class="cu-btn bg-grey margin-tb-sm lg" bind:tap="onCancelTransaction">取消交易</button>
-		</view>
-	</view>
-</view>
-
-<view wx:if="{{alreadyConfirmed}}">
-	<view wx:if="{{status==0}}">
-		<view class="padding flex flex-direction">
-			<button class="cu-btn bg-red margin-tb-sm lg" bind:tap="onShowContactInfo">查看对方联系方式</button>
-			<button class="cu-btn block bg-red margin-tb-sm lg" disabled type="">等待对方确认</button>
-			<button class="cu-btn bg-grey margin-tb-sm lg" bind:tap="onCancelTransaction">取消交易</button>
-		</view>
-	</view>
-</view>
 
 
 
-<!-- <view wx:if="{{status==1 || status==2}}">
+<view wx:if="{{status==0}}">
 	<view class="padding flex flex-direction">
-		<button class="cu-btn bg-grey margin-tb-sm lg" bind:tap="onDelTransaction">删除交易</button>
+		<button class="cu-btn bg-red margin-tb-sm lg" bind:tap="onShowContactInfo">查看对方联系方式</button>
+		<button class="cu-btn block bg-red margin-tb-sm lg" disabled="{{alreadyConfirmed}}" bind:tap="onConfirmFinishTransaction">{{alreadyConfirmed?'等待对方确认':'确认交易完成'}}</button>
+		<button class="cu-btn block bg-red margin-tb-sm lg" bind:tap="onEnterCommodityDetail">查看商品详情</button>
+		<button class="cu-btn bg-grey margin-tb-sm lg" bind:tap="onCancelTransaction">取消交易</button>
 	</view>
-</view> -->
+</view>
+
+
+<view wx:if="{{status==1 || status==2}}">
+	<view class="padding flex flex-direction">
+		<button class="cu-btn block bg-red margin-tb-sm lg" bind:tap="onEnterCommodityDetail">查看商品详情</button>
+	</view>
+</view>
 
 <van-dialog id="van-dialog" />

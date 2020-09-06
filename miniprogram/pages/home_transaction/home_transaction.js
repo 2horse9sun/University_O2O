@@ -1,88 +1,197 @@
 // miniprogram/pages/home_transaction/home_transaction.js
 const MAX_TRANSACTION_LIMIT_SIZE = 10
 const api = require('../../api/api')
+const cache = require('../../cache/cache')
+let res = {}
+let params = {}
+let start = 0
+
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
+    index: 0,
+    isLoading: false,
+    hasMore: true,
 
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  async onLoad(options) {
+    start = 0
+    params = {
+      start: start,
+      count: MAX_TRANSACTION_LIMIT_SIZE
+    }
+    res = await api.getMyBuyTransactionList(params)
+    if(res.errno == -1){
+      console.log("获取购买交易列表失败")
+      return
+    }
+    const transactionList = res.data
+    start = transactionList.length
+    this.setData({
+      transactionList
+    })
 
   },
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
+  async onShow(){
+    start = 0
+    if(this.data.index == 0){
+      params = {
+        start: start,
+        count: MAX_TRANSACTION_LIMIT_SIZE
+      }
+      res = await api.getMyBuyTransactionList(params)
+      if(res.errno == -1){
+        console.log("获取购买交易列表失败")
+        return
+      }
+      const transactionList = res.data
+      start = transactionList.length
+      this.setData({
+        transactionList
+      })
 
+    }else{
+      params = {
+        start: start,
+        count: MAX_TRANSACTION_LIMIT_SIZE
+      }
+      res = await api.getMySellTransactionList(params)
+      if(res.errno == -1){
+        console.log("获取出售交易列表失败")
+        return
+      }
+      const transactionList = res.data
+      start = transactionList.length
+      this.setData({
+        transactionList
+      })
+    }
   },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
-  },
-
-  // 获取交易列表
-  async onGetTransactionList(){
-    const params = {
-      start: 0,
-      count: MAX_TRANSACTION_LIMIT_SIZE,
+  async onReachBottom() {
+    if(!this.data.hasMore){
+      return
     }
-    const resGetTransactionList = await api.getTransactionList(params)
-    const transactionList = resGetTransactionList.result
-    console.log(transactionList)
+    this.setData({
+      isLoading: true
+    })
+
+    if(this.data.index == 0){
+      params = {
+        start: start,
+        count: MAX_TRANSACTION_LIMIT_SIZE
+      }
+      res = await api.getMyBuyTransactionList(params)
+      if(res.errno == -1){
+        console.log("获取购买交易列表失败")
+        return
+      }
+      const moreTransactionList = res.data
+      start += moreTransactionList.length
+      if(moreTransactionList.length == 0){
+        console.log("没有更多数据了！")
+        this.setData({
+          isLoading:false,
+          hasMore: false
+        })
+        return
+      }
+      this.setData({
+        transactionList: this.data.transactionList.concat(moreTransactionList)
+      })
+
+    }else{
+      params = {
+        start: start,
+        count: MAX_TRANSACTION_LIMIT_SIZE
+      }
+      res = await api.getMySellTransactionList(params)
+      if(res.errno == -1){
+        console.log("获取出售交易列表失败")
+        return
+      }
+      const moreTransactionList = res.data
+      start += moreTransactionList.length
+      if(moreTransactionList.length == 0){
+        console.log("没有更多数据了！")
+        this.setData({
+          isLoading:false,
+          hasMore: false
+        })
+        return
+      }
+      this.setData({
+        transactionList: this.data.transactionList.concat(moreTransactionList)
+      })
+    }
+
   },
 
-  // 删除交易
-  async onDelTransaction(){
-    const params = {
-      id: "6518b7395f47d6570079bc245bad1856"
+  onNavigateBack(){
+    wx.navigateBack({
+      delta: 1
+    })
+  },
+
+
+
+  async tabSelect(e) {
+    this.setData({
+      index: e.currentTarget.dataset.id,
+      scrollLeft: (e.currentTarget.dataset.id-1)*60,
+      transactionList: []
+    })
+    start = 0
+    if(this.data.index == 0){
+      params = {
+        start: start,
+        count: MAX_TRANSACTION_LIMIT_SIZE
+      }
+      res = await api.getMyBuyTransactionList(params)
+      if(res.errno == -1){
+        console.log("获取购买交易列表失败")
+        return
+      }
+      const transactionList = res.data
+      start = transactionList.length
+      this.setData({
+        transactionList
+      })
+
+    }else{
+      params = {
+        start: start,
+        count: MAX_TRANSACTION_LIMIT_SIZE
+      }
+      res = await api.getMySellTransactionList(params)
+      if(res.errno == -1){
+        console.log("获取出售交易列表失败")
+        return
+      }
+      const transactionList = res.data
+      start = transactionList.length
+      this.setData({
+        transactionList
+      })
     }
-    const resDelTransaction = await api.delTransaction(params)
-    console.log(resDelTransaction)
+  },
+
+  onEnterHomeTransaction(event){
+    const transactionNumber = event.currentTarget.dataset.transactionnumber
+    wx.navigateTo({
+      url: `../transaction_detail/transaction_detail?fromCommodityTransaction=false&transactionNumber=${transactionNumber}`,
+    })
   }
 })

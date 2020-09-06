@@ -339,11 +339,20 @@ Page({
   },
 
 
-  onEnterTransaction(){
+  async onEnterTransaction(){
+    if(this.data.myUserId == this.data.user_id){
+      Dialog.alert({
+        title: '出错了！',
+        message:"你不能购买自己发布的商品！",
+      })
+      return
+    }
     if(this.data.status != 0){
-      console.log("该商品已下架或者正在交易中！")
-      this.setData({
-        showFailPanel: true
+      Dialog.alert({
+        title: '出错了！',
+        message:"该商品已下架或正在交易中",
+      }).then(async () => {
+        await this.onPullDownRefresh()
       })
       return
     }

@@ -1,89 +1,145 @@
 // miniprogram/pages/home_release/home_release.js
-const MAX_COMMODITY_LIMIT_SIZE = 10
+const MAX_COMMODITY_LIMIT_SIZE = 5
 const api = require('../../api/api')
+const cache = require('../../cache/cache')
+import Dialog from '@vant/weapp/dialog/dialog';
+let res = {}
+let params = {}
+let start = 0
+let uid = ""
+
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
+    isLoading: false,
+    hasMore: true,
 
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  async onLoad(options) {
+    // 获取我的信息和大学信息
+    res = await cache.getMyInfoAndMyUniversityInfo()
+    if(res.errno == -1){
+      console.log("获取我的信息和大学信息失败！")
+      return
+    }
+    const myInfoAndMyUniversityInfo = res.data
+    uid = myInfoAndMyUniversityInfo.uid
 
-  },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
+    start = 0
+    params = {
+      uid,
+      cid: -1,
+      start: start,
+      count: MAX_COMMODITY_LIMIT_SIZE,
+      keyword: "",
+      is_mine: true
+    }
+    res = await api.getCommodityListByUidAndCid(params)
+    if(res.errno == -1){
+      console.log("获取我发布的商品信息失败！")
+      return
+    }
+    const commodityList = res.data
+    start = commodityList.length
+    this.setData({
+      commodityList
+    })
 
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {
+  async onReachBottom() {
+    if(!this.data.hasMore){
+      return
+    }
+    this.setData({
+      isLoading: true
+    })
 
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
-  },
-
-  // 获取我发布的商品列表
-  async onGetMyCommodityList(){
-    const params = {
+    params = {
+      uid,
+      cid: -1,
       keyword: "",
-      start: 0,
+      start: start,
       count: MAX_COMMODITY_LIMIT_SIZE,
-      is_mine: false
+      is_mine: true
     }
-    const resGetCommodityList = await api.getCommodityList(params)
-    const commodityList = resGetCommodityList.result
-    console.log(commodityList)
+    res = await api.getCommodityListByUidAndCid(params)
+    if(res.errno == -1){
+      console.log("加载更多商品列表失败！")
+      return
+    }
+    const moreCommodityList = res.data
+    if(moreCommodityList.length == 0){
+      console.log("没有更多数据了！")
+      this.setData({
+        isLoading:false,
+        hasMore: false
+      })
+      return
+    }
+    start += moreCommodityList.length
+    const newCommodityList = this.data.commodityList.concat(moreCommodityList)
+
+    this.setData({
+      commodityList: newCommodityList
+    })  
+
   },
 
-  async onDelCommodity(){
-    const params = {
-      id: "8a6c3bf65f47d44f00658a3f1006498e"
+  onNavigateBack(){
+    wx.navigateBack({
+      delta: 1
+    })
+  },
+
+  onEnterCommodityDetail(event){
+    const id = event.currentTarget.dataset.id
+    wx.navigateTo({
+      url: `../commodity_detail/commodity_detail?id=${id}`,
+    })
+  },
+
+  async onDelCommodity(event){
+    const position = event.detail;
+    if(position == "right"){
+      Dialog.confirm({
+        message: '确定删除吗？'
+      })
+      .then(async () => {
+        params = {
+          commodity_id: event.currentTarget.dataset.id
+        }
+        res = await api.delCommodity(params)
+        if(res.errno == -1){
+          Dialog.alert({
+            title: '出错了！',
+            message:res.message,
+          })
+        }else if(res.errno == -2){
+          Dialog.alert({
+            title: '出错了！',
+            message:res.message,
+          })
+        }else{
+          Dialog.alert({
+            title: '成功',
+            message:'成功删除商品！',
+          }).then(async () => {
+            await this.onLoad()
+          })
+        }
+      })
     }
-    const resDelCommodity = await api.delCommodity(params)
-    console.log(resDelCommodity)
+
   }
 })

@@ -54,16 +54,10 @@
 	thumb="{{item.thumbnail_url[0]}}" 
 	data-id="{{item._id}}" 
 	bind:tap="onEnterCommodityDetail">
-
-
 	<view slot="tags">
     <view class="cu-tag bg-{{item.status==0?'green':(item.status==1?'red':'grey')}} round">{{item.status==0?'正在出售':(item.status==1?'交易中':'已售罄')}}</view>
   </view>
-
 	</van-card>
-
-
-
 </view>
 
 

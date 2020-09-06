@@ -1,8 +1,27 @@
-<cu-custom bgColor="bg-gradual-pink" isBack="{{false}}">
-	<!-- <view slot="backText">返回</view> -->
+<cu-custom bgColor="bg-gradual-orange" isBack="{{true}}">
+	<view slot="backText">返回</view>
 	<view slot="content">我发布的商品</view>
 </cu-custom>
 
 
-<button bind:tap="onGetMyCommodityList">获取我的发布商品列表</button>
-<button bind:tap="onDelCommodity">通过商品_id删除商品</button>
+
+<view wx:for="{{commodityList}}" wx:key="_id">
+
+	<van-swipe-cell right-width="{{ 65 }}" bind:click="onDelCommodity" data-id="{{item._id}}">
+		<van-cell-group>
+			<van-card custom-class="commodity-card shadow-warp" thumb-mode="aspectFill" desc-class="text-cut" title-class="text-cut" num="{{item.number}}" price="{{item.price_now}}" origin-price="{{item.price_origin}}" desc="{{item.content}}" title="{{item.title}}" thumb="{{item.thumbnail_url[0]}}" data-id="{{item._id}}" bind:tap="onEnterCommodityDetail">
+				<view slot="tags">
+					<view class="cu-tag bg-{{item.status==0?'green':(item.status==1?'red':'grey')}} round">{{item.status==0?'正在出售':(item.status==1?'交易中':'已售罄')}}</view>
+				</view>
+			</van-card>
+		</van-cell-group>
+		<view class="van-swipe-cell__right" slot="right">删除</view>
+	</van-swipe-cell>
+
+</view>
+
+
+<!-- 加载更多 -->
+<view class="cu-load margin-top {{isLoading?'loading':'over'}}"></view>
+
+<van-dialog id="van-dialog" />

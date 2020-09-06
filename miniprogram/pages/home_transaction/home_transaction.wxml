@@ -1,8 +1,33 @@
-<cu-custom bgColor="bg-gradual-pink" isBack="{{false}}">
-	<!-- <view slot="backText">返回</view> -->
+<cu-custom bgColor="bg-gradual-orange" isBack="{{true}}">
+	<view slot="backText" catch:tap="onNavigateBack">返回</view>
 	<view slot="content">我的交易</view>
 </cu-custom>
 
 
-<button bind:tap="onGetTransactionList">点击获取用户交易列表</button>
-<button bind:tap="onDelTransaction">通过交易_id删除交易</button>
+<scroll-view scroll-x class="bg-white nav">
+	<view class="flex text-center">
+		<view class="cu-item flex-sub {{index==0?'text-orange cur':''}}" bindtap="tabSelect" data-id="0">
+			我的购买
+		</view>
+		<view class="cu-item flex-sub {{index==1?'text-orange cur':''}}" bindtap="tabSelect" data-id="1">
+			我的出售
+		</view>
+	</view>
+</scroll-view>
+
+
+<view class="cu-list menu shadow-lg margin-top">
+	<view class="cu-item arrow" wx:for="{{transactionList}}">
+		<view class="content" bindtap="onEnterHomeTransaction" data-transactionnumber="{{item.transaction_no}}" hover-class="none">
+			<text class="text-black text-border">{{item.title}}</text>
+			<text class="cu-tag margin-left bg-{{item.status==0?'green':(item.status==1?'grey':'red')}} radius">{{item.status==0?'进行中':(item.status==1?'已完成':'已取消')}}</text>
+			
+		</view>
+	</view>
+
+
+</view>
+
+
+<!-- 加载更多 -->
+<view class="cu-load margin-top {{isLoading?'loading':'over'}}"></view>
