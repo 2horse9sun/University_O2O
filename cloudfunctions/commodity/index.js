@@ -45,6 +45,17 @@ exports.main = async (event, context) => {
         .orderBy('create_time', 'desc')
         .skip(start)
         .limit(count)
+        .field({
+          _id: true,
+          cid: true,
+          content: true,
+          number: true,
+          price_now: true,
+          price_origin: true,
+          status: true,
+          thumbnail_url: true,
+          title: true
+        })
         .get()
         ctx.body.errno = 0
       }catch(e){
@@ -61,7 +72,14 @@ exports.main = async (event, context) => {
       ctx.body = await commodityCollection.where({
         _id: id,
         is_deleted: false
-      }).get()
+      })
+      .field({
+        create_time: false,
+        update_time: false,
+        is_deleted: false,
+        cid: false
+      })
+      .get()
       ctx.body.errno = 0
     }catch(e){
       ctx.body = {

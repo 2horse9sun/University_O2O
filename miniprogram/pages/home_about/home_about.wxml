@@ -1,0 +1,17 @@
+<cu-custom bgColor="bg-gradual-orange" isBack="{{true}}">
+	<view slot="backText" catch:tap="onNavigateBack">返回</view>
+	<view slot="content">关于</view>
+</cu-custom>
+
+
+<view class='margin-xl bg-white padding-xl radius shadow-lg'>
+	<view class='text-center margin-bottom text-lg  text-grey'>关于大学校园O2O</view>
+	<view class='text-content'>
+		<view>O2O，是Online To Offline的缩写即在线离线/线上到线下，是指将线下的商务机会与互联网结合，让互联网成为线下交易的平台（摘自百度百科）</view>
+		<view class='margin-top-sm'>该项目是2020年微信小程序云开发大赛，队伍HANG_IN_THERE的作品。</view>
+		<view class='margin-top-sm'>本项目是一个大学校园的闲置物品交易平台，线上发布信息，获取双方联系方式，线下交易。</view>
+		<view class='margin-top-sm'>到本项目的GitHub上点个Star吧！</view>
+		<view class='margin-top-sm'>还会持续更新！</view>
+    <view class='margin-top-sm'>版本号：1.0</view>
+	</view>
+</view>

@@ -42,6 +42,18 @@ Page({
 
   },
 
+  onEnterHomeUserInfo(){
+    wx.navigateTo({
+      url: '../home_user_info/home_user_info',
+    })
+  },
+
+  onEnterHomeTransaction(){
+    wx.navigateTo({
+      url: '../home_transaction/home_transaction',
+    })
+  },
+
   onEnterHomeTransaction(){
     wx.navigateTo({
       url: '../home_transaction/home_transaction',
@@ -54,9 +66,21 @@ Page({
     })
   },
 
-  onEnterHomeInfo(){
+  onEnterHomeAbout(){
     wx.navigateTo({
-      url: '../home_info/home_info',
+      url: '../home_about/home_about',
+    })
+  },
+
+  copyLink(e) {
+    wx.setClipboardData({
+      data: e.currentTarget.dataset.link,
+      success: res => {
+        wx.showToast({
+          title: '已复制',
+          duration: 1000,
+        })
+      }
     })
   },
 

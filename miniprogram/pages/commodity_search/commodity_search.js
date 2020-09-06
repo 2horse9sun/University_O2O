@@ -57,6 +57,7 @@ Page({
     start = commodityList.length
     this.setData({
       commodityList,
+      keyword
     })    
     
   },

@@ -98,6 +98,6 @@
 	</view>
 </form>
 
-
+<van-dialog id="van-dialog" />
 
 <button bind:tap="onCommodityRelease" loading="{{isUploading}}" class="release-button">点击上传</button>

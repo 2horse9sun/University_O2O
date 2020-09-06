@@ -13,7 +13,7 @@
 
 			<view class="cu-form-group">
 				<view class="title">昵称</view>
-				<input value="{{name}}" placeholder="请输入昵称" bind:change="onChangeName"></input>
+				<input class="text-right" value="{{name}}" placeholder="请输入昵称" bind:change="onChangeName"></input>
 			</view>
 			<view class="cu-form-group">
 				<view class="title">性别</view>
@@ -21,11 +21,11 @@
 			</view>
 			<view class="cu-form-group">
 				<view class="title">微信联系方式</view>
-				<input value="{{contactInfoWX}}" placeholder="选填" bind:change="onChangeContactInfoWX"></input>
+				<input class="text-right" value="{{contactInfoWX}}" placeholder="选填" bind:change="onChangeContactInfoWX"></input>
 			</view>
 			<view class="cu-form-group">
 				<view class="title">QQ联系方式</view>
-				<input value="{{contactInfoQQ}}" placeholder="选填" bind:change="onChangeContactInfoQQ"></input>
+				<input class="text-right" value="{{contactInfoQQ}}" placeholder="选填" bind:change="onChangeContactInfoQQ"></input>
 			</view>
 			<view class="cu-form-group">
 				<view class="title">选择大学</view>

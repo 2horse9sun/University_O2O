@@ -21,14 +21,14 @@ exports.main = async (event, context) => {
   })
 
   // 获取用户信息
-  app.router('getUserInfoFromDB', async (ctx, next) => {
-    ctx.body = await userCollection.where({
-      openid: wxContext.OPENID,
-      is_deleted: false
-    }).get().then((res) => {
-      return res.data
-    })
-  })
+  // app.router('getUserInfoFromDB', async (ctx, next) => {
+  //   ctx.body = await userCollection.where({
+  //     openid: wxContext.OPENID,
+  //     is_deleted: false
+  //   }).get().then((res) => {
+  //     return res.data
+  //   })
+  // })
 
   // 获取此用户信息和大学信息
   app.router('getMyInfoAndMyUniversityInfo', async (ctx, next) => {
@@ -36,6 +36,11 @@ exports.main = async (event, context) => {
       ctx.body = await userCollection.aggregate()
       .match({
         openid: wxContext.OPENID,
+        is_deleted: false
+      })
+      .project({
+        create_time: false,
+        update_time: false,
         is_deleted: false
       })
       .lookup({
@@ -60,7 +65,13 @@ exports.main = async (event, context) => {
       ctx.body = await userCollection.where({
         openid: userId,
         is_deleted: false
-      }).get()
+      })
+      .field({
+        _id: true,
+        contact_info_qq: true,
+        contact_info_wx: true,
+      })
+      .get()
       ctx.body.errno = 0
     }catch(e){
       ctx.body = {
@@ -116,19 +127,19 @@ exports.main = async (event, context) => {
   })
 
   // 更新用户信息
-  app.router('updateUserInfo', async (ctx, next) => {
-    const params = event.params
-    await userCollection.where({
-      openid: wxContext.OPENID
-    }).update({
-      data: {
-        ...params,
-        update_time: db.serverDate()
-      }
-    }).then((res) => {
-      return res
-    })
-  })
+  // app.router('updateUserInfo', async (ctx, next) => {
+  //   const params = event.params
+  //   await userCollection.where({
+  //     openid: wxContext.OPENID
+  //   }).update({
+  //     data: {
+  //       ...params,
+  //       update_time: db.serverDate()
+  //     }
+  //   }).then((res) => {
+  //     return res
+  //   })
+  // })
 
   // 学生身份验证, 空方法，默认返回true
   // TODO: 完善学生身份验证

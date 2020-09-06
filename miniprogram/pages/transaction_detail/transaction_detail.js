@@ -30,6 +30,7 @@ Page({
     opts = options
     fromCommodityTransaction = options.fromCommodityTransaction
     transactionNumber = options.transactionNumber
+    console.log(transactionNumber)
     params = {
       transaction_no: transactionNumber
     }

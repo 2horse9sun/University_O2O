@@ -29,8 +29,16 @@ exports.main = async (event, context) => {
     w["is_deleted"] = false
     w["seller_id"] = wxContext.OPENID
     try{
-      ctx.body = await transactionCollection.where(w).skip(start).limit(count)
-      .orderBy('create_time', 'desc').get()
+      ctx.body = await transactionCollection
+      .where(w)
+      .orderBy('create_time', 'desc')
+      .skip(start)
+      .limit(count)
+      .field({
+        title: true,
+        status: true
+      })
+      .get()
       ctx.body.errno = 0
     }catch(e){
       ctx.body = {
@@ -50,6 +58,11 @@ exports.main = async (event, context) => {
       .orderBy('create_time', 'desc')
       .skip(start)
       .limit(count)
+      .field({
+        title: true,
+        status: true,
+        transaction_no: true
+      })
       .get()
       ctx.body.errno = 0
     }catch(e){
@@ -63,10 +76,12 @@ exports.main = async (event, context) => {
   app.router('getTransactionByTransactionNumber', async (ctx, next) => {
     const {transaction_no} = event.params
     try{
-      ctx.body = await transactionCollection.where({
+      ctx.body = await transactionCollection
+      .where({
         transaction_no,
         is_deleted: false
-      }).get()
+      })
+      .get()
       ctx.body.errno = 0
     }catch(e){
       ctx.body = {
@@ -335,7 +350,13 @@ exports.main = async (event, context) => {
         res = await transactionCollection.where({
           commodity_id,
           is_deleted: false
-        }).skip(i * MAX_LIMIT).limit(MAX_LIMIT).get()
+        })
+        .skip(i * MAX_LIMIT)
+        .limit(MAX_LIMIT)
+        .field({
+          _id: true
+        })
+        .get()
         ctx.body.data = ctx.body.data.concat(res.data)
       }
       ctx.body.errno = 0

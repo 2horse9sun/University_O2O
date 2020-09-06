@@ -1,8 +1,9 @@
 // miniprogram/pages/commodity_release/commodity_release.js
+import Dialog from '@vant/weapp/dialog/dialog';
 const api = require('../../api/api')
 const cache = require("../../cache/cache")
-const MIN_EXPIRE_TIME = 1
-const MAX_EXPIRE_TIME = 7
+const rules = require('../../utils/rules')
+const {RespSuccess, RespError} = require('../../utils/resp')
 let res = {}
 let params = {}
 let categories = []
@@ -57,47 +58,6 @@ Page({
 
   },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
-  },
 
   onNavigateBack(){
     wx.navigateBack({
@@ -150,7 +110,7 @@ Page({
 
   onChangeCommodityExpireTime(event){
     this.setData({
-      commodityExpireTime: value
+      commodityExpireTime: event.detail.value
     })
   },
 
@@ -225,6 +185,57 @@ Page({
     })
   },
 
+
+  // 验证表单格式
+  isValid(params){
+    if(!rules.required(params.title)){
+      return new RespError("商品名称不能为空！")
+    }
+    if(!rules.required(params.number)){
+      return new RespError("商品数量不能为空！")
+    }
+    if(!rules.required(params.expire_time)){
+      return new RespError("有效期不能为空！")
+    }
+    if(!rules.required(params.price_origin)){
+      return new RespError("商品原价不能为空！")
+    }
+    if(!rules.required(params.price_now)){
+      return new RespError("商品现价不能为空！")
+    }
+    if(!rules.required(params.content)){
+      return new RespError("商品详情不能为空！")
+    }
+    if(!rules.onlyNumber(params.number)){
+      return new RespError("商品数量必须是数字")
+    }
+    if(!rules.onlyNumber(params.expire_time)){
+      return new RespError("有效期必须是数字")
+    }
+    if(!rules.onlyNumber(params.price_origin)){
+      return new RespError("商品原价必须是数字")
+    }
+    if(!rules.onlyNumber(params.price_now)){
+      return new RespError("商品现价必须是数字")
+    }
+    if(params.number < 1){
+      return new RespError("商品数量至少为1")
+    }
+    if(params.expire_time < 1){
+      return new RespError("有效期至少为1天")
+    }
+    if(params.expire_time > 7){
+      return new RespError("有效期至多为7天")
+    }
+    if(params.price_origin < 0){
+      return new RespError("商品原价至少为0")
+    }
+    if(params.price_now < 0){
+      return new RespError("商品现价至少为0")
+    }
+    return new RespSuccess()
+  },
+
   
   // 上传商品信息
   async onCommodityRelease(){ 
@@ -234,11 +245,17 @@ Page({
     this.setData({
       isUploading: true
     })
-    // TODO: 验证信息合法性
-
 
 
     // 上传图片到云存储，获取fileId
+    if(this.data.thumbnail.length == 0 || this.data.commodityImg.length == 0){
+      Dialog.alert({
+        title: '格式错误',
+        message:"至少上传一张缩略图和一张详情图！",
+      }).then(() => {
+        return
+      })
+    }
     params = {
       thumbnail: this.data.thumbnail,
       commodityImg: this.data.commodityImg,
@@ -248,7 +265,7 @@ Page({
       console.log("上传图片到云存储失败！")
       return
     }
-      const fileIDs = res.data
+    const fileIDs = res.data
 
     // 上传数据到云数据库
     const thumbnailFileID = fileIDs.splice(0,1)
@@ -271,11 +288,23 @@ Page({
       origin_url: this.data.commodityPurchaseUrl?this.data.commodityPurchaseUrl:"",
       price_origin: this.data.commodityOriginPrice,
       price_now: this.data.commodityCurrentPrice,
-      expire_time: this.data.expire_time,
+      expire_time: this.data.commodityExpireTime,
       remark: this.data.remark?this.data.remark:"",
       uid: uid,
       userPrimaryKey
     }
+
+    res = this.isValid(params)
+    if(res.errno == -1){
+      Dialog.alert({
+        title: '格式错误',
+        message:res.message,
+      }).then(() => {
+        return
+      })
+    }
+
+
     res = await api.setCommodityDetail(params)
     if(res.errno == -1){
       console.log("上传商品信息失败!")

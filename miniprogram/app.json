@@ -1,28 +1,24 @@
 {
   "pages": [
-    "pages/home/home",
+    "pages/index/index",
     "pages/commodity_list/commodity_list",
-
+    "pages/index_register/index_register",
+    
+    "pages/home/home",
     
     "pages/transaction_detail/transaction_detail",
     "pages/commodity_transaction/commodity_transaction",
-    
-    
-    
     "pages/commodity_detail/commodity_detail",
-    
     "pages/commodity_search/commodity_search",
     "pages/commodity_release/commodity_release",
-    "pages/index_register/index_register",
-    "pages/index/index",
+    
+    
     "pages/index_auth/index_auth",
-    
-    
     "pages/home_transaction/home_transaction",
     "pages/home_release/home_release",
-    
     "pages/home_user_info/home_user_info",
-    "pages/question_detail/question_detail"
+    "pages/question_detail/question_detail",
+    "pages/home_about/home_about"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",

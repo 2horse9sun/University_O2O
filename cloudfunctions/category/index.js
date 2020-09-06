@@ -23,7 +23,12 @@ exports.main = async (event, context) => {
     try{
       ctx.body = await categoryCollection.where({
         is_deleted: false
-      }).get()
+      })
+      .field({
+        cid: true,
+        name: true
+      })
+      .get()
       ctx.body.errno = 0
     }catch(e){
       ctx.body = {

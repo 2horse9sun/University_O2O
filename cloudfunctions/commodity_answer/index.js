@@ -27,7 +27,12 @@ exports.main = async (event, context) => {
       ctx.body = await commodityAnswerCollection.aggregate()
       .match({
         question_id
-      }).lookup({
+      })
+      .project({
+        update_time: false,
+        is_deleted: false
+      })
+      .lookup({
         from: 'user',
         localField: 'user_id',
         foreignField: 'openid',
@@ -102,7 +107,13 @@ exports.main = async (event, context) => {
         res = await commodityAnswerCollection.where({
           commodity_id,
           is_deleted: false
-        }).skip(i * MAX_LIMIT).limit(MAX_LIMIT).get()
+        })
+        .skip(i * MAX_LIMIT)
+        .limit(MAX_LIMIT)
+        .field({
+          _id: true
+        })
+        .get()
         console.log(res)
         ctx.body.data = ctx.body.data.concat(res.data)
       }

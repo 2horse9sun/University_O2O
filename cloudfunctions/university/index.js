@@ -35,7 +35,15 @@ exports.main = async (event, context) => {
       for (let i = 0; i < batchTimes; i++) {
         res = await universityCollection.where({
           is_deleted: false
-        }).skip(i * MAX_LIMIT).limit(MAX_LIMIT).get()
+        })
+        .skip(i * MAX_LIMIT)
+        .limit(MAX_LIMIT)
+        .field({
+          name: true,
+          province: true,
+          uid: true
+        })
+        .get()
         ctx.body.data = ctx.body.data.concat(res.data)
       }
       ctx.body.errno = 0
@@ -47,17 +55,17 @@ exports.main = async (event, context) => {
   })
 
   // 根据uid获取大学信息
-  app.router('getUniversityInfoByUid', async (ctx, next) => {
-    console.log(event)
-    const {uid} = event.params
+  // app.router('getUniversityInfoByUid', async (ctx, next) => {
+  //   console.log(event)
+  //   const {uid} = event.params
     
-    ctx.body = await universityCollection.where({
-      uid,
-      is_deleted: false
-    }).get().then((res) => {
-      return res.data
-    })
-  })
+  //   ctx.body = await universityCollection.where({
+  //     uid,
+  //     is_deleted: false
+  //   }).get().then((res) => {
+  //     return res.data
+  //   })
+  // })
 
   return app.serve()
 }

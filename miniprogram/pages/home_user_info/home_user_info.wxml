@@ -1,4 +1,64 @@
-<cu-custom bgColor="bg-gradual-pink" isBack="{{false}}">
-	<!-- <view slot="backText">返回</view> -->
+<cu-custom bgColor="bg-gradual-orange" isBack="{{true}}">
+	<view slot="backText" catch:tap="onNavigateBack">返回</view>
 	<view slot="content">我的信息</view>
 </cu-custom>
+
+
+<form>
+	<view class="cu-card">
+		<view class="cu-item shadow margin-top">
+			<view class="cu-form-group">
+				<view class="title">头像</view>
+				<image class="cu-avatar radius bg-gray" src="{{avatar_url}}"></image>
+			</view>
+
+			<view class="cu-form-group">
+				<view class="title">昵称</view>
+				<input class="text-right" disabled="{{!isEditting}}" value="{{name}}" placeholder="请输入昵称" bind:change="onChangeName"></input>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">性别</view>
+				<switch class="switch-sex" checked="{{gender}}" disabled></switch>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">微信联系方式</view>
+				<input class="text-right" disabled="{{!isEditting}}" value="{{contact_info_wx}}" placeholder="选填" bind:change="onChangeContactInfoWX"></input>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">QQ联系方式</view>
+				<input class="text-right" disabled="{{!isEditting}}" value="{{contact_info_qq}}" placeholder="选填" bind:change="onChangeContactInfoQQ"></input>
+			</view>
+
+			<view wx:if="{{!isEditting}}">
+				<view class="cu-form-group">
+					<view class="title">大学</view>
+					<input class="text-right" disabled="{{!isEditting}}" value="{{universityInfo.name}}"></input>
+				</view>
+			</view>
+
+			<view wx:if="{{isEditting}}">
+				<view class="cu-form-group">
+					<view class="title">选择大学</view>
+					<picker mode="multiSelector" bindcolumnchange="onMultiColumnChange" value="{{multiIndex}}" range="{{objectMultiArray}}" range-key="{{'name'}}">
+						<view class="picker">
+							{{objectMultiArray[0][multiIndex[0]].name}}，{{objectMultiArray[1][multiIndex[1]].name}}
+						</view>
+					</picker>
+				</view>
+			</view>
+		</view>
+	</view>
+</form>
+
+<view wx:if="{{!isEditting}}">
+	<view class="padding flex flex-direction">
+		<button class="cu-btn bg-red margin-tb-sm lg" bind:tap="onEditUserInfo">编辑我的信息</button>
+	</view>
+</view>
+
+<view wx:if="{{isEditting}}">
+	<view class="padding flex flex-direction">
+		<button class="cu-btn bg-red margin-tb-sm lg" bind:tap="onSaveUserInfo">保存用户信息</button>
+		<button class="cu-btn block bg-red margin-tb-sm lg" bind:tap="onCancelEditUserInfo">取消编辑用户信息</button>
+	</view>
+</view>

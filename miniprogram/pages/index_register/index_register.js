@@ -1,7 +1,9 @@
 // miniprogram/pages/index_register/index_register.js
 import Toast from '@vant/weapp/toast/toast';
+import Dialog from '@vant/weapp/dialog/dialog';
 const api = require("../../api/api")
 const cache = require("../../cache/cache")
+const rules = require('../../utils/rules')
 
 let params = {}
 
@@ -149,6 +151,14 @@ Page({
       "contact_info_qq": this.data.contactInfoQQ,
       "name": this.data.name,
       uid,
+    }
+    if(!rules.required(params.name)){
+      Dialog.alert({
+        title: '格式错误',
+        message:"昵称不能为空！",
+      }).then(() => {
+        return
+      })
     }
     res = await api.setMyInfo(params)
     if(res.errno == -1){

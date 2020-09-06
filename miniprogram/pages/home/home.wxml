@@ -21,7 +21,12 @@
     </view>
   </view>
   <view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg radius">
-    
+    <view class="cu-item arrow">
+      <view class="content" bindtap="onEnterHomeUserInfo" hover-class="none">
+        <text class="cuIcon-peoplefill text-orange"></text>
+        <text class="text-grey">我的信息</text>
+      </view>
+    </view>
     <view class="cu-item arrow">
       <view class="content" bindtap="onEnterHomeTransaction" hover-class="none">
         <text class="cuIcon-rechargefill text-red"></text>
@@ -35,7 +40,7 @@
       </view>
     </view>
 		<view class="cu-item arrow">
-      <view class="content" bindtap="copyLink" data-link="https://github.com/weilanwl/ColorUI">
+      <view class="content" bindtap="copyLink" data-link="https://github.com/2horse9sun/University_O2O">
         <text class="cuIcon-github text-grey"></text>
         <text class="text-grey">复制此小程序的GitHub地址</text>
       </view>
@@ -47,7 +52,7 @@
       </button>
     </view>
     <view class="cu-item arrow">
-      <view class="content" url="/pages/home_info/home_info" hover-class="none">
+      <view class="content" bindtap="onEnterHomeAbout" hover-class="none">
         <text class="cuIcon-infofill text-orange"></text>
         <text class="text-grey">关于此小程序</text>
       </view>
