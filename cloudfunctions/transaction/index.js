@@ -36,7 +36,8 @@ exports.main = async (event, context) => {
       .limit(count)
       .field({
         title: true,
-        status: true
+        status: true,
+        transaction_no: true
       })
       .get()
       ctx.body.errno = 0
@@ -151,7 +152,7 @@ exports.main = async (event, context) => {
       })
 
       // 写入订单
-      const transactionNumber = Date.now() + "-" + parseInt(Math.random() * 10000000) 
+      const transactionNumber = Date.now() + "-" + parseInt(Math.random() * 10000) 
       ctx.body = await transaction
       .collection("transaction")
       .add({
@@ -299,14 +300,14 @@ exports.main = async (event, context) => {
         })
       }
 
-      // 若商品数量为0，则更新为下架状态
+      // 若商品数量为0，且双方都确认交易完成，则更新为下架状态
       const resGetCommodityDetail = await transaction
       .collection("commodity")
       .doc(commodity_id)
       .get()
       const commodityDetail = resGetCommodityDetail.data
       const commodityNumber = commodityDetail.number
-      if(commodityNumber == 0){
+      if(commodityNumber == 0 && seller_status == 1 && buyerer_status == 1){
         await transaction
         .collection("commodity")
         .doc(commodity_id)

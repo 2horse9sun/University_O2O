@@ -1,6 +1,7 @@
 // miniprogram/pages/home/home.js
 const api = require('../../api/api')
 const cache = require('../../cache/cache')
+import Dialog from '@vant/weapp/dialog/dialog';
 let res = {}
 let params = {}
 Page({
@@ -16,6 +17,9 @@ Page({
    * 生命周期函数--监听页面加载
    */
   async onLoad(options) {
+    wx.showLoading({
+      title: '加载中',
+    })
     // 获取我的信息和大学信息
     res = await api.getMyInfoAndMyUniversityInfo()
     if(res.errno == -1){
@@ -39,6 +43,8 @@ Page({
       totalTransaction,
       totalRelease
     })
+
+    wx.hideLoading()
 
   },
 
@@ -82,6 +88,25 @@ Page({
         })
       }
     })
+  },
+
+  onAuthReceiveMsg(){
+    // 订阅消息：当有人购买用户发布的商品时，推送消息给此用户
+    const tmplId = 's9MweXoRKb_IWTm0edo6Ztso2BLcWSrYuTcNT1cDTME'
+    wx.requestSubscribeMessage({
+      tmplIds: [tmplId],
+      success: async (res) => {
+        console.log(await wx.getSetting({
+          withSubscriptions: true,
+        }))
+        Dialog.alert({
+          message: '当您有新的交易时，将接收到一次推送。若收到后，想要继续接受推送，则需再次点击此按钮。',
+          theme: 'round-button',
+        })
+
+      }
+    })
+    
   },
 
 

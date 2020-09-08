@@ -1,65 +1,71 @@
 <scroll-view scroll-y class="scrollPage">
-  <view class="UCenter-bg">
-    <image src="{{userAvatarUrl}}" class="png round" mode="widthFix"></image>
-    <view class="text-xl margin-top">{{userName}}
-    </view>
-    <view class="margin-top-sm">
-      <text>{{universityName}}</text>
-    </view>
-    <image src="cloud://dreamland2-a708ef.6472-dreamland2-a708ef-1259161827/bg-image/wave.gif" mode="scaleToFill" class="gif-wave"></image>
-  </view>
-  <view class="padding flex text-center text-grey bg-white shadow-warp">
-    <view class="flex flex-sub flex-direction solid-right">
-      <view class="text-xxl text-blue">{{totalTransaction}}</view>
-      <view class="margin-top-sm">
-        总交易数</view>
-    </view>
-    <view class="flex flex-sub flex-direction">
-      <view class="text-xxl text-green">{{totalRelease}}</view>
-      <view class="margin-top-sm">
-        发布商品数</view>
-    </view>
-  </view>
-  <view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg radius">
-    <view class="cu-item arrow">
-      <view class="content" bindtap="onEnterHomeUserInfo" hover-class="none">
-        <text class="cuIcon-peoplefill text-orange"></text>
-        <text class="text-grey">我的信息</text>
-      </view>
-    </view>
-    <view class="cu-item arrow">
-      <view class="content" bindtap="onEnterHomeTransaction" hover-class="none">
-        <text class="cuIcon-rechargefill text-red"></text>
-        <text class="text-grey">我的交易</text>
-      </view>
-    </view>
-    <view class="cu-item arrow">
-      <view class="content" bindtap="onEnterHomeRelease" hover-class="none">
-        <text class="cuIcon-formfill text-blue"></text>
-        <text class="text-grey">我发布的商品</text>
-      </view>
-    </view>
+	<view class="UCenter-bg">
+		<image src="{{userAvatarUrl}}" class="png round" mode="widthFix"></image>
+		<view class="text-xl margin-top">{{userName}}
+		</view>
+		<view class="margin-top-sm">
+			<text>{{universityName}}</text>
+		</view>
+		<image src="cloud://dreamland2-a708ef.6472-dreamland2-a708ef-1259161827/bg-image/wave.gif" mode="scaleToFill" class="gif-wave"></image>
+	</view>
+	<view class="padding flex text-center text-grey bg-white shadow-warp">
+		<view class="flex flex-sub flex-direction solid-right">
+			<view class="text-xxl text-blue">{{totalTransaction}}</view>
+			<view class="margin-top-sm">
+				总交易数</view>
+		</view>
+		<view class="flex flex-sub flex-direction">
+			<view class="text-xxl text-green">{{totalRelease}}</view>
+			<view class="margin-top-sm">
+				总发布商品数</view>
+		</view>
+	</view>
+	<view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg radius">
 		<view class="cu-item arrow">
-      <view class="content" bindtap="copyLink" data-link="https://github.com/2horse9sun/University_O2O">
-        <text class="cuIcon-github text-grey"></text>
-        <text class="text-grey">复制此小程序的GitHub地址</text>
-      </view>
-    </view>
-    <view class="cu-item arrow">
-      <button class="cu-btn content" open-type="feedback">
-        <text class="cuIcon-writefill text-cyan"></text>
-        <text class="text-grey">意见反馈</text>
-      </button>
-    </view>
-    <view class="cu-item arrow">
-      <view class="content" bindtap="onEnterHomeAbout" hover-class="none">
-        <text class="cuIcon-infofill text-orange"></text>
-        <text class="text-grey">关于此小程序</text>
-      </view>
-    </view>
-		
-  </view>
-  <view class="cu-tabbar-height"></view>
+			<view class="content" bindtap="onAuthReceiveMsg" hover-class="none">
+				<text class="cuIcon-peoplefill text-orange"></text>
+				<text class="text-grey">接受新交易推送一次</text>
+			</view>
+		</view>
+		<view class="cu-item arrow">
+			<view class="content" bindtap="onEnterHomeUserInfo" hover-class="none">
+				<text class="cuIcon-peoplefill text-orange"></text>
+				<text class="text-grey">我的信息</text>
+			</view>
+		</view>
+		<view class="cu-item arrow">
+			<view class="content" bindtap="onEnterHomeTransaction" hover-class="none">
+				<text class="cuIcon-rechargefill text-red"></text>
+				<text class="text-grey">我的交易</text>
+			</view>
+		</view>
+		<view class="cu-item arrow">
+			<view class="content" bindtap="onEnterHomeRelease" hover-class="none">
+				<text class="cuIcon-formfill text-blue"></text>
+				<text class="text-grey">我发布的商品</text>
+			</view>
+		</view>
+		<view class="cu-item arrow">
+			<view class="content" bindtap="copyLink" data-link="https://github.com/2horse9sun/University_O2O">
+				<text class="cuIcon-github text-grey"></text>
+				<text class="text-grey">复制此小程序的GitHub地址</text>
+			</view>
+		</view>
+		<view class="cu-item arrow">
+			<button class="cu-btn content" open-type="feedback">
+				<text class="cuIcon-writefill text-cyan"></text>
+				<text class="text-grey">意见反馈</text>
+			</button>
+		</view>
+		<view class="cu-item arrow">
+			<view class="content" bindtap="onEnterHomeAbout" hover-class="none">
+				<text class="cuIcon-infofill text-orange"></text>
+				<text class="text-grey">关于此小程序</text>
+			</view>
+		</view>
+
+	</view>
+	<view class="cu-tabbar-height"></view>
 </scroll-view>
 
 
@@ -82,3 +88,5 @@
 		我的
 	</view>
 </view>
+
+<van-dialog id="van-dialog" />

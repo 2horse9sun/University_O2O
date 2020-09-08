@@ -68,7 +68,7 @@
 <view class="cu-bar bg-white padding-bottom padding-left">
 	<view class="action">
 		<text>
-		商品原始购买链接：{{origin_url}}
+		商品原始购买链接：{{originUrl}}
 		</text>
 	</view>
 </view>
@@ -127,9 +127,9 @@
 							<view class="text-content text-df">
 								{{item.content}}
 							</view>
-							<view class="margin-top-sm flex justify-between">
+							<!-- <view class="margin-top-sm flex justify-between">
 								<view class="text-gray text-df">{{item.create_time}}</view>
-							</view>
+							</view> -->
 						</view>
 					</view>
 				</view>

@@ -23,6 +23,9 @@ Page({
    * 生命周期函数--监听页面加载
    */
   async onLoad(options) {
+    wx.showLoading({
+      title: '加载中',
+    })
     // 获取我的信息和大学信息
     res = await cache.getMyInfoAndMyUniversityInfo()
     if(res.errno == -1){
@@ -51,6 +54,8 @@ Page({
     this.setData({
       commodityList
     })
+
+    wx.hideLoading()
 
   },
 
@@ -116,21 +121,27 @@ Page({
         message: '确定删除吗？'
       })
       .then(async () => {
+        wx.showLoading({
+          title: '删除时间可能较长',
+        })
         params = {
           commodity_id: event.currentTarget.dataset.id
         }
         res = await api.delCommodity(params)
         if(res.errno == -1){
+          wx.hideLoading()
           Dialog.alert({
             title: '出错了！',
             message:res.message,
           })
         }else if(res.errno == -2){
+          wx.hideLoading()
           Dialog.alert({
             title: '出错了！',
             message:res.message,
           })
         }else{
+          wx.hideLoading()
           Dialog.alert({
             title: '成功',
             message:'成功删除商品！',

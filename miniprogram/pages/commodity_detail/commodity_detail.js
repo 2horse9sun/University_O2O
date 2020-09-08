@@ -35,6 +35,11 @@ Page({
    * 生命周期函数--监听页面加载
    */
   async onLoad(options) {
+
+    wx.showLoading({
+      title: '加载中',
+    })
+
     opts = options
     start = 0
 
@@ -82,8 +87,8 @@ Page({
       title,
       content,
       number,
-      remark,
-      originUrl:origin_url,
+      remark: remark?remark:"暂无",
+      originUrl:origin_url?origin_url:"暂无",
       priceNow: price_now,
       priceOrigin: price_origin,
       status,
@@ -91,6 +96,8 @@ Page({
       myUserId
     })
     console.log(commodityDetail)
+
+    
 
     // 获取商品提问的数量
     params = {
@@ -106,6 +113,9 @@ Page({
       commodityQuestionCount
     })
 
+    wx.hideLoading()
+
+
     // 获取商品提问
     params = {
       commodity_id,
@@ -120,6 +130,8 @@ Page({
     let commodityQuestion = res.data
     start = commodityQuestion.length
     console.log(commodityQuestion)
+
+
 
     // 获取每个问题的回答，并加入到commodityQuestion中
     for(let i = 0;i < commodityQuestion.length;i++){
@@ -297,6 +309,9 @@ Page({
   },
 
   async onSubmitQuestion(){
+    wx.showLoading({
+      title: '提交中',
+    })
     params = {
       commodity_id,
       content: this.data.questionContent
@@ -310,10 +325,16 @@ Page({
       questionContent: "",
       showAskPanel: false
     })
+
+    wx.hideLoading()
     await this.onPullDownRefresh()
+
   },
 
   async onSubmitAnswer(){
+    wx.showLoading({
+      title: '提交中',
+    })
     params = {
       question_id,
       commodity_id,
@@ -328,6 +349,7 @@ Page({
       answerContent: "",
       showAnswerPanel: false
     })
+    wx.hideLoading()
     await this.onPullDownRefresh()
   },
 
@@ -361,37 +383,6 @@ Page({
     })
   },
 
-  async onDelCommodity(){
-    params = {
-      commodity_id
-    }
-    res = await api.delCommodity(params)
-    if(res.errno == -1){
-      Dialog.alert({
-        title: '出错了！',
-        message:res.message,
-      }).then(() => {
-        wx.navigateBack()
-      })
-      return
-    }else if(res.errno == -2){
-      Dialog.alert({
-        title: '出错了！',
-        message:res.message,
-      }).then(() => {
-        wx.navigateBack()
-      })
-      return
-    }else{
-      Dialog.alert({
-        title: '成功',
-        message:'成功删除商品！',
-      }).then(() => {
-        wx.navigateBack()
-      })
-      return
-    }
-  },
 
   onCancelFailPanel(){
     this.setData({

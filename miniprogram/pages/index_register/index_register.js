@@ -25,12 +25,17 @@ Page({
     avatarUrl: "",
     contactInfoQQ: "",
     contactInfoWX: "",
+    objectMultiArray: [[],[]],
+    multiIndex: [0, 0]
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   async onLoad(options) {
+    wx.showLoading({
+      title: '加载中',
+    })
     // 获取用户头像，性别等信息
     // TODO: login util 方法
     const userInfo = wx.getStorageSync('userInfo')
@@ -82,6 +87,7 @@ Page({
       avatarUrl,
       gender
     }) 
+    wx.hideLoading()
   },
 
 
@@ -144,10 +150,10 @@ Page({
 
   // 提交注册信息
   async onRegister(){
+    
     params = {
       "contact_info_wx": this.data.contactInfoWX,
-      "gender": this.data.gender,
-      "avatar_url": this.data.avatarUrl,
+      "avatar_url": this.dasta.avatarUrl,
       "contact_info_qq": this.data.contactInfoQQ,
       "name": this.data.name,
       uid,
@@ -156,10 +162,14 @@ Page({
       Dialog.alert({
         title: '格式错误',
         message:"昵称不能为空！",
-      }).then(() => {
-        return
       })
+      return
     }
+
+    wx.showLoading({
+      title: '正在提交中',
+    })
+
     res = await api.setMyInfo(params)
     if(res.errno == -1){
       console.log("上传用户信息失败！")
@@ -173,6 +183,8 @@ Page({
       return
     }
     console.log({"我的信息和我的大学信息:":res.data})
+    const myInfoAndMyUniversityInfo = res.data
+    wx.hideLoading()
     wx.showToast({
       title: '注册成功！',
       icon: 'success',
@@ -180,9 +192,9 @@ Page({
       success(res){
         setTimeout(() => {
           wx.redirectTo({
-            url: '../index_auth/index_auth',
+            url: `../commodity_list/commodity_list?uid=${myInfoAndMyUniversityInfo.uid}`,
           })
-        }, 2000)
+        }, 1500)
       }
     })
   }

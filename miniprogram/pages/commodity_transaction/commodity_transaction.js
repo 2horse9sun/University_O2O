@@ -26,9 +26,15 @@ Page({
    */
   async onLoad(options) {
 
+    wx.showLoading({
+      title: '加载中',
+    })
+
     // 获取商品详情信息
-    commodity_id = options.commodity_id
-    commodity_id = "74b3e15b5f4fa9a600145ea93bfe7d8d"
+
+    commodity_id = options.commodityid
+
+    // commodity_id = "74b3e15b5f4fa9a600145ea93bfe7d8d"
     params = {
       id: commodity_id
     }
@@ -82,6 +88,8 @@ Page({
       totalPrice: ((1<=number)?1:0)*price_now
     })
     console.log(commodityDetail)
+
+    wx.hideLoading()
 
   },
 
@@ -154,8 +162,9 @@ Page({
   
 
   async onSubmitTransaction(){
-    this.setData({
-      isSubmitting: true
+
+    wx.showLoading({
+      title: '生成交易中',
     })
     params = {
       commodity_id,
@@ -169,10 +178,9 @@ Page({
       buyerPrimaryKey
     }
     res = await api.setTransaction(params)
-    this.setData({
-      isSubmitting: false
-    })
+
     if(res.errno != 0){
+      wx.hideLoading()
       const errMsg = res.message
       Dialog.alert({
         message: errMsg,
@@ -181,13 +189,32 @@ Page({
         this.onNavigateBack()
       })
     }else{
+
       const transactionNumber = res.data.transactionNumber
+
+      let datetime = new Date();
+      let year = datetime.getFullYear();
+      let month = datetime.getMonth() + 1 < 10 ? "0" + (datetime.getMonth() + 1) : datetime.getMonth() + 1;
+      let date = datetime.getDate() < 10 ? "0" + datetime.getDate() : datetime.getDate();
+      params = {
+        seller_id,
+        transactionNumber,
+        title: this.data.title,
+        create_time:`${year}年${month}月${date}日`
+      }
+      console.log(params)
+      res = api.sendNewTransactionMsg(params)
+
+
+      wx.hideLoading()
+      
       Dialog.alert({
         message: '已经成功发起交易，可以到我的交易中查看',
         theme: 'round-button',
       }).then(() => {
+        
         wx.navigateTo({
-          url: `../transaction_detail/transaction_detail?fromCommodityTransaction=${true}&transactionNumber=${transactionNumber}`,
+          url: `../transaction_detail/transaction_detail?enteredFrom=0&transactionNumber=${transactionNumber}`,
         })
       })
 

@@ -30,7 +30,7 @@
 	},
 	"appid": "wx9215321878b739b6",
 	"projectname": "University-O2O",
-	"libVersion": "2.8.1",
+	"libVersion": "2.12.2",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
 	"cloudfunctionTemplateRoot": "cloudfunctionTemplate",

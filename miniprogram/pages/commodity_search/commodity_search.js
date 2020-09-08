@@ -27,6 +27,10 @@ Page({
    */
   async onLoad(options) {
 
+    wx.showLoading({
+      title: '加载中',
+    })
+
     keyword = options.keyword
     console.log(keyword)
 
@@ -59,6 +63,8 @@ Page({
       commodityList,
       keyword
     })    
+
+    wx.hideLoading()
     
   },
 

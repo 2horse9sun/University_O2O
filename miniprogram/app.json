@@ -2,17 +2,15 @@
   "pages": [
     "pages/index/index",
     "pages/commodity_list/commodity_list",
+    
+    
     "pages/index_register/index_register",
-    
     "pages/home/home",
-    
     "pages/transaction_detail/transaction_detail",
     "pages/commodity_transaction/commodity_transaction",
     "pages/commodity_detail/commodity_detail",
     "pages/commodity_search/commodity_search",
     "pages/commodity_release/commodity_release",
-    
-    
     "pages/index_auth/index_auth",
     "pages/home_transaction/home_transaction",
     "pages/home_release/home_release",

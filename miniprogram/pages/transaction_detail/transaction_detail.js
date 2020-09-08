@@ -7,7 +7,7 @@ const fmt = require('../../utils/formatTime')
 let res = {}
 let params = {}
 let opts = {}
-let fromCommodityTransaction = false;
+let enteredFrom = 0
 let transactionNumber = ""
 let isSeller = false
 let isBuyer = false
@@ -27,8 +27,11 @@ Page({
    * 生命周期函数--监听页面加载
    */
   async onLoad(options) {
+    wx.showLoading({
+      title: '获取交易详情中',
+    })
     opts = options
-    fromCommodityTransaction = options.fromCommodityTransaction
+    enteredFrom = options.enteredFrom
     transactionNumber = options.transactionNumber
     console.log(transactionNumber)
     params = {
@@ -68,26 +71,36 @@ Page({
     alreadyConfirmed = isSeller&&seller_status==1 || isBuyer&&buyer_status==1
     this.setData({
       ...transactionDetail,
-      fromCommodityTransaction,
       alreadyConfirmed
     })
+
+    wx.hideLoading()
 
   },
 
   onNavigateBack(){
-    if(fromCommodityTransaction == true){
+    console.log("页面跳转")
+    console.log(enteredFrom)
+    if(enteredFrom == 0){
       const commodity_id = this.data.commodity_id
       wx.redirectTo({
-        url: `../commodity_detail/commodity_detail?id=${commodity_id}`,
+        url: "../commodity_list/commodity_list",
       })
-    }else{
+    }else if(enteredFrom == 1){
       wx.navigateBack()
+    }else if(enteredFrom == 2){
+      wx.redirectTo({
+        url: "../home/home",
+      })
     }
     
   },
 
 
   async onShowContactInfo(){
+    wx.showLoading({
+      title: '查询中',
+    })
     if(isSeller){
       params = {
         userId: this.data.buyer_id
@@ -100,6 +113,7 @@ Page({
       const buyerContactInfoWX = res.data.contact_info_wx?res.data.contact_info_wx:"暂无"
       const buyerContactInfoQQ = res.data.contact_info_qq?res.data.contact_info_qq:"暂无"
 
+      wx.hideLoading()
       Dialog.alert({
         message: `
         买家微信联系方式：${buyerContactInfoWX}
@@ -122,6 +136,7 @@ Page({
       const sellerContactInfoWX = res.data.contact_info_wx?res.data.contact_info_wx:"暂无"
       const sellerContactInfoQQ = res.data.contact_info_qq?res.data.contact_info_qq:"暂无"
 
+      wx.hideLoading()
       Dialog.alert({
         message: `卖家微信联系方式：${sellerContactInfoWX}
         卖家QQ联系方式：${sellerContactInfoQQ}`,
@@ -133,6 +148,9 @@ Page({
 
   // 确认交易完成
   async onConfirmFinishTransaction(){
+    wx.showLoading({
+      title: '正在确认中',
+    })
     params = {
       id: this.data._id,
       isSeller,
@@ -147,7 +165,15 @@ Page({
       })
     }
 
+    wx.hideLoading()
+    
+
     await this.onLoad(opts)
+
+    Dialog.alert({
+      message: "确认成功！",
+      theme: 'round-button',
+    })
   },
 
   onEnterCommodityDetail(){
@@ -164,6 +190,9 @@ Page({
       message: '确认取消此次交易吗？',
     })
       .then(async() => {
+        wx.showLoading({
+          title: '正在取消中',
+        })
         params = {
           id: this.data._id,
         }
@@ -174,7 +203,14 @@ Page({
             theme: 'round-button',
           })
         }
+        wx.hideLoading()
+        
         await this.onLoad(opts)
+
+        Dialog.alert({
+          message: "取消成功！",
+          theme: 'round-button',
+        })
 
       })
   },

@@ -6,6 +6,7 @@
     "van-overlay": "@vant/weapp/overlay/index",
     "van-button": "@vant/weapp/button/index",
     "van-image": "@vant/weapp/image/index",
-    "van-toast": "@vant/weapp/toast/index"
+    "van-toast": "@vant/weapp/toast/index",
+    "van-dialog": "@vant/weapp/dialog/index"
   }
 }

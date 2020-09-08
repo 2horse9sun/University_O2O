@@ -23,6 +23,9 @@ Page({
    * 生命周期函数--监听页面加载
    */
   async onLoad(options) {
+    wx.showLoading({
+      title: '加载中',
+    })
     // 获取我的信息和大学信息
     res = await api.getMyInfoAndMyUniversityInfo()
     if(res.errno == -1){
@@ -82,6 +85,8 @@ Page({
       multiIndex,
     }) 
 
+    wx.hideLoading()
+
   },
 
   onNavigateBack(){
@@ -117,10 +122,12 @@ Page({
       Dialog.alert({
         title: '格式错误',
         message:"昵称不能为空！",
-      }).then(() => {
-        return
       })
+      return
     }
+    wx.showLoading({
+      title: '上传中',
+    })
     res = await api.updateMyInfo(params)
     if(res.errno == -1){
       console.log("更新用户信息失败！")
@@ -134,6 +141,8 @@ Page({
 
     // 清空全部缓存
     wx.clearStorageSync()
+
+    wx.hideLoading()
     wx.showToast({
       title: '修改成功！',
       icon: 'success',

@@ -20,8 +20,17 @@ Page({
     commodityNumber: 1,
     commodityExpireTime: 7,
     columns:[],
-    isUploading: false,
     categoryIndex: 0,
+    commodityTitle: "",
+    commodityContent:"",
+    commodityPurchaseUrl:"",
+    commodityOriginPrice:"",
+    commodityCurrentPrice:"",
+    commodityRemark:""
+
+
+
+
 
   },
 
@@ -188,6 +197,7 @@ Page({
 
   // 验证表单格式
   isValid(params){
+    console.log(params)
     if(!rules.required(params.title)){
       return new RespError("商品名称不能为空！")
     }
@@ -239,81 +249,113 @@ Page({
   
   // 上传商品信息
   async onCommodityRelease(){ 
-    if(this.data.isUploading){
-      return
-    }
-    this.setData({
-      isUploading: true
+
+    // 订阅消息：当有人购买用户发布的商品时，推送消息给此用户
+    const tmplId = 's9MweXoRKb_IWTm0edo6Ztso2BLcWSrYuTcNT1cDTME'
+    wx.requestSubscribeMessage({
+      tmplIds: [tmplId],
+      complete: async (res) => {
+
+        res = await cache.getMyInfoAndMyUniversityInfo()
+        if(res.errno == -1){
+          console.log("获取我的信息和我的大学信息失败！")
+        }
+        console.log(res)
+        const myInfoAndMyUniversityInfo = res.data
+        const userPrimaryKey = myInfoAndMyUniversityInfo._id
+        uid = myInfoAndMyUniversityInfo.uid
+        let uploadParams = {
+          // thumbnail_url: thumbnailFileID,
+          // img_url: commodityImgFileID,
+          cid: cid,
+          content: this.data.commodityContent,
+          title: this.data.commodityTitle,
+          number: this.data.commodityNumber,
+          origin_url: this.data.commodityPurchaseUrl?this.data.commodityPurchaseUrl:"",
+          price_origin: this.data.commodityOriginPrice,
+          price_now: this.data.commodityCurrentPrice,
+          expire_time: this.data.commodityExpireTime,
+          remark: this.data.commodityRemark?this.data.commodityRemark:"",
+          uid: uid,
+          userPrimaryKey
+        }
+    
+        res = this.isValid(uploadParams)
+        
+        if(res.errno == -1){
+          Dialog.alert({
+            title: '格式错误',
+            message:res.message,
+          })
+          return
+        }
+        
+        
+    
+        // 上传图片到云存储，获取fileId
+        if(this.data.thumbnail.length == 0 || this.data.commodityImg.length == 0){
+          wx.hideLoading()
+          Dialog.alert({
+            title: '格式错误',
+            message:"至少上传一张缩略图和一张详情图！",
+          })
+          
+          return
+        }
+
+        wx.showLoading({
+          title: '上传中',
+        })
+
+        params = {
+          thumbnail: this.data.thumbnail,
+          commodityImg: this.data.commodityImg,
+        }
+        res = await api.uploadImgAndGetFileID(params)
+        if(res.errno == -1){
+          console.log("上传图片到云存储失败！")
+          return
+        }
+        const fileIDs = res.data
+    
+        // 上传数据到云数据库
+        const thumbnailFileID = fileIDs.splice(0,1)
+        const commodityImgFileID = fileIDs
+        uploadParams["thumbnail_url"] = thumbnailFileID
+        uploadParams["img_url"] = commodityImgFileID
+        
+        res = await api.setCommodityDetail(uploadParams)
+        if(res.errno == -1){
+          wx.hideLoading()
+          console.log("上传商品信息失败!")
+          return
+        }
+        wx.hideLoading()
+    
+        wx.showToast({
+          title: '上传成功！',
+          icon: 'success',
+          duration: 2000,
+          success(res){
+            setTimeout(() => {
+              wx.redirectTo({
+                url: `../commodity_list/commodity_list?uid=${uid}`,
+              })
+            }, 1500)
+          }
+        })
+
+
+
+
+
+
+      }
     })
 
 
-    // 上传图片到云存储，获取fileId
-    if(this.data.thumbnail.length == 0 || this.data.commodityImg.length == 0){
-      Dialog.alert({
-        title: '格式错误',
-        message:"至少上传一张缩略图和一张详情图！",
-      }).then(() => {
-        return
-      })
-    }
-    params = {
-      thumbnail: this.data.thumbnail,
-      commodityImg: this.data.commodityImg,
-    }
-    res = await api.uploadImgAndGetFileID(params)
-    if(res.errno == -1){
-      console.log("上传图片到云存储失败！")
-      return
-    }
-    const fileIDs = res.data
-
-    // 上传数据到云数据库
-    const thumbnailFileID = fileIDs.splice(0,1)
-    const commodityImgFileID = fileIDs
-    res = await cache.getMyInfoAndMyUniversityInfo()
-    if(res.errno == -1){
-      console.log("获取我的信息和我的大学信息失败！")
-    }
-    console.log(res)
-    const myInfoAndMyUniversityInfo = res.data
-    const userPrimaryKey = myInfoAndMyUniversityInfo._id
-    uid = myInfoAndMyUniversityInfo.uid
-    params = {
-      thumbnail_url: thumbnailFileID,
-      img_url: commodityImgFileID,
-      cid: cid,
-      content: this.data.commodityContent,
-      title: this.data.commodityTitle,
-      number: this.data.commodityNumber,
-      origin_url: this.data.commodityPurchaseUrl?this.data.commodityPurchaseUrl:"",
-      price_origin: this.data.commodityOriginPrice,
-      price_now: this.data.commodityCurrentPrice,
-      expire_time: this.data.commodityExpireTime,
-      remark: this.data.remark?this.data.remark:"",
-      uid: uid,
-      userPrimaryKey
-    }
-
-    res = this.isValid(params)
-    if(res.errno == -1){
-      Dialog.alert({
-        title: '格式错误',
-        message:res.message,
-      }).then(() => {
-        return
-      })
-    }
-
-
-    res = await api.setCommodityDetail(params)
-    if(res.errno == -1){
-      console.log("上传商品信息失败!")
-    }
-    this.setData({
-      isUploading: false
-    })    
-    wx.redirectTo({
-      url: `../commodity_list/commodity_list?uid=${uid}`,
-    })
+    
+  
+    
   }
 })

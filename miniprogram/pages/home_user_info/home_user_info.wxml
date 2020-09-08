@@ -16,10 +16,7 @@
 				<view class="title">昵称</view>
 				<input class="text-right" disabled="{{!isEditting}}" value="{{name}}" placeholder="请输入昵称" bind:change="onChangeName"></input>
 			</view>
-			<view class="cu-form-group">
-				<view class="title">性别</view>
-				<switch class="switch-sex" checked="{{gender}}" disabled></switch>
-			</view>
+
 			<view class="cu-form-group">
 				<view class="title">微信联系方式</view>
 				<input class="text-right" disabled="{{!isEditting}}" value="{{contact_info_wx}}" placeholder="选填" bind:change="onChangeContactInfoWX"></input>

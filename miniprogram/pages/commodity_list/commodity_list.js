@@ -56,6 +56,10 @@ Page({
    */
   async onLoad(options) {
 
+    wx.showLoading({
+      title: '加载中',
+    })
+
     // 获取我的信息和大学信息
     res = await cache.getMyInfoAndMyUniversityInfo()
     if(res.errno == -1){
@@ -103,6 +107,7 @@ Page({
       }),
       universityName: myInfoAndMyUniversityInfo.universityInfo.name
     })    
+    wx.hideLoading()
   },
 
   onSearchInput(event){
@@ -120,6 +125,9 @@ Page({
 
   // 标签页，切换分类
   async tabSelect(e) {
+    wx.showLoading({
+      title: '加载中',
+    })
     this.setData({
       TabCur: e.currentTarget.dataset.id,
       scrollLeft: (e.currentTarget.dataset.id-1)*60,
@@ -150,6 +158,7 @@ Page({
       hasMore: true,
       isLoading: false
     })    
+    wx.hideLoading()
   },
 
   // 轮播图相关 cardSwiper
@@ -161,6 +170,10 @@ Page({
 
   // 刷新商品列表
   async onPullDownRefresh() {
+
+    wx.showLoading({
+      title: '加载中',
+    })
 
     params = {
       uid,
@@ -192,6 +205,7 @@ Page({
       hasMore: true,
       isLoading: false
     })  
+    wx.hideLoading()
   },
 
   // 到底加载更多数据

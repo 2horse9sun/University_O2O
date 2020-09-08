@@ -676,6 +676,23 @@ const api = {
   //   })
   // },
 
+  async sendNewTransactionMsg(params){
+    res = await wx.cloud.callFunction({
+      name: 'subscribeMsg',
+      data: {
+        $url: 'sendNewTransactionMsg',
+        params
+      }
+    })
+    console.log(res)
+    if(res.result.errno == -1){
+      console.log("发送推送消息失败！")
+      return new RespError("发送推送消息失败！")
+    }
+    console.log("发送推送消息成功！")
+    return new RespSuccess()
+  }
+
 }
 
 module.exports = api

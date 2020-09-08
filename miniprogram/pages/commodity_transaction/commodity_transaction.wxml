@@ -46,13 +46,8 @@
 </view>
 
 
-<view wx:if="{{isSubmitting}}">
-	<van-submit-bar loading class="submit-transaction-bar" price="{{totalPrice*100}}" button-text="确认交易" bind:submit="onSubmitTransaction" />
-</view>
-
-<view wx:if="{{!isSubmitting}}">
 	<van-submit-bar class="submit-transaction-bar" price="{{totalPrice*100}}" button-text="确认交易" bind:submit="onSubmitTransaction" />
-</view>
+
 
 
 <van-dialog id="van-dialog" />

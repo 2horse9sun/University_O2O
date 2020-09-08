@@ -8,6 +8,7 @@ const cache = {
     async getMyInfoAndMyUniversityInfo(){
       // 先读缓存
       let myInfoAndMyUniversityInfo = wx.getStorageSync('myInfoAndMyUniversityInfo')
+      console.log(myInfoAndMyUniversityInfo)
       if(myInfoAndMyUniversityInfo){
         console.log({"获取我的信息和我的大学信息缓存":myInfoAndMyUniversityInfo})
         return new RespSuccess(myInfoAndMyUniversityInfo)

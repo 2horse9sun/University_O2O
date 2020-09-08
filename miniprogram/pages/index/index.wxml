@@ -4,8 +4,11 @@
 </cu-custom>
 
 
-<view class="padding" >
-	<button class="cu-btn block bg-red margin-tb-sm lg" style="bottom:-800rpx" bind:tap="onEnter">进入</button>
+<view class="padding">
+	<view class="box text-center">
+		<button class="cu-btn bg-gradual-orange shadow round lg" style="bottom:-800rpx;width:300rpx" bind:tap="onEnter">
+			进入</button>
+	</view>
 </view>
 
 <!-- 登录弹出层 -->

@@ -22,6 +22,9 @@ Page({
    * 生命周期函数--监听页面加载
    */
   async onLoad(options) {
+    wx.showLoading({
+      title: '加载中',
+    })
     start = 0
     params = {
       start: start,
@@ -38,9 +41,14 @@ Page({
       transactionList
     })
 
+    wx.hideLoading()
+
   },
 
   async onShow(){
+    wx.showLoading({
+      title: '加载中',
+    })
     start = 0
     if(this.data.index == 0){
       params = {
@@ -74,6 +82,7 @@ Page({
         transactionList
       })
     }
+    wx.hideLoading()
   },
 
 
@@ -153,6 +162,9 @@ Page({
       scrollLeft: (e.currentTarget.dataset.id-1)*60,
       transactionList: []
     })
+    wx.showLoading({
+      title: '加载中',
+    })
     start = 0
     if(this.data.index == 0){
       params = {
@@ -186,12 +198,13 @@ Page({
         transactionList
       })
     }
+    wx.hideLoading()
   },
 
   onEnterHomeTransaction(event){
     const transactionNumber = event.currentTarget.dataset.transactionnumber
     wx.navigateTo({
-      url: `../transaction_detail/transaction_detail?fromCommodityTransaction=false&transactionNumber=${transactionNumber}`,
+      url: `../transaction_detail/transaction_detail?enteredFrom=1&transactionNumber=${transactionNumber}`,
     })
   }
 })
