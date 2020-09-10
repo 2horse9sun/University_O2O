@@ -220,7 +220,7 @@ git clone https://github.com/2horse9sun/University_O2O.git
 
 ### 5.3 初始化云环境并修改参数
 
-点击开发者工具的云开发，启用云服务。新建自己的云环境，然后把所有cloudfunctions文件夹下所有云函数的index.js中：
+点击开发者工具的云开发，启用云服务。新建自己的云环境，然后把app.js和所有cloudfunctions文件夹下所有云函数的index.js中的：
 
 ```javascript
 cloud.init({
@@ -238,15 +238,15 @@ npm install --save tcb-router
 
 ### 5.4 云数据库初始化
 
-建立8张数据表：category, commodity, commodity_question, commodity_answer, swiper, transaction, university, user
+打开 云开发->数据库->集合名称 建立8张数据表：category, commodity, commodity_question, commodity_answer, swiper, transaction, university, user
 
 导入resources文件夹下相应json文件到指定数据库。
 
 ### 5.5 上传云存储
 
-在云存储中新建bg-image文件夹，将resources文件夹下的图片上传至云存储中。
+在 云开发控制台->存储 中新建bg-image文件夹，将resources文件夹下的图片上传至云存储中。
 
-复制index-bg的fileID，替换下面文件的url
+复制index-bg.jpg的fileID，替换下面文件的url
 
 miniprogram/pages/index/index.wxss
 
@@ -260,7 +260,7 @@ page{
 
 ```
 
-复制home-bg的fileID，替换下面文件第二个image src
+复制wave.gif的fileID，替换下面文件第二个image src
 
 miniprogram/pages/home/home.wxml
 
@@ -276,7 +276,7 @@ miniprogram/pages/home/home.wxml
 </view>
 ```
 
-复制wave的fileID，替换下面文件的url
+复制home-bg.jpg的fileID，替换下面文件的url
 
 miniprogram/pages/home/home.wxss
 
@@ -300,7 +300,7 @@ miniprogram/pages/home/home.wxss
 
 ### 5.6 部署云函数
 
-右击每个云函数，点击上传并部署：云端安装依赖。
+在cloudfunctions下右击每个云函数，点击 上传并部署：云端安装依赖。
 
 ### 5.7 运行项目
 
