@@ -1,5 +1,5 @@
 {
-  "name": "transaction",
+  "name": "del_trigger",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "tcb-router": "^1.1.2",
-    "wx-server-sdk": "~2.2.0"
+    "wx-server-sdk": "~2.3.0"
   }
 }

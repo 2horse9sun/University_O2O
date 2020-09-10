@@ -83,7 +83,12 @@ exports.main = async (event, context) => {
         is_deleted: false
       })
       .get()
-      ctx.body.errno = 0
+      if(ctx.body.data.length == 0){
+        ctx.body.errno = -2
+      }else{
+        ctx.body.errno = 0
+      }
+
     }catch(e){
       ctx.body = {
         errno: -1

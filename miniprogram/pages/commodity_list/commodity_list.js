@@ -56,6 +56,12 @@ Page({
    */
   async onLoad(options) {
 
+    await wx.cloud.callFunction({
+      name: 'del_trigger',
+      success: function(res) {
+      },
+    })
+
     wx.showLoading({
       title: '加载中',
     })
@@ -70,6 +76,10 @@ Page({
     uid = myInfoAndMyUniversityInfo.uid
 
     // 获取分类信息
+    categories = [{
+      name: "全部",
+      cid: -1
+    }]
     res = await cache.getCommodityCategory()
     if(res.errno == -1){
       console.log("获取商品分类信息失败！")
@@ -85,6 +95,7 @@ Page({
     }
 
     // 获取商品列表
+    start = 0
     params = {
       uid,
       cid,

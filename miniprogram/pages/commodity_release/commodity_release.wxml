@@ -23,10 +23,6 @@
 			<input value="{{commodityNumber}}" maxlength="5" type="commodityNumber" placeholder="请输入商品的数量，必填" bindinput="onChangeCommodityNumber"></input>
 		</view>
 		<view class="cu-form-group">
-			<view class="title">有效期(天)</view>
-			<input value="{{commodityExpireTime}}" maxlength="1" type="number" placeholder="至少1天，至多7天，必填" bindinput="onChangeCommodityExpireTime"></input>
-		</view>
-		<view class="cu-form-group">
 			<view class="title">商品原价</view>
 			<input value="{{commodityOriginPrice}}" maxlength="10" type="digit" placeholder="请输入单个商品的原价，必填" bindinput="onChangeCommodityOriginPrice"></input>
 		</view>

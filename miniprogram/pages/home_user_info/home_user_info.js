@@ -40,6 +40,9 @@ Page({
 
 
     // 从数据库中读取大学信息，加工成合适的格式
+    universities = [[],[]]
+    objectMultiArray = [[],[]]
+    multiIndex = [0, 0]
     params = {
       is_mine: false
     }

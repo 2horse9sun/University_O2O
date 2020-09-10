@@ -60,6 +60,7 @@ Page({
     }
     res = await api.getCommodityDetail(params)
     if(res.errno == -1){
+      wx.hideLoading()
       console.log("商品详情获取失败！")
       Dialog.alert({
         title: '出错了！',
@@ -117,9 +118,10 @@ Page({
 
 
     // 获取商品提问
+    start = 0
     params = {
       commodity_id,
-      start: 0,
+      start: start,
       count: MAX_QUESTION_LIMIT_SIZE
     }
     res = await api.getCommodityQuestionAndUserInfo(params)
@@ -245,13 +247,6 @@ Page({
       commodityQuestion: this.data.commodityQuestion.concat(newCommodityQuestion)
     })
 
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
 
   },
 

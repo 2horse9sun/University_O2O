@@ -18,7 +18,6 @@ Page({
     thumbnail: [],
     commodityImg: [],
     commodityNumber: 1,
-    commodityExpireTime: 7,
     columns:[],
     categoryIndex: 0,
     commodityTitle: "",
@@ -39,6 +38,7 @@ Page({
    */
   async onLoad(options) {
     // 读取商品分类信息
+    categories = []
     res = await cache.getCommodityCategory()
     if(res.errno == -1){
       console.log("获取商品分类信息失败")
@@ -117,11 +117,6 @@ Page({
     })
   },
 
-  onChangeCommodityExpireTime(event){
-    this.setData({
-      commodityExpireTime: event.detail.value
-    })
-  },
 
   onChangeCommodityCategory(event){
     const idx = event.detail.value
@@ -136,7 +131,7 @@ Page({
     wx.chooseImage({
       count: 1, //默认9
       sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
-      sourceType: ['album'], //从相册选择
+      sourceType: ['album','camera'], //从相册选择
       success: (res) => {
         if (this.data.thumbnail.length != 0) {
           this.setData({
@@ -204,9 +199,6 @@ Page({
     if(!rules.required(params.number)){
       return new RespError("商品数量不能为空！")
     }
-    if(!rules.required(params.expire_time)){
-      return new RespError("有效期不能为空！")
-    }
     if(!rules.required(params.price_origin)){
       return new RespError("商品原价不能为空！")
     }
@@ -219,9 +211,6 @@ Page({
     if(!rules.onlyNumber(params.number)){
       return new RespError("商品数量必须是数字")
     }
-    if(!rules.onlyNumber(params.expire_time)){
-      return new RespError("有效期必须是数字")
-    }
     if(!rules.onlyNumber(params.price_origin)){
       return new RespError("商品原价必须是数字")
     }
@@ -230,12 +219,6 @@ Page({
     }
     if(params.number < 1){
       return new RespError("商品数量至少为1")
-    }
-    if(params.expire_time < 1){
-      return new RespError("有效期至少为1天")
-    }
-    if(params.expire_time > 7){
-      return new RespError("有效期至多为7天")
     }
     if(params.price_origin < 0){
       return new RespError("商品原价至少为0")
@@ -274,7 +257,6 @@ Page({
           origin_url: this.data.commodityPurchaseUrl?this.data.commodityPurchaseUrl:"",
           price_origin: this.data.commodityOriginPrice,
           price_now: this.data.commodityCurrentPrice,
-          expire_time: this.data.commodityExpireTime,
           remark: this.data.commodityRemark?this.data.commodityRemark:"",
           uid: uid,
           userPrimaryKey
@@ -330,6 +312,8 @@ Page({
           console.log("上传商品信息失败!")
           return
         }
+        // 清空缓存
+        wx.clearStorageSync()
         wx.hideLoading()
     
         wx.showToast({

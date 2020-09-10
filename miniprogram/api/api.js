@@ -577,6 +577,10 @@ const api = {
       console.log("查询交易失败！")
       return new RespError("查询交易失败！")
     }
+    if(res.result.errno == -2){
+      console.log("交易已被删除或不存在！")
+      return new RespError("交易已被删除或不存在！")
+    }
     console.log("查询交易成功！")
     const transactionDetail = res.result.data[0]
     console.log({"交易详情":transactionDetail})

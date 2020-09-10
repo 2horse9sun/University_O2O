@@ -38,9 +38,15 @@ Page({
       transaction_no: transactionNumber
     }
     res = await api.getTransactionByTransactionNumber(params)
-    if(res.errno == -1){
+    if(res.errno != 0){
       console.log("获取交易详情失败！")
-      return
+      Dialog.alert({
+        message: res.message,
+        theme: 'round-button',
+      }).then(() => {
+        this.onNavigateBack()
+      })
+      
     }
     const transactionDetail = res.data
     console.log(transactionDetail)
@@ -83,6 +89,8 @@ Page({
     console.log(enteredFrom)
     if(enteredFrom == 0){
       const commodity_id = this.data.commodity_id
+      // 清空缓存
+      wx.clearStorageSync()
       wx.redirectTo({
         url: "../commodity_list/commodity_list",
       })

@@ -55,9 +55,10 @@ Page({
       commodityQuestionCount: res.data
     })
     // 回答详情
+    start = 0
     params = {
       question_id,
-      start: 0,
+      start: start,
       count: MAX_ANSWER_LIMIT_SIZE
     }
     res = await api.getCommodityAnswerAndUserInfo(params)

@@ -44,6 +44,7 @@ Page({
     uid = myInfoAndMyUniversityInfo.uid
 
     // 获取搜索的商品列表
+    start = 0
     params = {
       uid,
       cid,
