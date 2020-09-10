@@ -1,20 +1,20 @@
 <scroll-view scroll-y class="scrollPage">
 	<view class="UCenter-bg">
-		<image src="{{userAvatarUrl}}" class="png round" mode="widthFix"></image>
-		<view class="text-xl margin-top">{{userName}}
+		<image src="{{userAvatarUrl}}" class="png round" mode="widthFix" bindtap="onEnterHomeUserInfo"></image>
+		<view class="text-xl margin-top" bindtap="onEnterHomeUserInfo">{{userName}}
 		</view>
-		<view class="margin-top-sm">
+		<view class="margin-top-sm" bindtap="onEnterHomeUserInfo">
 			<text>{{universityName}}</text>
 		</view>
 		<image src="cloud://dreamland2-a708ef.6472-dreamland2-a708ef-1259161827/bg-image/wave.gif" mode="scaleToFill" class="gif-wave"></image>
 	</view>
 	<view class="padding flex text-center text-grey bg-white shadow-warp">
-		<view class="flex flex-sub flex-direction solid-right">
+		<view class="flex flex-sub flex-direction solid-right" bindtap="onEnterHomeTransaction">
 			<view class="text-xxl text-blue">{{totalTransaction}}</view>
 			<view class="margin-top-sm">
 				总交易数</view>
 		</view>
-		<view class="flex flex-sub flex-direction">
+		<view class="flex flex-sub flex-direction" bindtap="onEnterHomeRelease">
 			<view class="text-xxl text-green">{{totalRelease}}</view>
 			<view class="margin-top-sm">
 				总发布商品数</view>

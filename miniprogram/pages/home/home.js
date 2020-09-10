@@ -60,11 +60,6 @@ Page({
     })
   },
 
-  onEnterHomeTransaction(){
-    wx.navigateTo({
-      url: '../home_transaction/home_transaction',
-    })
-  },
 
   onEnterHomeRelease(){
     wx.navigateTo({
