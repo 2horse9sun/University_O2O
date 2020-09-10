@@ -1,6 +1,6 @@
-# #云开发挑战赛#大学校园闲置物品交易平台-HANG_IN_THERE
+# 项目名称：大学校园闲置物品交易平台
 
-## 1. 应用场景
+## 1. 项目介绍
 
 作为一个大学生，经常会有一些闲置的物品需要处理，物品仍有使用价值，直接扔掉有些可惜，只好寻找再次出售的途径；或许也想要买一些物品，但不需要全新的，如二手自行车等。购买出售的途径一般有两个：
 
@@ -9,15 +9,9 @@
 
 针对上述途径存在的问题，我们设计了“大学校园闲置物品交易平台”的微信小程序，使用学生验证（暂未完成）、各大学相互隔离、线下交易的方式确保**安全性**，提供线上发布、商品列表与商品详情详情展示、商品检索的功能以保障**较高的消息获取效率**，采用商品问答、商品状态自动更新的方式确保**信息的时效性**。在大学校园闲置物品交易平台中，大学生能够在**不涉及线上支付的情况下安全快捷地出售与购买二手物品**。
 
-## 2. 目标用户
+## 2. 各页面功能展示
 
-1. 在校大学生
-2. 有需要出售的二手物品
-3. 想要收购二手物品
-
-## 3. 各页面功能展示
-
-### 3.1 商品列表与搜索
+### 2.1 商品列表与搜索
 
 ![commodity_list](https://github.com/2horse9sun/images/raw/master/University-O2O-img/commodity_list.png)
 
@@ -31,7 +25,7 @@
 
 搜索后的商品展示与首页的展示方式类似，采用模糊搜索，查询匹配到的商品的标题。
 
-### 3.2 商品详情页与商品问答
+### 2.2 商品详情页与商品问答
 
 ![commodity_detail](https://github.com/2horse9sun/images/raw/master/University-O2O-img/commodity_detail.png)
 
@@ -49,13 +43,13 @@
 
 商品问题仍然采用分页加载模式。当问题的回复超过2条时，回复卡片将自动折叠，点击查看全部回答可以跳转至问题详情界面，采用分页加载的模式展示所有回复。
 
-### 3.3 商品发布
+### 2.3 商品发布
 
 ![commodity_release](https://github.com/2horse9sun/images/raw/master/University-O2O-img/commodity_release.png)
 
 点击底部Tab Bar的加号可以进入商品发布界面，上传前会进行表单验证，防止非法的数据存入数据库。上传时会让用户选择是否接受新交易推送，无论是否同意均不影响商品上传。上传成功后会自动跳转到商品列表界面，用户可以看到自己刚发布的商品。
 
-### 3.4 发起交易与交易操作
+### 2.4 发起交易与交易操作
 
 ![transaction_detail](https://github.com/2horse9sun/images/raw/master/University-O2O-img/transaction_detail.png)
 
@@ -65,7 +59,7 @@
 
 至此，线上的活动暂告一段落，点击查看对方联系方式，通过对方的联系方式自行进行线下交易，结束后，当双方都点击确认交易完成后，交易结束。若任一方想要中止交易，直接点击取消交易即可。进行中的交易若无人点击确认完成，将在7天后状态自动变为已完成。
 
-### 3.5 用户信息管理
+### 2.5 用户信息管理
 
 ![user_info](https://github.com/2horse9sun/images/raw/master/University-O2O-img/user_info.png)
 
@@ -73,13 +67,13 @@
 
 点击头像/昵称/学校或在我的信息中，可以编辑个人信息，修改昵称、微信QQ联系方式与大学。
 
-### 3.6 交易与商品管理
+### 2.6 交易与商品管理
 
 ![transactionAndCommodityManage](https://github.com/2horse9sun/images/raw/master/University-O2O-img/transactionAndCommodityManage.png)
 
 在“我的交易”与“我发布的商品”中，可以查看交易详情，进行交易操作，或者查看发布的商品，选择删除商品。加载方式均为分页加载。
 
-### 3.7 新交易推送
+### 2.7 新交易推送
 
 ![subscribeMsg](https://github.com/2horse9sun/images/raw/master/University-O2O-img/subscribeMsg.png)
 
@@ -87,15 +81,15 @@
 
 由于微信小程序对于用户隐私的保护，个人小程序的消息订阅仅是一次性的。若想再次收到交易推送，则需要在“我的”界面中点击“接受新交易推送一次”。
 
-### 3.8 其他
+### 2.8 其他
 
 其他界面包括index页、用户注册页、小程序介绍页等等，均为辅助功能，在此不再赘述。
 
-## 4. 项目架构
+## 3. 项目架构
 
 下面时此项目的详细架构，对此项目感兴趣的小伙伴可以仔细阅读，如有不妥，敬请指正。
 
-### 4.1 总体架构
+### 3.1 总体架构
 
 ![overall-design](https://github.com/2horse9sun/images/raw/master/University-O2O-img/overall-design.png)
 
@@ -139,7 +133,7 @@ HTTP API（暂未完成）：
 
 下面将对上述架构的每一部分进行详述。
 
-### 4.2 云数据库表结构
+### 3.2 云数据库表结构
 
 ![ER-modeling](https://github.com/2horse9sun/images/raw/master/University-O2O-img/ER-modeling.png)
 
@@ -149,7 +143,7 @@ HTTP API（暂未完成）：
 
 ![cloudDB-design](https://github.com/2horse9sun/images/raw/master/University-O2O-img/cloudDB-design.png)
 
-### 4.3 小程序端架构
+### 3.3 小程序端架构
 
 ![miniprogram-design](https://github.com/2horse9sun/images/raw/master/University-O2O-img/miniprogram-design.png)
 
@@ -173,7 +167,7 @@ HTTP API（暂未完成）：
 
 CSS库：为了小程序的样式更加美观，本项目使用[Color-UI库](https://github.com/weilanwl/ColorUI)。
 
-### 4.4 云函数结构
+### 3.4 云函数结构
 
 ![cloudFunc-design](https://github.com/2horse9sun/images/raw/master/University-O2O-img/cloudFunc-design.png)
 
@@ -186,45 +180,133 @@ CSS库：为了小程序的样式更加美观，本项目使用[Color-UI库](htt
 2. `del_trigger`函数：定时触发器，每天定时删除一定时间之前的商品、问答、交易等。
 3. `transaction`函数中的发起交易、取消交易、确认交易完成，以及`commodity`函数中的删除商品，这几个操作均涉及到多个数据表的改动，为了保障ACID，都应采用数据库事务去完成数据库的操作。
 
-### 4.5 云存储结构
+### 3.5 云存储结构
 
 ![cloudStorage-design](https://github.com/2horse9sun/images/raw/master/University-O2O-img/cloudStorage-design.png)
 
 云存储中主要存放商品的缩略图和详情图的`fileIDs`、小程序背景图片及轮播图（暂未完成）。
 
-### 4.6 云调用
+### 3.6 云调用
 
 ![cloudCall-design](https://github.com/2horse9sun/images/raw/master/University-O2O-img/cloudCall-design.png)
 
 本项目的云调用主要是实现消息推送的功能，先在小程序端获取卖家的授权，然后由买家触发推送消息的云函数。
 
-### 4.7 HTTP API，后台管理及第三方服务器（暂未完成）
+### 3.7 HTTP API，后台管理及第三方服务器（暂未完成）
 
 由于参加比赛时间较晚，再加上临近开学，时间仓促，故无法完成该平台后台管理系统的搭建。待时间允许，将考虑建立后台管理系统，方便快捷地管理商品、用户、交易、轮播图的数据，通过HTTP API访问云函数，复用写好的方法，或者直接访问云数据库和云存储。
 
 关于第三方服务器的学生验证功能，暂时还无法实现。
 
-## 5. 代码链接
-
-GitHub地址：https://github.com/2horse9sun/University_O2O
-
-点个Star吧！
-
-## 6. 体验二维码
+## 4. 体验二维码
 
 由于该项目涉及到商业且是个人开发，故很难上线，只有体验版。
 
 希望日后能争取上线投入使用吧。
 
-## 7. 团队介绍
+## 5. 部署教程
 
-2horse9sun: 应该能猜到名字吧~ 对后端开发较感兴趣，看到前端就头疼。爱冒险，爱阅读，爱生活！
+### 5.1 下载代码
 
-Quark Lee: 
+在本地创建项目文件夹，进入到项目目录中，使用如下命令将代码下载到本地：
 
+```bash
+git clone https://github.com/2horse9sun/University_O2O.git
+```
 
+### 5.2 将代码导入到开发者工具
 
+打开微信开发者工具，添加小程序项目，点击“导入项目”，选择刚才的文件夹，使用自己的APP ID，导入项目。
 
+### 5.3 初始化云环境并修改参数
 
+点击开发者工具的云开发，启用云服务。新建自己的云环境，然后把所有cloudfunctions文件夹下所有云函数的index.js中：
 
+```javascript
+cloud.init({
+  env: "dreamland2-a708ef" // 替换成自己的云环境ID
+})
+```
+
+的env部分替换成自己的云环境ID。
+
+右击category, commodity, commodity_question, commodity_answer, swiper, transaction, university, user云函数，选择在终端打开，输入如下命令：
+
+```bash
+npm install --save tcb-router
+```
+
+### 5.4 云数据库初始化
+
+建立8张数据表：category, commodity, commodity_question, commodity_answer, swiper, transaction, university, user
+
+导入resources文件夹下相应json文件到指定数据库。
+
+### 5.5 上传云存储
+
+在云存储中新建bg-image文件夹，将resources文件夹下的图片上传至云存储中。
+
+复制index-bg的fileID，替换下面文件的url
+
+miniprogram/pages/index/index.wxss
+
+```CSS
+page{
+  background-image: url(https://6472-dreamland2-a708ef-1259161827.tcb.qcloud.la/bg-image/index-bg.jpg?sign=5a34df13fbf53f7faba83afa148618a4&t=1599392559);
+  background-repeat:no-repeat;
+  background-size:100% 100%;
+  -moz-background-size:100% 100%;
+}
+
+```
+
+复制home-bg的fileID，替换下面文件第二个image src
+
+miniprogram/pages/home/home.wxml
+
+```html
+<view class="UCenter-bg">
+    <image src="{{userAvatarUrl}}" class="png round" mode="widthFix" bindtap="onEnterHomeUserInfo"></image>
+    <view class="text-xl margin-top" bindtap="onEnterHomeUserInfo">{{userName}}
+    </view>
+    <view class="margin-top-sm" bindtap="onEnterHomeUserInfo">
+        <text>{{universityName}}</text>
+    </view>
+    <image src="cloud://dreamland2-a708ef.6472-dreamland2-a708ef-1259161827/bg-image/wave.gif" mode="scaleToFill" class="gif-wave"></image>
+</view>
+```
+
+复制wave的fileID，替换下面文件的url
+
+miniprogram/pages/home/home.wxss
+
+```javascript
+.UCenter-bg {
+  background-image: url(https://6472-dreamland2-a708ef-1259161827.tcb.qcloud.la/bg-image/home-bg.jpg?sign=22e94e92ece78774590d786e3bdaf35f&t=1599313333);
+  background-size: cover;
+  height: 550rpx;
+  display: flex;
+  justify-content: center;
+  padding-top: 40rpx;
+  overflow: hidden;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+  font-weight: 300;
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+}
+```
+
+### 5.6 部署云函数
+
+右击每个云函数，点击上传并部署：云端安装依赖。
+
+### 5.7 运行项目
+
+点击编译，项目应该可以正常运行。
+
+## 6. 开源许可证
+
+GPL许可证
 
