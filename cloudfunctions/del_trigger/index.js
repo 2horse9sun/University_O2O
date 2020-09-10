@@ -29,9 +29,10 @@ exports.main = async (event, context) => {
   let currentDate = new Date()
   console.log(currentDate)
   let currentDateMinusOneMonth = new Date()
+  let currentDateMinusOneWeek = new Date()
   currentDateMinusOneMonth.setMonth(currentDateMinusOneMonth.getMonth()-1)
+  currentDateMinusOneWeek.setDate(currentDateMinusOneWeek.getDate()-7)
 
-  console.log(currentDateMinusOneMonth)
 
   // 删除：距发布时间超过30天且未被删除的商品，图片
   countResult = await commodityCollection.count()
@@ -121,6 +122,28 @@ exports.main = async (event, context) => {
     .update({
       data:{
         is_deleted: true
+      }
+    })
+  }
+
+
+  // 修改：距发起时间超过7天的进行中的交易：已完成
+  countResult = await transactionCollection.count()
+  total = countResult.total
+  batchTimes = Math.ceil(total / MAX_LIMIT)
+  for (let i = 0; i < batchTimes; i++) {
+    res = await transactionCollection
+    .where({
+      is_deleted: false,
+      status: _.eq(0),
+      end_time: _.lte(currentDateMinusOneWeek)
+    })
+    .skip(i * MAX_LIMIT)
+    .limit(MAX_LIMIT)
+    .update({
+      data:{
+        status: 1,
+        end_time: db.serverDate()
       }
     })
   }
