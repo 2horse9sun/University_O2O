@@ -230,6 +230,8 @@ cloud.init({
 
 的`env`的值替换成自己的云环境ID。
 
+右击`cloudfunctions`，选择当前云环境。
+
 分别右击`category, commodity, commodity_question, commodity_answer, swiper, transaction, university, user`云函数，选择在终端打开，输入如下命令安装依赖：
 
 ```bash

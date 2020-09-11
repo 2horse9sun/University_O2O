@@ -132,7 +132,8 @@ exports.main = async (event, context) => {
       .update({
         data:{
           number: newNumber,
-          status: newStatus
+          status: newStatus,
+          update_time: db.serverDate()
         }
       })
 

@@ -16,9 +16,10 @@ const transactionCollection = db.collection('transaction')
 const MAX_LIMIT = 100
 
 // 云函数入口函数
-// 删除：距发布时间超过30天且未被删除的商品，图片
+// 删除：距上次更新时间超过30天且未被删除的商品，图片
 // 删除：距发布时间超过30天的且未被删除商品提问
 // 删除：距发布时间超过30天的且未被删除问题回答
+// 修改：距发起时间超过7天的进行中的交易：已完成
 // 删除：距结束时间超过30天的交易
 exports.main = async (event, context) => {
 
@@ -44,7 +45,7 @@ exports.main = async (event, context) => {
     res = await commodityCollection
     .where({
       is_deleted: false,
-      create_time: _.lte(currentDateMinusOneMonth)
+      update_time: _.lte(currentDateMinusOneMonth)
     })
     .field({
       thumbnail_url: true,
@@ -65,7 +66,7 @@ exports.main = async (event, context) => {
     res = await commodityCollection
     .where({
       is_deleted: false,
-      create_time: _.lte(currentDateMinusOneMonth)
+      update_time: _.lte(currentDateMinusOneMonth)
     })
     .skip(i * MAX_LIMIT)
     .limit(MAX_LIMIT)
@@ -136,7 +137,7 @@ exports.main = async (event, context) => {
     .where({
       is_deleted: false,
       status: _.eq(0),
-      end_time: _.lte(currentDateMinusOneWeek)
+      create_time: _.lte(currentDateMinusOneWeek)
     })
     .skip(i * MAX_LIMIT)
     .limit(MAX_LIMIT)
