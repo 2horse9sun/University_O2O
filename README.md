@@ -171,14 +171,14 @@ CSS库：为了小程序的样式更加美观，本项目使用[Color-UI库](htt
 
 ![cloudFunc-design](https://github.com/2horse9sun/images/raw/master/University-O2O-img/cloudFunc-design.png)
 
-本项目一共创建了10个云函数，大多与云数据库中的数据表一一对应。由于业务功能较多，所以使用tcb-router进行路由转发，增加服务的数量。每个云函数中的方法不再赘述，见其名就可知其意，都是基本的CURD操作。
+本项目一共创建了10个云函数，大多与云数据库中的数据表一一对应。由于业务功能较多，所以使用`tcb-router`进行路由转发，增加服务的数量。每个云函数中的方法不再赘述，见其名就可知其意，都是基本的CURD操作。
 
 需要说明的是：
 
 1. `subscribeMsg`函数：使用云调用，向用户推送消息（新交易提醒）。
 
 2. `del_trigger`函数：定时触发器，每天定时删除一定时间之前的商品、问答、交易等。
-3. `transaction`函数中的发起交易、取消交易、确认交易完成，以及`commodity`函数中的删除商品，这几个操作均涉及到多个数据表的改动，为了保障ACID，都应采用数据库事务去完成数据库的操作。
+3. `transaction`函数中的发起交易、取消交易、确认交易完成，以及`commodity`函数中的删除商品，这几个操作均涉及到多个数据表的改动，为了保障ACID(atomic, consistency, isolation, durable)，都应采用数据库事务去完成数据库的操作。
 
 ### 3.5 云存储结构
 
@@ -206,21 +206,21 @@ CSS库：为了小程序的样式更加美观，本项目使用[Color-UI库](htt
 
 ## 5. 部署教程
 
-### 5.1 下载代码
+### 5.1 在开发者工具中新建项目
 
-在本地创建项目文件夹，进入到项目目录中，使用如下命令将代码下载到本地：
+打开微信开发者工具，添加小程序项目，选择合适的文件夹，使用自己的APP ID，勾选云开发服务，新建项目。
+
+### 5.2 下载代码
+
+进入到项目目录中，使用如下命令将代码下载到本地：
 
 ```bash
 git clone https://github.com/2horse9sun/University_O2O.git
 ```
 
-### 5.2 将代码导入到开发者工具
-
-打开微信开发者工具，添加小程序项目，点击“导入项目”，选择刚才的文件夹，使用自己的APP ID，导入项目。
-
 ### 5.3 初始化云环境并修改参数
 
-点击开发者工具的云开发，启用云服务。新建自己的云环境，然后把app.js和所有cloudfunctions文件夹下所有云函数的index.js中的：
+点击开发者工具的云开发，启用云服务。新建自己的云环境，复制云环境ID，然后把`app.js`和所有`cloudfunctions`文件夹下所有云函数的`index.js`中的：
 
 ```javascript
 cloud.init({
@@ -228,9 +228,9 @@ cloud.init({
 })
 ```
 
-的env部分替换成自己的云环境ID。
+的`env`的值替换成自己的云环境ID。
 
-右击category, commodity, commodity_question, commodity_answer, swiper, transaction, university, user云函数，选择在终端打开，输入如下命令：
+分别右击`category, commodity, commodity_question, commodity_answer, swiper, transaction, university, user`云函数，选择在终端打开，输入如下命令安装依赖：
 
 ```bash
 npm install --save tcb-router
@@ -238,17 +238,17 @@ npm install --save tcb-router
 
 ### 5.4 云数据库初始化
 
-打开 云开发->数据库->集合名称 建立8张数据表：category, commodity, commodity_question, commodity_answer, swiper, transaction, university, user
+打开 云开发->数据库->集合名称 建立8张数据表：`category, commodity, commodity_question, commodity_answer, swiper, transaction, university, user`
 
-导入resources文件夹下相应json文件到指定数据库。
+导入`resources`文件夹下相应`json`文件到指定数据库。
 
 ### 5.5 上传云存储
 
-在 云开发控制台->存储 中新建bg-image文件夹，将resources文件夹下的图片上传至云存储中。
+在 云开发控制台->存储 中新建`bg-image`文件夹，将`resources`文件夹下的图片上传至云存储中。
 
-复制index-bg.jpg的fileID，替换下面文件的url
+复制`index-bg.jpg`的下载地址，替换下面文件的`url`中的值
 
-miniprogram/pages/index/index.wxss
+路径：`miniprogram/pages/index/index.wxss`
 
 ```CSS
 page{
@@ -260,9 +260,9 @@ page{
 
 ```
 
-复制wave.gif的fileID，替换下面文件第二个image src
+复制`wave.gif`的下载地址，替换下面文件第二个`image src`的值
 
-miniprogram/pages/home/home.wxml
+路径：`miniprogram/pages/home/home.wxml`
 
 ```html
 <view class="UCenter-bg">
@@ -276,35 +276,25 @@ miniprogram/pages/home/home.wxml
 </view>
 ```
 
-复制home-bg.jpg的fileID，替换下面文件的url
+复制`home-bg.jpg`的下载地址，替换下面文件的`url`中的值
 
-miniprogram/pages/home/home.wxss
+路径：`miniprogram/pages/home/home.wxss`
 
 ```javascript
 .UCenter-bg {
   background-image: url(https://6472-dreamland2-a708ef-1259161827.tcb.qcloud.la/bg-image/home-bg.jpg?sign=22e94e92ece78774590d786e3bdaf35f&t=1599313333);
   background-size: cover;
-  height: 550rpx;
-  display: flex;
-  justify-content: center;
-  padding-top: 40rpx;
-  overflow: hidden;
-  position: relative;
-  flex-direction: column;
-  align-items: center;
-  color: #fff;
-  font-weight: 300;
-  text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+............
 }
 ```
 
 ### 5.6 部署云函数
 
-在cloudfunctions下右击每个云函数，点击 上传并部署：云端安装依赖。
+在`cloudfunctions`下右击每个云函数，点击 上传并部署：云端安装依赖。
 
 ### 5.7 运行项目
 
-点击编译，项目应该可以正常运行。
+点击编译，运行项目。
 
 ## 6. 开源许可证
 
