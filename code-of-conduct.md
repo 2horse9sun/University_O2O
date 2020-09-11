@@ -1,4 +1,4 @@
-#Contributor Code of Conduct行为准则
+# Contributor Code of Conduct行为准则
 
 ## 项目名称：大学校园闲置物品交易平台
 
