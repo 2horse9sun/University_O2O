@@ -80,8 +80,7 @@ exports.main = async (event, context) => {
           openid: wxContext.OPENID,
           student_auth: true,
           total_transaction: 0,
-          total_sell: 0,
-          total_buy: 0,
+          total_release: 0,
           create_time: db.serverDate(),
           update_time: db.serverDate(),
           is_deleted: false
