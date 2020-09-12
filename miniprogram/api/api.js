@@ -1,19 +1,10 @@
+// 云函数调用统一接口，可考虑分成多文件？
+
 const {RespSuccess, RespError} = require('../utils/resp')
 let res = {}
-// 云函数和云调用的统一接口，类似于发送http的GET和POST请求
-// 都是异步方法，在小程序端调用时需使用async-await关键字
-const api = {
-  // 从云数据库中获取用户信息
-  getUserInfoFromDB(){
-    return wx.cloud.callFunction({
-      name: 'user',
-      data: {
-        $url: 'getUserInfoFromDB',
-      }
-    })
-  },
 
-  // 获取此用户信息和大学信息
+const api = {
+  // 获取此用户信息和大学信息，无需参数
   async getMyInfoAndMyUniversityInfo(){
       res = await wx.cloud.callFunction({
         name: 'user',
@@ -36,6 +27,7 @@ const api = {
       return new RespSuccess(myInfoAndMyUniversityInfo)
   },
 
+  // 通过用户的openid从数据库中读取用户信息
   async getUserInfoFromDbByUserId(params){
     res = await wx.cloud.callFunction({
       name: 'user',
@@ -54,16 +46,7 @@ const api = {
 
   },
   
-  // 上传用户信息
-  // params = {
-  //   uid number NOT NULL// 大学的编号
-  //   name string NOT NULL// 昵称
-  //   sex int NOT NULL// 性别：0为女生，1为男生，2为保密
-  //   date_of_birth string NOT NULL// 出生日期，格式：yyyy-MM-dd
-  //   avatar_url string NOT NULL// 用户微信头像地址，可从wx.getSetting()获取
-  //   contact_info_qq string// QQ联系方式
-  //   contact_info_wx string// WX联系方式
-  // }
+  // 上传自己的信息，参数见调用处
   async setMyInfo(params){
     res = await wx.cloud.callFunction({
       name: 'user',
@@ -81,6 +64,7 @@ const api = {
     }
   },
 
+  // 更新自己的信息，参数是所有字段的子集
   async updateMyInfo(params){
     res = await wx.cloud.callFunction({
       name: 'user',
@@ -98,19 +82,8 @@ const api = {
     }
   },
 
-  // 更新用户信息
-  // params中的键值是上传用户信息时params的子集
-  updateUserInfo(params){
-    return wx.cloud.callFunction({
-      name: 'user',
-      data: {
-        $url: 'updateUserInfo',
-        params
-      }
-    })
-  },
 
-  // 从云数据库中获取大学信息
+  // 从云数据库中获取所有大学信息
   async getUniversityInfo(){
     res = await wx.cloud.callFunction({
       name: 'university',
@@ -127,7 +100,7 @@ const api = {
     return new RespSuccess(universityInfo)
   },
 
-  // 从云数据库中获取大学信息
+  // 通过大学的uid获取大学信息
   getUniversityInfoByUid(params){
     return wx.cloud.callFunction({
       name: 'university',
@@ -140,18 +113,17 @@ const api = {
 
   // 验证学生身份
   // TODO: 如何验证学生身份？
-  studentIdAuth(){
-    return wx.cloud.callFunction({
-      name: 'user',
-      data: {
-        $url: 'studentIdAuth',
-      }
-    })
-  },
+  // studentIdAuth(){
+  //   return wx.cloud.callFunction({
+  //     name: 'user',
+  //     data: {
+  //       $url: 'studentIdAuth',
+  //     }
+  //   })
+  // },
 
   // 获取商品分类信息
   async getCommodityCategory(){
-
     res = await wx.cloud.callFunction({
       name: 'category',
       data: {
@@ -168,17 +140,9 @@ const api = {
     
   },
 
-  // 获取轮播图路径
-  getSwiperImg(){
-    return wx.cloud.callFunction({
-      name: 'swiper',
-      data: {
-        $url: 'getSwiperImg',
-      }
-    })
-  },
 
-  // 获取商品列表，使用分页查询
+  // 获取商品列表，使用分页查询，参数见调用处
+  // cid = -1 说明是全部分类
   async getCommodityListByUidAndCid(params){
     res = await wx.cloud.callFunction({
       name: 'commodity',
@@ -197,6 +161,7 @@ const api = {
 
   },
 
+  // 获取商品详情信息，参数见调用处
   async getCommodityDetail(params){
     res = await wx.cloud.callFunction({
       name: 'commodity',
@@ -221,18 +186,7 @@ const api = {
 
 
 
-  // 上传商品详细信息
-  // params = {
-  //   thumbnail_url array NOT NULL// 商品缩略图的fileID
-  //   img_url array NOT NULL // 商品详情图片的fileID
-  //   category_id string NOT NULL // 商品分类的_id
-  //   content string NOT NULL // 商品的详情介绍，应当放在text标签内才能显示换行
-  //   title string NOT NULL // 商品的标题
-  //   number number NOT NULL // 商品数量
-  //   origin_url string // 初次购买商品的链接
-  //   price_origin number // 初次购买商品的价格
-  //   price_now number NOT NULL // 现价
-  // }
+  // 上传商品详细信息，参数见调用处
   async setCommodityDetail(params){
     res = await wx.cloud.callFunction({
       name: 'commodity',
@@ -253,6 +207,7 @@ const api = {
 
   // 删除商品(soft-del)
   // 需要获取与商品相关的问题，回答，交易的主键，以及图片的fileIDs
+  // 此处可以优化吗？？？暂时想不到
   async delCommodity(params){
     const {commodity_id} = params
     const cid = commodity_id
@@ -378,7 +333,7 @@ const api = {
 
   },
 
-  // 上传图片，不直接调用
+  // 上传图片，不在api外调用
   async uploadImg(path, suffix){
     try{
       res = await wx.cloud.uploadFile({
@@ -394,12 +349,7 @@ const api = {
 
   
 
-  // 获取对商品的提问
-  // params = {
-  //   commodity_id string NOT NULL // 商品的_id
-  //   start number NOT NULL
-  //   count number NOT NULL
-  // }
+  // 获取对商品的部分提问及相应的用户信息，参数见调用处
   async getCommodityQuestionAndUserInfo(params){
     res = await wx.cloud.callFunction({
       name: 'commodity_question',
@@ -417,6 +367,7 @@ const api = {
     return new RespSuccess(commodityQuestionAndUserInfo)
   },
 
+  // 通过问题的_id获取问题及相应用户信息，参数见调用处
   async getCommodityQuestionAndUserInfoByQid(params){
     res = await wx.cloud.callFunction({
       name: 'commodity_question',
@@ -451,11 +402,7 @@ const api = {
     return new RespSuccess(commodityQuestionCount)
   },
 
-  // 上传对商品的提问
-  // params = {
-  //   commodity_id string NOT NULL // 商品的_id
-  //   content string NOT NULL // 提问内容
-  // }
+  // 上传对商品的提问，参数见调用处
   async setCommodityQuestion(params){
     res = await wx.cloud.callFunction({
       name: 'commodity_question',
@@ -472,12 +419,7 @@ const api = {
     return new RespSuccess()
   },
 
-  // 获取对问题的回答
-  // params = {
-  //   question_id string NOT NULL // 问题的_id
-  //   start number NOT NULL
-  //   count number NOT NULL
-  // }
+  // 获取对问题的部分回答，参数见调用处
   async getCommodityAnswerAndUserInfo(params){
     res = await wx.cloud.callFunction({
       name: 'commodity_answer',
@@ -494,8 +436,6 @@ const api = {
     console.log({"获取问题的回答成功":commodityAnswerAndUserInfo})
     return new RespSuccess(commodityAnswerAndUserInfo)
   },
-
-  
 
   async getCommodityAnswerCount(params){
     res = await wx.cloud.callFunction({
@@ -514,11 +454,7 @@ const api = {
     return new RespSuccess(commodityAnswerCount)
   },
 
-  // 上传对问题的回答
-  // params = {
-  //   question_id string NOT NULL // 问题的_id
-  //   content string NOT NULL // 回答内容
-  // }
+  // 上传对问题的回答，参数见调用处
   async setCommodityAnswer(params){
     res = await wx.cloud.callFunction({
       name: 'commodity_answer',
@@ -535,15 +471,7 @@ const api = {
     return new RespSuccess()
   },
 
-  // 上传交易信息
-  // const params = {
-  //   commodity_id string NOT NULL // 购买的商品_id
-  //   number number NOT NULL // 购买数量
-  //   price_origin number NOT NULL // 折扣或减价前的价格
-  //   price_now number NOT NULL // 折扣或减价后的价格
-  //   total_price number NOT NULL // 实际价格，加上手续费
-  //   transaction_no string NOT NULL // 按某种规则生成交易编号
-  // }
+  // 上传交易信息，参数见调用处
   async setTransaction(params){
     res = await wx.cloud.callFunction({
       name: 'transaction',
@@ -565,6 +493,7 @@ const api = {
     return new RespSuccess({transactionNumber})
   },
 
+  // 通过transaction_no获取交易详情，参数见调用处
   async getTransactionByTransactionNumber(params){
     res = await wx.cloud.callFunction({
       name: 'transaction',
@@ -587,11 +516,7 @@ const api = {
     return new RespSuccess(transactionDetail)
   },
 
-  // 获取关于自己的交易列表
-  // params = {
-  //   start number NOT NULL
-  //   count number NOT NULL
-  // }
+  // 获取关于自己的出售交易列表，参数见调用处
   async getMySellTransactionList(params){
     res = await wx.cloud.callFunction({
       name: 'transaction',
@@ -610,6 +535,7 @@ const api = {
     return new RespSuccess(sellTransactionList)
   },
 
+  // 获取关于自己的购买交易列表，参数见调用处
   async getMyBuyTransactionList(params){
     res = await wx.cloud.callFunction({
       name: 'transaction',
@@ -628,6 +554,7 @@ const api = {
     return new RespSuccess(buyTransactionList)
   },
 
+  // 取消交易，参数见调用处
   async cancelTransaction(params){
     res = await wx.cloud.callFunction({
       name: 'transaction',
@@ -647,6 +574,7 @@ const api = {
     return new RespSuccess()
   },
 
+  // 确认交易完成，参数见调用处
   async confirmFinishTransaction(params){
     res = await wx.cloud.callFunction({
       name: 'transaction',
@@ -666,20 +594,8 @@ const api = {
     return new RespSuccess()
   },
 
-  // 删除交易(soft-del)
-  // params = {
-  //   id string NOT NULL // 交易_id
-  // }
-  // delTransaction(params){
-  //   return wx.cloud.callFunction({
-  //     name: 'transaction',
-  //     data: {
-  //       $url: 'delTransaction',
-  //       params
-  //     }
-  //   })
-  // },
 
+  // 消息推送，参数见调用处
   async sendNewTransactionMsg(params){
     res = await wx.cloud.callFunction({
       name: 'subscribeMsg',

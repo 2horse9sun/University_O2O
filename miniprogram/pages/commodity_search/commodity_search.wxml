@@ -31,11 +31,7 @@
 	<view slot="tags">
     <view class="cu-tag bg-{{item.status==0?'green':(item.status==1?'red':'grey')}} round">{{item.status==0?'正在出售':(item.status==1?'交易中':'已下架')}}</view>
   </view>
-
 	</van-card>
-
-
-
 </view>
 
 <!-- 加载更多 -->

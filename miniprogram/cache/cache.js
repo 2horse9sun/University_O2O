@@ -1,3 +1,4 @@
+// 缓存管理
 const api = require("../api/api")
 const {RespSuccess, RespError} = require("../utils/resp")
 let res = {}
@@ -33,25 +34,25 @@ const cache = {
       return new RespSuccess()
     },
 
-      // 获取商品分类信息
-  async getCommodityCategory(){
-    let commodityCategory = wx.getStorageSync('commodityCategory')
-    if(commodityCategory){
-      console.log({"获取商品分类信息缓存":commodityCategory})
-      return new RespSuccess(commodityCategory)
-    }else{
-      res = await api.getCommodityCategory()
-      if(res.errno == -1){
-        console.log("获取商品分类信息失败！")
-        return new RespError("获取商品分类信息失败！")
+    // 获取商品分类信息
+    async getCommodityCategory(){
+      let commodityCategory = wx.getStorageSync('commodityCategory')
+      if(commodityCategory){
+        console.log({"获取商品分类信息缓存":commodityCategory})
+        return new RespSuccess(commodityCategory)
+      }else{
+        res = await api.getCommodityCategory()
+        if(res.errno == -1){
+          console.log("获取商品分类信息失败！")
+          return new RespError("获取商品分类信息失败！")
+        }
+        commodityCategory = res.data
+        console.log({"获取商品分类信息成功":commodityCategory})
+        wx.setStorageSync('commodityCategory', commodityCategory)
+        console.log({"写入商品分类信息缓存":commodityCategory})
+        return new RespSuccess(commodityCategory)
       }
-      commodityCategory = res.data
-      console.log({"获取商品分类信息成功":commodityCategory})
-      wx.setStorageSync('commodityCategory', commodityCategory)
-      console.log({"写入商品分类信息缓存":commodityCategory})
-      return new RespSuccess(commodityCategory)
-    }
-  },
+    },
 
     // 获取商品列表，使用分页查询
     async getCommodityListByUidAndCid(params){
@@ -80,8 +81,6 @@ const cache = {
       console.log({"新数据写入商品列表缓存":commodityList})
       return new RespSuccess(commodityList)
     },
-
-
 }
 
 module.exports = cache

@@ -57,9 +57,6 @@
 						<view class="text-content text-df">
 							{{item.content}}
 						</view>
-						<!-- <view class="margin-top-sm flex justify-between">
-								<view class="text-gray text-df">{{item.create_time}}</view>
-							</view> -->
 					</view>
 				</view>
 			</view>

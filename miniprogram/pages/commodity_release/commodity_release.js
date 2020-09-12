@@ -9,6 +9,7 @@ let params = {}
 let categories = []
 let cid = 0
 let uid = 0
+
 Page({
 
   /**
@@ -26,11 +27,6 @@ Page({
     commodityOriginPrice:"",
     commodityCurrentPrice:"",
     commodityRemark:""
-
-
-
-
-
   },
 
   /**
@@ -60,13 +56,6 @@ Page({
     }
   },
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
 
   onNavigateBack(){
     wx.navigateBack({
@@ -74,50 +63,43 @@ Page({
     })
   },
 
+  // 表单
   onChangeCommodityTitle(event){
     this.setData({
       commodityTitle: event.detail.value
     })
   },
-
   onChangeCommodityContent(event){
     this.setData({
       commodityContent: event.detail.value
     })
   },
-
   onChangeCommodityOriginPrice(event){
     this.setData({
       commodityOriginPrice: event.detail.value
     })
   },
-
   onChangeCommodityCurrentPrice(event){
     this.setData({
       commodityCurrentPrice: event.detail.value
     })
   },
-
   onChangeCommodityPurchaseUrl(event){
     this.setData({
       commodityPurchaseUrl: event.detail.value
     })
   },
-
   onChangeCommodityRemark(event){
     this.setData({
       commodityRemark: event.detail.value
     })
   },
-
   onChangeCommodityNumber(event){
     console.log(event.detail.value)
     this.setData({
       commodityNumber: event.detail.value
     })
   },
-
-
   onChangeCommodityCategory(event){
     const idx = event.detail.value
     cid = categories[idx].cid
@@ -126,7 +108,7 @@ Page({
     })
   },
 
-
+  // 添加缩略图
   onUpdateThumbnail(e) {
     wx.chooseImage({
       count: 1, //默认9
@@ -158,6 +140,7 @@ Page({
     })
   },
 
+  // 添加详情图
   onUpdateCommodityImg(e) {
     wx.chooseImage({
       count: 9, //默认9
@@ -248,8 +231,6 @@ Page({
         const userPrimaryKey = myInfoAndMyUniversityInfo._id
         uid = myInfoAndMyUniversityInfo.uid
         let uploadParams = {
-          // thumbnail_url: thumbnailFileID,
-          // img_url: commodityImgFileID,
           cid: cid,
           content: this.data.commodityContent,
           title: this.data.commodityTitle,
@@ -261,7 +242,6 @@ Page({
           uid: uid,
           userPrimaryKey
         }
-    
         res = this.isValid(uploadParams)
         
         if(res.errno == -1){
@@ -272,8 +252,6 @@ Page({
           return
         }
         
-        
-    
         // 上传图片到云存储，获取fileId
         if(this.data.thumbnail.length == 0 || this.data.commodityImg.length == 0){
           wx.hideLoading()
@@ -281,7 +259,6 @@ Page({
             title: '格式错误',
             message:"至少上传一张缩略图和一张详情图！",
           })
-          
           return
         }
 
@@ -328,18 +305,7 @@ Page({
             }, 1500)
           }
         })
-
-
-
-
-
-
       }
-    })
-
-
-    
-  
-    
+    })  
   }
 })

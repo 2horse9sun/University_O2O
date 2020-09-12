@@ -35,9 +35,6 @@ exports.main = async (event, context) => {
         errno: -1
       }
     }
-    
   })
-
-
   return app.serve()
 }

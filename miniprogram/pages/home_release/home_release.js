@@ -59,9 +59,7 @@ Page({
 
   },
 
-  /**
-   * 页面上拉触底事件的处理函数
-   */
+  // 加载更多
   async onReachBottom() {
     if(!this.data.hasMore){
       return
@@ -114,6 +112,7 @@ Page({
     })
   },
 
+  // 删除商品
   async onDelCommodity(event){
     const position = event.detail;
     if(position == "right"){
@@ -151,6 +150,5 @@ Page({
         }
       })
     }
-
   }
 })

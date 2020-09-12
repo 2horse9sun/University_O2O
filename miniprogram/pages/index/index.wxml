@@ -11,10 +11,6 @@
 	</view>
 </view>
 
-<!-- 登录弹出层 -->
-<!-- <van-popup closeable show="{{showLoginPopup}}" position="bottom" custom-style="height: 20%;" bind:close="onClosePopup">
-	<button class="login-button" open-type="getUserInfo" bindgetuserinfo="onAuth">获取微信授权信息</button>
-</van-popup> -->
 
 <view class="cu-modal bottom-modal {{showLoginPopup?'show':''}}">
 	<view class="cu-dialog" catchtap>

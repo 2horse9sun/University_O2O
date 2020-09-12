@@ -374,26 +374,5 @@ exports.main = async (event, context) => {
     }
   })
 
-  // 根据交易_id删除交易(soft-del)
-  // app.router('delTransaction', async (ctx, next) => {
-  //   const {id} = event.params
-  //   try{
-  //     ctx.body = await transactionCollection.where({
-  //       _id: id
-  //     }).update({
-  //       data:{
-  //         is_deleted: true
-  //       }
-  //     })
-  //     ctx.body.errno = 0
-  //   }catch(e){
-  //     ctx.body = {
-  //       errno: -1
-  //     }
-  //   }
-    
-  // })
-
-
   return app.serve()
 }

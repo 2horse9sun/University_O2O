@@ -85,8 +85,9 @@ Page({
     })
   },
 
+  // 订阅消息：当有人购买用户发布的商品时，推送消息给此用户
   onAuthReceiveMsg(){
-    // 订阅消息：当有人购买用户发布的商品时，推送消息给此用户
+    // 模板ID 需要在微信公众平台中配置
     const tmplId = 's9MweXoRKb_IWTm0edo6Ztso2BLcWSrYuTcNT1cDTME'
     wx.requestSubscribeMessage({
       tmplIds: [tmplId],
@@ -98,10 +99,8 @@ Page({
           message: '当您有新的交易时，将接收到一次推送。若收到后，想要继续接受推送，则需再次点击此按钮。',
           theme: 'round-button',
         })
-
       }
     })
-    
   },
 
 

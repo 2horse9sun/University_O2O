@@ -1,6 +1,5 @@
 // miniprogram/pages/transaction_detail/transaction_detail.js
 import Dialog from '@vant/weapp/dialog/dialog';
-
 const api = require('../../api/api')
 const cache = require('../../cache/cache')
 const fmt = require('../../utils/formatTime')
@@ -84,9 +83,8 @@ Page({
 
   },
 
+  // 三种跳转至交易详情的方式：商品交易页，我的交易页，推送进入
   onNavigateBack(){
-    console.log("页面跳转")
-    console.log(enteredFrom)
     if(enteredFrom == 0){
       const commodity_id = this.data.commodity_id
       // 清空缓存
@@ -101,10 +99,9 @@ Page({
         url: "../home/home",
       })
     }
-    
   },
 
-
+  // 展示对方联系方式
   async onShowContactInfo(){
     wx.showLoading({
       title: '查询中',
@@ -130,7 +127,6 @@ Page({
       })
 
     }
-
 
     if(isBuyer){
       params = {
@@ -174,7 +170,6 @@ Page({
     }
 
     wx.hideLoading()
-    
 
     await this.onLoad(opts)
 
@@ -223,21 +218,4 @@ Page({
       })
   },
 
-  // async onDelTransaction(){
-  //   Dialog.confirm({
-  //     title: '删除交易',
-  //     message: '确认删除此次交易吗？',
-  //   })
-  //     .then(async() => {
-  //       let params = {
-  //         id: this.data._id,
-  //       }
-  //       const resDelTransaction = await api.delTransaction(params)
-  //       console.log(resDelTransaction)
-
-  //     })
-  //     .catch(() => {
-
-  //     })
-  // }
 })

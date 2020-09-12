@@ -4,9 +4,7 @@ import Dialog from '@vant/weapp/dialog/dialog';
 const api = require("../../api/api")
 const cache = require("../../cache/cache")
 const rules = require('../../utils/rules')
-
 let params = {}
-
 let res = {}
 let uid = 0
 
@@ -37,7 +35,6 @@ Page({
       title: '加载中',
     })
     // 获取用户头像，性别等信息
-    // TODO: login util 方法
     const userInfo = wx.getStorageSync('userInfo')
     const avatarUrl = userInfo.avatarUrl
     const gender = userInfo.gender
@@ -150,10 +147,8 @@ Page({
     } 
   },
 
-
   // 提交注册信息
   async onRegister(){
-    
     params = {
       "contact_info_wx": this.data.contactInfoWX,
       "avatar_url": this.dasta.avatarUrl,

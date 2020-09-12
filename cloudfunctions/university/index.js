@@ -53,19 +53,5 @@ exports.main = async (event, context) => {
       }
     }
   })
-
-  // 根据uid获取大学信息
-  // app.router('getUniversityInfoByUid', async (ctx, next) => {
-  //   console.log(event)
-  //   const {uid} = event.params
-    
-  //   ctx.body = await universityCollection.where({
-  //     uid,
-  //     is_deleted: false
-  //   }).get().then((res) => {
-  //     return res.data
-  //   })
-  // })
-
   return app.serve()
 }

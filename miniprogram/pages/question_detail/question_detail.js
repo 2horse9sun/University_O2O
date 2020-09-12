@@ -87,7 +87,6 @@ Page({
       isLoading: true
     })
 
-
     // 获取问题的回答，并加入到commodityQuestion中
     params = {
       question_id,
@@ -143,6 +142,7 @@ Page({
     })
   },
 
+  // 提交回复
   async onSubmitAnswer(){
     params = {
       question_id,

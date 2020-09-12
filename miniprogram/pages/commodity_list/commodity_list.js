@@ -4,16 +4,13 @@ const MAX_COMMODITY_LIMIT_SIZE = 10
 let res = {}
 let params = {}
 let uid = 0
-// 当前分类
 let cid = -1
-// 偏移量
 let start = 0
 let categories = [{
   name: "全部",
   cid: -1
 }]
 
-// miniprogram/pages/commodity_list/commodity_list.js
 Page({
 
   /**
@@ -21,7 +18,6 @@ Page({
    */
   data: {
     pageIndex: 0,
-
     searchInput:"",
     universityName: "",
     commodityList: [],
@@ -29,12 +25,8 @@ Page({
     start: 0,
     isLoading: false,
     hasMore: true,
-
     TabCur: 0,
     scrollLeft:0,
-
-
-
     cardCur: 0,
     swiperList: [{
       id: 0,
@@ -121,12 +113,14 @@ Page({
     wx.hideLoading()
   },
 
+  // 表单
   onSearchInput(event){
     this.setData({
       searchInput: event.detail.value
     })
   },
 
+  // 搜索
   onSearchCommodity(event){
     const keyword = event.detail.value
     wx.navigateTo({
@@ -275,15 +269,6 @@ Page({
       url: `../commodity_detail/commodity_detail?id=${id}`,
     })
   },
-
-
-  // 获取轮播图路径
-  async onGetSwiperImg(){
-    const resGetSwiperImg = await api.getSwiperImg()
-    const swiperList = resGetSwiperImg.result
-    console.log(swiperList)
-  },
-
 
 
   //底部Tab相关

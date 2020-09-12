@@ -135,7 +135,8 @@ exports.main = async (event, context) => {
   // 通过_id删除商品(soft-del)，涉及多张表，使用事务
   // !!!!! 在事务中仅能进行单记录操作，也就是不能使用 where、aggregate 接口 ???  !!!
   // 不能用事务怎么保证ACID?
-  // 先查到所有相关主键。。。再传过来一个个删除。。。
+  // 先查到所有相关主键。。。再传过来一个个删除。。。???
+  // 有无更好的解决方法？？？
   app.router('delCommodity', async (ctx, next) => {
     const {cid, tids, qids, aids, fileIDs} = event.params
     // 创建事务

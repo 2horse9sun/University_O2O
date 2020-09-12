@@ -21,11 +21,8 @@
 		<view class="content" bindtap="onEnterHomeTransaction" data-transactionnumber="{{item.transaction_no}}" hover-class="none">
 			<text class="text-black text-border">{{item.title}}</text>
 			<text class="cu-tag margin-left bg-{{item.status==0?'green':(item.status==1?'grey':'red')}} radius">{{item.status==0?'进行中':(item.status==1?'已完成':'已取消')}}</text>
-			
 		</view>
 	</view>
-
-
 </view>
 
 

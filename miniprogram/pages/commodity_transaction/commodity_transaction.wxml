@@ -42,12 +42,8 @@
 			<text class="text-black text-border text-xl">￥0</text>
 		</view>
 	</view>
-
 </view>
 
-
-	<van-submit-bar class="submit-transaction-bar" price="{{totalPrice*100}}" button-text="确认交易" bind:submit="onSubmitTransaction" />
-
-
+<van-submit-bar class="submit-transaction-bar" price="{{totalPrice*100}}" button-text="确认交易" bind:submit="onSubmitTransaction" />
 
 <van-dialog id="van-dialog" />

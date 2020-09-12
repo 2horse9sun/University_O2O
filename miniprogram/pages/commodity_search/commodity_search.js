@@ -75,9 +75,7 @@ Page({
     })
   },
 
-  /**
-   * 页面上拉触底事件的处理函数
-   */
+  // 加载更多
   async onReachBottom() {
     if(!this.data.hasMore){
       return

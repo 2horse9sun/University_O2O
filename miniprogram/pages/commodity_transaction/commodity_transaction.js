@@ -31,10 +31,7 @@ Page({
     })
 
     // 获取商品详情信息
-
     commodity_id = options.commodityid
-
-    // commodity_id = "74b3e15b5f4fa9a600145ea93bfe7d8d"
     params = {
       id: commodity_id
     }
@@ -79,7 +76,6 @@ Page({
     const userInfoFromDbByUserId = res.data
     sellerPrimaryKey = userInfoFromDbByUserId._id
 
-
     this.setData({
       title,
       number,
@@ -93,61 +89,12 @@ Page({
 
   },
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
-  },
-
   onNavigateBack(){
-
     wx.navigateBack({
       delta: 1,
     })
   },
+
 
   onChangePurchaseNumber(event){
     this.setData({
@@ -159,8 +106,8 @@ Page({
     console.log(this.data.purchaseNumber)
   },
 
-  
 
+  // 确认交易
   async onSubmitTransaction(){
 
     wx.showLoading({
@@ -205,20 +152,16 @@ Page({
       console.log(params)
       res = api.sendNewTransactionMsg(params)
 
-
       wx.hideLoading()
       
       Dialog.alert({
         message: '已经成功发起交易，可以到我的交易中查看',
         theme: 'round-button',
       }).then(() => {
-        
         wx.navigateTo({
           url: `../transaction_detail/transaction_detail?enteredFrom=0&transactionNumber=${transactionNumber}`,
         })
       })
-
     }
-    
   }
 })

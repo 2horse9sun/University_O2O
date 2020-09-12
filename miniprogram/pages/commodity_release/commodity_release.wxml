@@ -42,9 +42,6 @@
 		<view class="cu-form-group margin-top">
 			<textarea value="{{commodityContent}}" maxlength="-1" bindinput="onChangeCommodityContent" placeholder="请输入商品详情介绍，必填"></textarea>
 		</view>
-
-
-
 	</view>
 
 	<view class="cu-item shadow margin-top">

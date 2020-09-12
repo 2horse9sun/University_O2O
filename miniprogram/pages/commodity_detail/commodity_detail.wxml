@@ -31,8 +31,6 @@
 						</view>
 					</view>
 				</view>
-
-
 				<view class="cu-bar bg-white">
 					<view class="action">
 						<text>
@@ -40,7 +38,6 @@
 						</text>
 					</view>
 				</view>
-
 				<view class="cu-bar bg-white">
 					<view class="action">
 						<text>
@@ -48,14 +45,10 @@
 						</text>
 					</view>
 				</view>
-
 			</view>
 		</view>
 	</view>
 </view>
-
-
-
 
 
 <view class="cu-bar bg-white margin-top padding-left">
@@ -73,15 +66,12 @@
 	</view>
 </view>
 
-
 <view class="cu-bar bg-white margin-top">
 	<view class="action">
 		<text class="cuIcon-title text-orange"></text>
 		<text class="text-border text-xl">问答区({{commodityQuestionCount}})</text>
 	</view>
 </view>
-
-
 
 <view wx:for="{{commodityQuestion}}" wx:key="_id">
 	<view class="cu-card dynamic">
@@ -145,7 +135,6 @@
 					暂无回答
 				</view>
 			</view>
-
 		</view>
 	</view>
 </view>
@@ -153,10 +142,7 @@
 
 <view class="cu-load {{isLoading?'loading':'over'}}"></view>
 
-
 <view class="hline"></view>
-
-
 
 <view class="cu-modal {{showAskPanel?'show':''}}">
 	<view class="cu-dialog">
@@ -209,15 +195,9 @@
 	</view>
 </view>
 
-
-
-
 	<van-goods-action>
 		<van-goods-action-icon icon="chat-o" text="提问" bind:click="onAskQuestion" />
 		<van-goods-action-button text="发起交易" bind:click="onEnterTransaction" />
 	</van-goods-action>
-
-
-
 
 <van-dialog id="van-dialog" />

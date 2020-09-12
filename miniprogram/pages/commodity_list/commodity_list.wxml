@@ -3,26 +3,19 @@
 	<view slot="content">首页</view>
 </cu-custom>
 
-<!-- <button bind:tap="onGetSwiperImg">获取轮播图路径</button> -->
 
-<!-- <van-search value="{{searchInput}}" shape="round" label="{{universityName}}" placeholder="请输入商品名称" bind:change="onSearchInput" bind:search="onSearchCommodity"> -->
-<!-- </van-search> -->
-
-  <view class="cu-bar bg-white search">
+<view class="cu-bar bg-white search">
 	<view class="action">
-      <text class="cuIcon-locationfill text-orange"></text>
-      <text>{{universityName}}</text>
-    </view>
-    <view class="search-form round">
-      <text class="cuIcon-search"></text>
-      <input type="text" placeholder="搜索商品" confirm-type="search" bindinput="onSearchInput" bindconfirm="onSearchCommodity"></input>
-    </view>
-    
-  </view>
+		<text class="cuIcon-locationfill text-orange"></text>
+		<text>{{universityName}}</text>
+	</view>
+	<view class="search-form round">
+		<text class="cuIcon-search"></text>
+		<input type="text" placeholder="搜索商品" confirm-type="search" bindinput="onSearchInput" bindconfirm="onSearchCommodity"></input>
+	</view>
+</view>
 
 
-
-<!-- 轮播图 -->
 <swiper class="card-swiper square-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500" bindchange="cardSwiper" indicator-color="#8799a3" indicator-active-color="#0081ff">
 	<swiper-item wx:for="{{swiperList}}" wx:key="_id" class="{{cardCur==index?'cur':''}}">
 		<view class="swiper-item shadow">
@@ -31,7 +24,7 @@
 	</swiper-item>
 </swiper>
 
-<!-- 标签页 -->
+
 <scroll-view scroll-x class="bg-gradual-orange nav text-center">
 	<view class="cu-item {{index==TabCur?'text-white cur':''}}" wx:for="{{categoryName}}" wx:key="_id" bindtap="tabSelect" data-id="{{index}}">
 		<text>{{item}}</text>
@@ -39,32 +32,15 @@
 </scroll-view>
 
 
-
-
 <view wx:for="{{commodityList}}" wx:key="_id">
-	<van-card custom-class="commodity-card shadow-warp"
-	thumb-mode="aspectFill"
-	desc-class="text-cut"
-	title-class="text-cut"
-	num="{{item.number}}" 
-	price="{{item.price_now}}" 
-	origin-price="{{item.price_origin}}" 
-	desc="{{item.content}}" 
-	title="{{item.title}}" 
-	thumb="{{item.thumbnail_url[0]}}" 
-	data-id="{{item._id}}" 
-	bind:tap="onEnterCommodityDetail">
-	<view slot="tags">
-    <view class="cu-tag bg-{{item.status==0?'green':(item.status==1?'red':'grey')}} round">{{item.status==0?'正在出售':(item.status==1?'交易中':'已售罄')}}</view>
-  </view>
+	<van-card custom-class="commodity-card shadow-warp" thumb-mode="aspectFill" desc-class="text-cut" title-class="text-cut" num="{{item.number}}" price="{{item.price_now}}" origin-price="{{item.price_origin}}" desc="{{item.content}}" title="{{item.title}}" thumb="{{item.thumbnail_url[0]}}" data-id="{{item._id}}" bind:tap="onEnterCommodityDetail">
+		<view slot="tags">
+			<view class="cu-tag bg-{{item.status==0?'green':(item.status==1?'red':'grey')}} round">{{item.status==0?'正在出售':(item.status==1?'交易中':'已售罄')}}</view>
+		</view>
 	</van-card>
 </view>
 
 
-
-
-
-<!-- 加载更多 -->
 <view class="cu-load margin-top {{isLoading?'loading':'over'}}"></view>
 
 <view class="hline"></view>

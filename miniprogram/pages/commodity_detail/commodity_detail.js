@@ -54,7 +54,6 @@ Page({
     
     // 获取商品详情信息
     commodity_id = options.id
-    // commodity_id = "b5416b755f4d1ec400d462d6699ae2f3"
     params = {
       id: commodity_id
     }
@@ -98,8 +97,6 @@ Page({
     })
     console.log(commodityDetail)
 
-    
-
     // 获取商品提问的数量
     params = {
       commodity_id,
@@ -116,7 +113,6 @@ Page({
 
     wx.hideLoading()
 
-
     // 获取商品提问
     start = 0
     params = {
@@ -132,8 +128,6 @@ Page({
     let commodityQuestion = res.data
     start = commodityQuestion.length
     console.log(commodityQuestion)
-
-
 
     // 获取每个问题的回答，并加入到commodityQuestion中
     for(let i = 0;i < commodityQuestion.length;i++){
@@ -251,7 +245,6 @@ Page({
   },
 
   onNavigateBack(){
-
     wx.navigateBack({
       delta: 1
     })
@@ -266,43 +259,42 @@ Page({
     })
   },
 
+  // 面板显示
   onAskQuestion(){
     this.setData({
       showAskPanel: true
     })
   },
-
   onCancelAskPanel(){
     this.setData({
       showAskPanel: false
     })
   },
-
   onAnswerQuestion(event){
     question_id = event.currentTarget.dataset.questionid
     this.setData({
       showAnswerPanel: true,
     })
   },
-
   onCancelAnswerPanel(){
     this.setData({
       showAnswerPanel: false
     })
   },
 
+  // 表单
   onChangeQuestionContent(event){
     this.setData({
       questionContent: event.detail.value
     })
   },
-
   onChangeAnswerContent(event){
     this.setData({
       answerContent: event.detail.value
     })
   },
 
+  // 发布问题
   async onSubmitQuestion(){
     wx.showLoading({
       title: '提交中',
@@ -323,9 +315,9 @@ Page({
 
     wx.hideLoading()
     await this.onPullDownRefresh()
-
   },
 
+  // 发布回复
   async onSubmitAnswer(){
     wx.showLoading({
       title: '提交中',
@@ -348,6 +340,7 @@ Page({
     await this.onPullDownRefresh()
   },
 
+  // 问题详情
   onEnterQuestionDetail(event){
     question_id = event.currentTarget.dataset.questionid
     wx.navigateTo({
@@ -356,6 +349,7 @@ Page({
   },
 
 
+  // 发起交易
   async onEnterTransaction(){
     if(this.data.myUserId == this.data.user_id){
       Dialog.alert({
@@ -377,13 +371,5 @@ Page({
       url: `../commodity_transaction/commodity_transaction?commodityid=${commodity_id}`,
     })
   },
-
-
-  onCancelFailPanel(){
-    this.setData({
-      showFailPanel: false
-    })
-  }
-
    
 })
