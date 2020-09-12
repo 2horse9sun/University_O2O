@@ -151,7 +151,7 @@ Page({
   async onRegister(){
     params = {
       "contact_info_wx": this.data.contactInfoWX,
-      "avatar_url": this.dasta.avatarUrl,
+      "avatar_url": this.data.avatarUrl,
       "contact_info_qq": this.data.contactInfoQQ,
       "name": this.data.name,
       uid,
