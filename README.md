@@ -212,12 +212,12 @@ CSS库：为了小程序的样式更加美观，本项目使用[Color-UI库](htt
 
 ### 5.2 下载代码
 
-进入到项目目录中，使用如下命令将代码下载到本地：
+进入到项目目录中删除所有文件，使用如下命令将代码下载到本地：
 
 ```bash
 git clone https://github.com/2horse9sun/University_O2O.git
 ```
-
+把University_O2O文件夹中文件剪切到小程序项目根目录，删除University_O2O空文件夹
 ### 5.3 初始化云环境并修改参数
 
 点击开发者工具的云开发，启用云服务。新建自己的云环境，复制云环境ID，然后把`app.js`和所有`cloudfunctions`文件夹下所有云函数的`index.js`中的：
