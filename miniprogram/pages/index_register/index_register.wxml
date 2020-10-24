@@ -1,5 +1,5 @@
 <cu-custom bgColor="bg-gradual-orange" isBack="{{true}}">
-	<view slot="backText" catch:tap="onNavigateBack">返回登录</view>
+	<view slot="backText" catch:tap="onNavigateBack">返回</view>
 	<view slot="content">新用户注册</view>
 </cu-custom>
 

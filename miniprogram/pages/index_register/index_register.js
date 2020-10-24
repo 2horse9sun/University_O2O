@@ -36,6 +36,7 @@ Page({
     })
     // 获取用户头像，性别等信息
     const userInfo = wx.getStorageSync('userInfo')
+    console.log(userInfo)
     const avatarUrl = userInfo.avatarUrl
     const gender = userInfo.gender
 

@@ -3,13 +3,23 @@
 	<view slot="content">大学校园O2O</view>
 </cu-custom>
 
-
 <view class="padding">
 	<view class="box text-center">
 		<button class="cu-btn bg-gradual-orange shadow round lg" style="bottom:-800rpx;width:300rpx" bind:tap="onEnter">
 			进入</button>
 	</view>
 </view>
+
+<view class="padding">
+	<view class="box text-center">
+		<button class="cu-btn bg-gradual-orange shadow round lg" open-type="getUserInfo" style="bottom:-800rpx;width:300rpx" bindgetuserinfo="onAuth">
+			注册</button>
+	</view>
+</view>
+
+
+
+
 
 
 <view class="cu-modal bottom-modal {{showLoginPopup?'show':''}}">

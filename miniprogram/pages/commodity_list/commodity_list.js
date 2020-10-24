@@ -17,6 +17,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    showLoginPopup: false,
     pageIndex: 0,
     searchInput:"",
     universityName: "",
@@ -48,24 +49,35 @@ Page({
    */
   async onLoad(options) {
 
-    await wx.cloud.callFunction({
-      name: 'del_trigger',
-      success: function(res) {
-      },
-    })
+    // await wx.cloud.callFunction({
+    //   name: 'del_trigger',
+    //   success: function(res) {
+    //   },
+    // })
 
     wx.showLoading({
       title: '加载中',
     })
 
+
+
     // 获取我的信息和大学信息
     res = await cache.getMyInfoAndMyUniversityInfo()
+    let myInfoAndMyUniversityInfo = {}
     if(res.errno == -1){
       console.log("获取我的信息和大学信息失败！")
-      return
+      wx.hideLoading()
+      myInfoAndMyUniversityInfo = {
+        "uid": parseInt(options.uid),
+        "universityInfo": {
+          "name": ""
+        }
+      }
+    }else{
+      myInfoAndMyUniversityInfo = res.data
     }
-    const myInfoAndMyUniversityInfo = res.data
     uid = myInfoAndMyUniversityInfo.uid
+    
 
     // 获取分类信息
     categories = [{
@@ -121,7 +133,14 @@ Page({
   },
 
   // 搜索
-  onSearchCommodity(event){
+  async onSearchCommodity(event){
+    res = await cache.getMyInfoAndMyUniversityInfo()
+    if(res.errno == -1){
+      this.setData({
+        showLoginPopup: true
+      })
+      return
+    }
     const keyword = event.detail.value
     wx.navigateTo({
       url: `../commodity_search/commodity_search?keyword=${keyword}`,
@@ -263,7 +282,14 @@ Page({
   },
 
 
-  onEnterCommodityDetail(event){
+  async onEnterCommodityDetail(event){
+    res = await cache.getMyInfoAndMyUniversityInfo()
+    if(res.errno == -1){
+      this.setData({
+        showLoginPopup: true
+      })
+      return
+    }
     const id = event.currentTarget.dataset.id
     wx.navigateTo({
       url: `../commodity_detail/commodity_detail?id=${id}`,
@@ -272,16 +298,50 @@ Page({
 
 
   //底部Tab相关
-  onCommodityReleaseTab(){
+  async onCommodityReleaseTab(){
+    res = await cache.getMyInfoAndMyUniversityInfo()
+    if(res.errno == -1){
+      this.setData({
+        showLoginPopup: true
+      })
+      return
+    }
     wx.navigateTo({
       url: '../commodity_release/commodity_release',
     })
   },
 
-  onHomeTab(){
+  async onHomeTab(){
+    res = await cache.getMyInfoAndMyUniversityInfo()
+    if(res.errno == -1){
+      this.setData({
+        showLoginPopup: true
+      })
+      return
+    }
     wx.navigateTo({
       url: '../home/home',
     })
   },
+
+  onCancelLoginPopup(){
+    this.setData({
+      showLoginPopup: false
+    })
+  },
+
+    // 用户注册
+    async onAuth(event){
+      const userInfo = event.detail.userInfo
+      console.log(userInfo)
+      wx.setStorageSync('userInfo', userInfo)
+      this.setData({
+        showLoginPopup: false
+      })
+      wx.navigateTo({
+        url: '../index_register/index_register',
+      })
+      
+    },
 
 })

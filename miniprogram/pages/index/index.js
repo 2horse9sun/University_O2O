@@ -1,5 +1,6 @@
 // miniprogram/pages/index/index.js
 import Toast from '@vant/weapp/toast/toast';
+const app = getApp()
 const api = require("../../api/api")
 const cache = require("../../cache/cache")
 let params = {}
@@ -28,12 +29,31 @@ Page({
     }
   },
 
-  // 弹出授权窗口
-  onEnter(){
-    this.setData({
-      showLoginPopup: true
-    })
+  async onEnter(){
+    // const userInfo = event.detail.userInfo
+    // wx.setStorageSync('userInfo', userInfo)
+    const myInfoAndMyUniversityInfo = wx.getStorageSync('myInfoAndMyUniversityInfo')
+    // 用户已注册
+    if(myInfoAndMyUniversityInfo){
+      // 更新头像
+      const avatarUrl = myInfoAndMyUniversityInfo.avatar_url
+      params = {
+        avatar_url: avatarUrl
+      }
+      res = await api.updateMyInfo(params)
+ 
+      wx.redirectTo({
+        url: `../commodity_list/commodity_list?uid=${myInfoAndMyUniversityInfo.uid}`,
+      })
+    }else{
+      // 用户未注册，进入默认的大学商品界面
+      wx.navigateTo({
+        url: '../commodity_list/commodity_list?uid=10698',
+      })
+    }
   },
+
+
 
 
   // 用户授权

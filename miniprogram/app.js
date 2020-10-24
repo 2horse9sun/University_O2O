@@ -31,5 +31,6 @@ App({
 
     // 清空缓存
     wx.clearStorageSync()
-  }
+  },
+  
 })
