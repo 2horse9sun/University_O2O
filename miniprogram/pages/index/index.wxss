@@ -1,7 +1,41 @@
 /* miniprogram/pages/index/index.wxss */
 page{
-  background-image: url(https://6472-dreamland2-a708ef-1259161827.tcb.qcloud.la/bg-image/index-bg.jpg?sign=5a34df13fbf53f7faba83afa148618a4&t=1599392559);
+  background-image: url(https://6472-dreamland2-a708ef-1259161827.tcb.qcloud.la/bg-image/index-bg.PNG?sign=63ba1ec84f43d4d6049a01307e8a4f5a&t=1603625990);
   background-repeat:no-repeat;
   background-size:100% 100%;
   -moz-background-size:100% 100%;
+}
+
+.hd {
+  position: absolute;
+  top: 400rpx;
+  left: 50%;
+  width: 1000rpx;
+  margin-left: -500rpx;
+  height: 200rpx;
+  transition: all .35s ease;
+}
+
+.logo {
+  display: block;
+  overflow: hidden;
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: 200rpx;
+  width: 160rpx;
+  height: 160rpx;
+  margin-left: -80rpx;
+  border-radius: 160rpx;
+  animation: sway 10s ease-in-out infinite;
+  opacity: .95;
+}
+@keyframes sway{
+  0% {transform: translate3d(0,20rpx,0) rotate(-15deg); }
+  17% {transform: translate3d(0,0rpx,0) rotate(25deg); }
+  34% {transform: translate3d(0,-20rpx,0) rotate(-20deg); }
+  50% {transform: translate3d(0,-10rpx,0) rotate(15deg); }
+  67% {transform: translate3d(0,10rpx,0) rotate(-25deg); }
+  84% {transform: translate3d(0,15rpx,0) rotate(15deg); }
+  100% {transform: translate3d(0,20rpx,0) rotate(-15deg); }
 }

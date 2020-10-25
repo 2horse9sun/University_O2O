@@ -170,8 +170,18 @@ Page({
     })
 
     res = await api.setMyInfo(params)
-    if(res.errno == -1){
+    if(res.errno != 0){
+      wx.hideLoading()
       console.log("上传用户信息失败！")
+      wx.showToast({
+        title: res.message,
+        icon: 'none',
+        duration: 2000,
+        success(res){
+          setTimeout(() => {
+          }, 1500)
+        }
+      })
       return
     }
     console.log("注册成功！")

@@ -1,4 +1,4 @@
-<cu-custom bgColor="bg-gradual-orange" isBack="{{true}}">
+<cu-custom bgColor="bg-yellow" isBack="{{true}}">
 	<view slot="backText" bind:tap="onNavigateBack">返回首页</view>
 	<view slot="content">搜索结果</view>
 </cu-custom>
@@ -12,6 +12,9 @@
   </view>
 
 
+<view wx:if="{{commodityList.length==0}}">
+<van-empty description="暂无匹配结果" />
+</view>
 
 <view wx:for="{{commodityList}}" wx:key="_id">
 	<van-card custom-class="commodity-card shadow-warp"
@@ -35,7 +38,8 @@
 </view>
 
 <!-- 加载更多 -->
+<view wx:if="{{commodityList.length!=0}}">
 <view class="cu-load margin-top {{isLoading?'loading':'over'}}"></view>
-
+</view>
 
 

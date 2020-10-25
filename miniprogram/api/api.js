@@ -57,7 +57,10 @@ const api = {
     })
     if(res.result.errno == -1){
       console.log("上传用户信息失败！")
-      return new RespError("上传用户信息失败！")
+      return new RespError("上传失败！")
+    }else if(res.result.errno == 87014){
+      console.log("上传信息包含敏感内容！")
+      return new RespError("包含敏感内容！")
     }else{
       console.log("上传用户信息成功！")
       return new RespSuccess()
@@ -74,10 +77,13 @@ const api = {
       }
     })
     if(res.result.errno == -1){
-      console.log("更新数据库失败！")
-      return new RespError("更新数据库失败！")
+      console.log("上传用户信息失败！")
+      return new RespError("上传失败！")
+    }else if(res.result.errno == 87014){
+      console.log("上传信息包含敏感内容！")
+      return new RespError("包含敏感内容！")
     }else{
-      console.log({"更新数据库成功！": params})
+      console.log("上传用户信息成功！")
       return new RespSuccess()
     }
   },
@@ -198,6 +204,9 @@ const api = {
     if(res.result.errno == -1){
       console.log("上传商品信息失败！")
       return new RespError("上传商品信息失败！")
+    }else if(res.result.errno == 87014){
+      console.log("上传信息包含敏感内容！")
+      return new RespError("包含敏感内容！")
     }else{
       console.log("上传商品信息成功！")
       return new RespSuccess()
@@ -308,6 +317,26 @@ const api = {
     let fileIDs = []
     let path = thumbnail[0]
     let suffix = /\.\w+$/.exec(path)[0]
+
+    // 安全校验
+    let res = wx.getFileSystemManager().readFileSync(path)
+    let buffer = res.data
+    res = await wx.cloud.callFunction({
+      name: 'commodity',
+      data: {
+        $url: 'imgSecCheck',
+        params: {
+          suffix,
+          buffer
+        }
+      }
+    })
+    if(res.result.errno == 87014){
+      console.log("上传信息包含敏感内容！")
+      return new RespError("包含敏感内容！")
+    }
+
+
     res = await this.uploadImg(path, suffix)
     if(res.errno == -1){
       console.log("上传缩略图到云存储失败！")
@@ -317,6 +346,25 @@ const api = {
       for (let i = 0, len = commodityImg.length; i < len; i++) {
         path = commodityImg[i]
         suffix = /\.\w+$/.exec(path)[0]
+
+        // 安全校验
+        res = wx.getFileSystemManager().readFileSync(path)
+        buffer = res.data
+        res = await wx.cloud.callFunction({
+          name: 'commodity',
+          data: {
+            $url: 'imgSecCheck',
+            params: {
+              suffix,
+              buffer
+            }
+          }
+        })
+        if(res.result.errno == 87014){
+          console.log("上传信息包含敏感内容！")
+          return new RespError("包含敏感内容！")
+        }
+
         res = await this.uploadImg(path, suffix)
         if(res.errno == -1){
           console.log("上传详情图到云存储失败！")
@@ -414,9 +462,14 @@ const api = {
     if(res.result.errno == -1){
       console.log("上传商品问题失败！")
       return new RespError("上传商品问题失败！")
+    }else if(res.result.errno == 87014){
+      console.log("上传信息包含敏感内容！")
+      return new RespError("包含敏感内容！")
+    }else{
+      console.log("上传商品问题成功！")
+      return new RespSuccess()
     }
-    console.log("上传商品问题成功！")
-    return new RespSuccess()
+    
   },
 
   // 获取对问题的部分回答，参数见调用处
@@ -466,9 +519,14 @@ const api = {
     if(res.result.errno == -1){
       console.log("上传问题回答失败！")
       return new RespError("上问题回答失败！")
+    }else if(res.result.errno == 87014){
+      console.log("上传信息包含敏感内容！")
+      return new RespError("包含敏感内容！")
+    }else{
+      console.log("上传问题回答成功！")
+      return new RespSuccess()
     }
-    console.log("上传问题回答成功！")
-    return new RespSuccess()
+    
   },
 
   // 上传交易信息，参数见调用处

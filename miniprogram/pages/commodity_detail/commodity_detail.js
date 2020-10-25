@@ -304,8 +304,18 @@ Page({
       content: this.data.questionContent
     }
     res = await api.setCommodityQuestion(params)
-    if(res.errno == -1){
-      console.log("上传商品问题失败！")
+    if(res.errno != 0){
+      wx.hideLoading()
+      console.log("上传信息失败！")
+      wx.showToast({
+        title: res.message,
+        icon: 'none',
+        duration: 2000,
+        success(res){
+          setTimeout(() => {
+          }, 1500)
+        }
+      })
       return
     }
     this.setData({
@@ -328,8 +338,18 @@ Page({
       content: this.data.answerContent
     }
     res = await api.setCommodityAnswer(params)
-    if(res.errno == -1){
-      console.log("上传问题回答失败！")
+    if(res.errno != 0){
+      wx.hideLoading()
+      console.log("上传信息失败！")
+      wx.showToast({
+        title: res.message,
+        icon: 'none',
+        duration: 2000,
+        success(res){
+          setTimeout(() => {
+          }, 1500)
+        }
+      })
       return
     }
     this.setData({

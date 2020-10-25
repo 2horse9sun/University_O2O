@@ -55,6 +55,9 @@ exports.main = async (event, context) => {
   // 通过提问_id上传问题回答
   app.router('setCommodityAnswer', async (ctx, next) => {
     try{
+      res = await cloud.openapi.security.msgSecCheck({
+        content: JSON.stringify(event.params)
+      })
       ctx.body = await commodityAnswerCollection.add({
         data:{
           ...event.params,
@@ -69,6 +72,11 @@ exports.main = async (event, context) => {
       ctx.body = {
         errno: -1
       }
+      if (e.errCode.toString() === '87014'){
+        ctx.body = {
+          errno: 87014
+        }
+     }
     }
   })
 

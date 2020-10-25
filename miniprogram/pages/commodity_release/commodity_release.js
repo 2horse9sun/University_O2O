@@ -271,10 +271,21 @@ Page({
           commodityImg: this.data.commodityImg,
         }
         res = await api.uploadImgAndGetFileID(params)
-        if(res.errno == -1){
-          console.log("上传图片到云存储失败！")
+        if(res.errno != 0){
+          wx.hideLoading()
+          console.log("上传信息失败！")
+          wx.showToast({
+            title: res.message,
+            icon: 'none',
+            duration: 2000,
+            success(res){
+              setTimeout(() => {
+              }, 1500)
+            }
+          })
           return
         }
+        
         const fileIDs = res.data
     
         // 上传数据到云数据库
@@ -284,9 +295,18 @@ Page({
         uploadParams["img_url"] = commodityImgFileID
         
         res = await api.setCommodityDetail(uploadParams)
-        if(res.errno == -1){
+        if(res.errno != 0){
           wx.hideLoading()
-          console.log("上传商品信息失败!")
+          console.log("上传信息失败！")
+          wx.showToast({
+            title: res.message,
+            icon: 'none',
+            duration: 2000,
+            success(res){
+              setTimeout(() => {
+              }, 1500)
+            }
+          })
           return
         }
         // 清空缓存

@@ -1,18 +1,21 @@
-<cu-custom bgColor="bg-gradual-orange" isBack="{{false}}">
-	<!-- <view slot="backText">返回</view> -->
-	<view slot="content">大学校园O2O</view>
-</cu-custom>
+<!-- <cu-custom bgColor="bg-gradual-orange" isBack="{{false}}">
+	<view slot="content">大学校园闲置物品交易平台</view>
+</cu-custom> -->
+
+<view bindtap="cancellogin" class="hd" style="transform:rotateZ({{angle}}deg);">
+	<open-data class='logo' type="userAvatarUrl"></open-data>
+</view>
 
 <view class="padding">
 	<view class="box text-center">
-		<button class="cu-btn bg-gradual-orange shadow round lg" style="bottom:-800rpx;width:300rpx" bind:tap="onEnter">
+		<button class="cu-btn bg-gradual-black bg-black shadow round lg" style="bottom:-800rpx;width:300rpx" bind:tap="onEnter">
 			进入</button>
 	</view>
 </view>
 
 <view class="padding">
 	<view class="box text-center">
-		<button class="cu-btn bg-gradual-orange shadow round lg" open-type="getUserInfo" style="bottom:-800rpx;width:300rpx" bindgetuserinfo="onAuth">
+		<button class="cu-btn bg-gradual-black bg-black shadow round lg" open-type="getUserInfo" style="bottom:-800rpx;width:300rpx" bindgetuserinfo="onAuth">
 			注册</button>
 	</view>
 </view>

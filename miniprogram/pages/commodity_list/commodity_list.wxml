@@ -1,4 +1,4 @@
-<cu-custom bgColor="bg-gradual-orange" isBack="{{false}}">
+<cu-custom bgColor="bg-yellow" isBack="{{false}}">
 	<!-- <view slot="backText" bind:tap="onNavigateBack">返回登录</view> -->
 	<view slot="content">首页</view>
 </cu-custom>
@@ -16,20 +16,35 @@
 </view>
 
 
-<swiper class="card-swiper square-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500" bindchange="cardSwiper" indicator-color="#8799a3" indicator-active-color="#0081ff">
+<!-- <swiper class="card-swiper square-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500" bindchange="cardSwiper" indicator-color="#8799a3" indicator-active-color="#0081ff">
 	<swiper-item wx:for="{{swiperList}}" wx:key="_id" class="{{cardCur==index?'cur':''}}">
 		<view class="swiper-item shadow">
 			<image src="{{item.url}}" mode="aspectFill"></image>
 		</view>
 	</swiper-item>
-</swiper>
+</swiper> -->
+
+  <view class="cu-list grid col-4 margin-sm radius">
+    <view class="cu-item" wx:for="{{categoryInfo}}" wx:key="key" wx:if="{{index<8}}">
+      <view class="cuIcon-{{item.icon}} text-{{item.color}}" bindtap="tabSelect" data-id="{{index}}">
+        <view class="cu-tag badge" wx:if="{{currCategory==item.name}}">
+          <block>当前</block>
+        </view>
+      </view>
+      <text bindtap="tabSelect" data-id="{{index}}">{{item.name}}</text>
+    </view>
+  </view>
 
 
-<scroll-view scroll-x class="bg-gradual-orange nav text-center">
-	<view class="cu-item {{index==TabCur?'text-white cur':''}}" wx:for="{{categoryName}}" wx:key="_id" bindtap="tabSelect" data-id="{{index}}">
-		<text>{{item}}</text>
+<!-- <scroll-view scroll-x class="bg-gradual-orange nav text-center">
+	<view class="cu-item {{index==TabCur?'text-white cur':''}}" wx:for="{{categoryInfo}}" wx:key="_id" bindtap="tabSelect" data-id="{{index}}">
+		<text>{{item.name}}</text>
 	</view>
-</scroll-view>
+</scroll-view> -->
+
+<view wx:if="{{commodityList.length==0}}">
+<van-empty description="暂时没有商品哦，快去发布吧" />
+</view>
 
 
 <view wx:for="{{commodityList}}" wx:key="_id">
@@ -40,9 +55,9 @@
 	</van-card>
 </view>
 
-
+<view wx:if="{{commodityList.length!=0}}">
 <view class="cu-load margin-top {{isLoading?'loading':'over'}}"></view>
-
+</view>
 <view class="hline"></view>
 
 
@@ -65,7 +80,7 @@
 	</view>
 
 	<view class="action text-gray add-action" bind:tap="onCommodityReleaseTab">
-		<button class="cu-btn cuIcon-add bg-green shadow"></button>
+		<button class="cu-btn cuIcon-add bg-yellow shadow"></button>
 		发布
 	</view>
 

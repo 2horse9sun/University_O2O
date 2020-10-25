@@ -1,10 +1,10 @@
 <scroll-view scroll-y class="scrollPage">
 	<view class="UCenter-bg">
 		<image src="{{userAvatarUrl}}" class="png round" mode="widthFix" bindtap="onEnterHomeUserInfo"></image>
-		<view class="text-xl margin-top" bindtap="onEnterHomeUserInfo">{{userName}}
+		<view class="text-xl margin-top text-black" bindtap="onEnterHomeUserInfo">{{userName}}
 		</view>
 		<view class="margin-top-sm" bindtap="onEnterHomeUserInfo">
-			<text>{{universityName}}</text>
+			<text class="text-black">{{universityName}}</text>
 		</view>
 		<image src="cloud://dreamland2-a708ef.6472-dreamland2-a708ef-1259161827/bg-image/wave.gif" mode="scaleToFill" class="gif-wave"></image>
 	</view>
@@ -77,7 +77,7 @@
 	</view>
 
 	<view class="action text-gray add-action" bind:tap="onCommodityReleaseTab">
-		<button class="cu-btn cuIcon-add bg-green shadow"></button>
+		<button class="cu-btn cuIcon-add bg-yellow shadow"></button>
 		发布
 	</view>
 

@@ -97,6 +97,11 @@ exports.main = async (event, context) => {
     // 创建事务
     const transaction = await db.startTransaction()
     try{
+
+      res = await cloud.openapi.security.msgSecCheck({
+        content: JSON.stringify(event.params)
+      })
+
       await transaction
       .collection("commodity")
       .add({
@@ -128,8 +133,42 @@ exports.main = async (event, context) => {
       ctx.body = {
         errno: -1
       }
+      if (e.errCode.toString() === '87014'){
+        ctx.body = {
+          errno: 87014
+        }
+     }
     }
   })
+
+    // 图片安全校验
+    app.router('imgSecCheck', async (ctx, next) => {
+      params = event.params
+      buffer = params.buffer
+      suffix = params.suffix.substring(1).toLowerCase()
+      try{
+        res = await cloud.openapi.security.imgSecCheck({
+            media: {
+              contentType: 'image/' + suffix,
+              value: buffer
+            }
+        })
+        
+        ctx.body = {
+          errno: 0
+        }
+      }catch(e){
+        ctx.body = {
+          errno: -1
+        }
+        if (e.errCode.toString() === '87014'){
+          ctx.body = {
+            errno: 87014
+          }
+       }
+      }
+      
+    })
 
 
   // 通过_id删除商品(soft-del)，涉及多张表，使用事务

@@ -112,7 +112,7 @@ Page({
     })
   },
 
-  // 保持用户信息
+  // 保存用户信息
   async onSaveUserInfo(){
     params = {
       contact_info_wx: this.data.contact_info_wx,
@@ -131,8 +131,18 @@ Page({
       title: '上传中',
     })
     res = await api.updateMyInfo(params)
-    if(res.errno == -1){
-      console.log("更新用户信息失败！")
+    if(res.errno != 0){
+      wx.hideLoading()
+      console.log("上传用户信息失败！")
+      wx.showToast({
+        title: res.message,
+        icon: 'none',
+        duration: 2000,
+        success(res){
+          setTimeout(() => {
+          }, 1500)
+        }
+      })
       return
     }
     console.log("修改成功！")

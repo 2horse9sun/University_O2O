@@ -10,7 +10,8 @@
     "van-card": "@vant/weapp/card/index",
     "van-swipe-cell": "@vant/weapp/swipe-cell/index",
     "van-cell": "@vant/weapp/cell/index",
-    "van-dialog": "@vant/weapp/dialog/index"
+    "van-dialog": "@vant/weapp/dialog/index",
+    "van-empty": "@vant/weapp/empty/index"
     
   }
 }

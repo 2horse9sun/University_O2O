@@ -1,4 +1,4 @@
-<cu-custom bgColor="bg-gradual-orange" isBack="{{false}}">
+<cu-custom bgColor="bg-yellow" isBack="{{false}}">
 	<!-- <view slot="backText" bind:tap="onNavigateBack">返回登录</view> -->
 	<view slot="content">学生身份认证</view>
 </cu-custom>

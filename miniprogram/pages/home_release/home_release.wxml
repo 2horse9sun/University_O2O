@@ -1,9 +1,11 @@
-<cu-custom bgColor="bg-gradual-orange" isBack="{{true}}">
+<cu-custom bgColor="bg-yellow" isBack="{{true}}">
 	<view slot="backText">返回</view>
 	<view slot="content">我发布的商品</view>
 </cu-custom>
 
-
+<view wx:if="{{commodityList.length==0}}">
+<van-empty description="暂无发布的商品" />
+</view>
 
 <view wx:for="{{commodityList}}" wx:key="_id">
 
@@ -22,6 +24,7 @@
 
 
 <!-- 加载更多 -->
+<view wx:if="{{commodityList.length!=0}}">
 <view class="cu-load margin-top {{isLoading?'loading':'over'}}"></view>
-
+</view>
 <van-dialog id="van-dialog" />

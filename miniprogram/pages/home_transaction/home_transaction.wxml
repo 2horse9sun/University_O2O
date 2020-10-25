@@ -1,4 +1,4 @@
-<cu-custom bgColor="bg-gradual-orange" isBack="{{true}}">
+<cu-custom bgColor="bg-yellow" isBack="{{true}}">
 	<view slot="backText" catch:tap="onNavigateBack">返回</view>
 	<view slot="content">我的交易</view>
 </cu-custom>
@@ -15,6 +15,9 @@
 	</view>
 </scroll-view>
 
+<view wx:if="{{transactionList.length==0}}">
+<van-empty description="暂无交易记录" />
+</view>
 
 <view class="cu-list menu shadow-lg margin-top">
 	<view class="cu-item arrow" wx:for="{{transactionList}}">
@@ -27,4 +30,6 @@
 
 
 <!-- 加载更多 -->
+<view wx:if="{{transactionList.length!=0}}">
 <view class="cu-load margin-top {{isLoading?'loading':'over'}}"></view>
+</view>

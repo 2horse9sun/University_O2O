@@ -74,6 +74,12 @@ exports.main = async (event, context) => {
   // 添加自己的信息
   app.router('setMyInfo', async (ctx, next) => {
     try{
+
+      res = await cloud.openapi.security.msgSecCheck({
+        content: JSON.stringify(event.params)
+      })
+
+
       ctx.body = await userCollection.add({
         data: {
           ...event.params,
@@ -91,6 +97,11 @@ exports.main = async (event, context) => {
       ctx.body = {
         errno: -1
       }
+      if (e.errCode.toString() === '87014'){
+        ctx.body = {
+          errno: 87014
+        }
+     }
     }
     
   })
@@ -98,6 +109,9 @@ exports.main = async (event, context) => {
   // 更新自己的信息
   app.router('updateMyInfo', async (ctx, next) => {
     try{
+      res = await cloud.openapi.security.msgSecCheck({
+        content: JSON.stringify(event.params)
+      })
       ctx.body = await userCollection.where({
         openid: wxContext.OPENID
       }).update({
@@ -111,7 +125,13 @@ exports.main = async (event, context) => {
       ctx.body = {
         errno: -1,
       }
+      if (e.errCode.toString() === '87014'){
+        ctx.body = {
+          errno: 87014
+        }
+     }
     }
+    
     
   })
 
