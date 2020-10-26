@@ -1,6 +1,7 @@
+const cache = require("./cache/cache")
 //app.js
 App({
-  onLaunch: function () {
+  async onLaunch() {
     
     if (!wx.cloud) {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
@@ -31,6 +32,14 @@ App({
 
     // 清空缓存
     wx.clearStorageSync()
+
+    // 查询用户是否已经注册
+    const res = await cache.getMyInfoAndMyUniversityInfo()
+    if(res.errno == -1){
+      this.globalData['registered'] = false
+    }else{
+      this.globalData['registered'] = true
+    }
   },
   
 })

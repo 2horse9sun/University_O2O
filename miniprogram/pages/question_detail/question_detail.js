@@ -1,4 +1,5 @@
 // miniprogram/pages/question_detail/question_detail.js
+const app = getApp()
 const api = require('../../api/api')
 const fmt = require('../../utils/formatTime')
 const MAX_ANSWER_LIMIT_SIZE = 10
@@ -125,9 +126,16 @@ Page({
   },
 
   onAnswerQuestion(event){
-    this.setData({
-      showAnswerPanel: true,
-    })
+    const registered = app.globalData.registered
+    if(registered){
+      this.setData({
+        showAnswerPanel: true,
+      })
+    }else{
+      this.setData({
+        showLoginPopup: true
+      })
+    }
   },
 
   onCancelAnswerPanel(){
@@ -159,5 +167,25 @@ Page({
     })
     await this.onLoad(opts)
   },
+
+  onCancelLoginPopup(){
+    this.setData({
+      showLoginPopup: false
+    })
+  },
+
+    // 用户注册
+    async onAuth(event){
+      const userInfo = event.detail.userInfo
+      console.log(userInfo)
+      wx.setStorageSync('userInfo', userInfo)
+      this.setData({
+        showLoginPopup: false
+      })
+      wx.redirectTo({
+        url: '../index_register/index_register',
+      })
+      
+    },
 
 })

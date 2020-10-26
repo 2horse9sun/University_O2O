@@ -5,7 +5,7 @@
 
 
 <view class="cu-bar bg-white search">
-	<view class="action">
+	<view class="action" bindtap="onShowLoginPopup">
 		<text class="cuIcon-locationfill text-orange"></text>
 		<text>{{universityName}}</text>
 	</view>

@@ -81,7 +81,17 @@
 	</view>
 </view>
 
-
+<view class="cu-modal bottom-modal {{showLoginPopup?'show':''}}">
+	<view class="cu-dialog" catchtap>
+		<view class="cu-bar bg-white">
+			<view class="action text-blue"></view>
+			<view class="action text-green" catch:tap="onCancelLoginPopup">取消</view>
+		</view>
+		<view class="padding">
+			<button class="cu-btn block bg-green margin-tb-sm lg" open-type="getUserInfo" bindgetuserinfo="onAuth">注册后可进行更多操作</button>
+		</view>
+	</view>
+</view>
 
 
 <view class="cu-load {{isLoading?'loading':'over'}}"></view>

@@ -1,5 +1,6 @@
 // miniprogram/pages/commodity_release/commodity_release.js
 import Dialog from '@vant/weapp/dialog/dialog';
+const app = getApp()
 const api = require('../../api/api')
 const cache = require("../../cache/cache")
 const rules = require('../../utils/rules')
@@ -307,6 +308,12 @@ Page({
               }, 1500)
             }
           })
+
+          // 若数据上传失败，需要删除已经上传的图片
+          res = await api.delImg({fileIDs})
+          if(res.errno!=0){
+            console.log(res.message)
+          }
           return
         }
         // 清空缓存

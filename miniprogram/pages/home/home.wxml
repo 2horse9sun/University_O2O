@@ -21,32 +21,32 @@
 		</view>
 	</view>
 	<view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg radius">
-		<view class="cu-item arrow">
-			<view class="content" bindtap="onAuthReceiveMsg" hover-class="none">
+		<view class="cu-item arrow" bindtap="onAuthReceiveMsg">
+			<view class="content" hover-class="none">
 				<text class="cuIcon-forwardfill text-green"></text>
 				<text class="text-grey">接受新交易推送一次</text>
 			</view>
 		</view>
-		<view class="cu-item arrow">
-			<view class="content" bindtap="onEnterHomeUserInfo" hover-class="none">
+		<view class="cu-item arrow" bindtap="onEnterHomeUserInfo">
+			<view class="content" hover-class="none">
 				<text class="cuIcon-peoplefill text-orange"></text>
 				<text class="text-grey">我的信息</text>
 			</view>
 		</view>
-		<view class="cu-item arrow">
-			<view class="content" bindtap="onEnterHomeTransaction" hover-class="none">
+		<view class="cu-item arrow" bindtap="onEnterHomeTransaction">
+			<view class="content" hover-class="none">
 				<text class="cuIcon-rechargefill text-red"></text>
 				<text class="text-grey">我的交易</text>
 			</view>
 		</view>
-		<view class="cu-item arrow">
-			<view class="content" bindtap="onEnterHomeRelease" hover-class="none">
+		<view class="cu-item arrow" bindtap="onEnterHomeRelease">
+			<view class="content" hover-class="none">
 				<text class="cuIcon-formfill text-blue"></text>
 				<text class="text-grey">我发布的商品</text>
 			</view>
 		</view>
-		<view class="cu-item arrow">
-			<view class="content" bindtap="copyLink" data-link="https://github.com/2horse9sun/University_O2O">
+		<view class="cu-item arrow" bindtap="copyLink">
+			<view class="content" data-link="https://github.com/2horse9sun/University_O2O">
 				<text class="cuIcon-github text-grey"></text>
 				<text class="text-grey">复制此小程序的GitHub地址</text>
 			</view>
@@ -57,8 +57,8 @@
 				<text class="text-grey">意见反馈</text>
 			</button>
 		</view>
-		<view class="cu-item arrow">
-			<view class="content" bindtap="onEnterHomeAbout" hover-class="none">
+		<view class="cu-item arrow" bindtap="onEnterHomeAbout">
+			<view class="content" hover-class="none">
 				<text class="cuIcon-infofill text-orange"></text>
 				<text class="text-grey">关于此小程序</text>
 			</view>
@@ -86,6 +86,18 @@
 			<!-- <view class="cu-tag badge"></view> -->
 		</view>
 		我的
+	</view>
+</view>
+
+<view class="cu-modal bottom-modal {{showLoginPopup?'show':''}}">
+	<view class="cu-dialog" catchtap>
+		<view class="cu-bar bg-white">
+			<view class="action text-blue"></view>
+			<view class="action text-green" catch:tap="onCancelLoginPopup">取消</view>
+		</view>
+		<view class="padding">
+			<button class="cu-btn block bg-green margin-tb-sm lg" open-type="getUserInfo" bindgetuserinfo="onAuth">注册后可进行更多操作</button>
+		</view>
 	</view>
 </view>
 

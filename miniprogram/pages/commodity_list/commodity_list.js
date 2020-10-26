@@ -1,3 +1,4 @@
+const app = getApp()
 const api = require("../../api/api")
 const cache = require("../../cache/cache")
 const MAX_COMMODITY_LIMIT_SIZE = 10
@@ -50,37 +51,28 @@ Page({
    */
   async onLoad(options) {
 
-    // await wx.cloud.callFunction({
-    //   name: 'del_trigger',
-    //   success: function(res) {
-    //   },
-    // })
-
     wx.showLoading({
       title: '加载中',
     })
 
-
-
     // 获取我的信息和大学信息
-    res = await cache.getMyInfoAndMyUniversityInfo()
+    const registered = app.globalData.registered
     let myInfoAndMyUniversityInfo = {}
-    if(res.errno == -1){
-      console.log("获取我的信息和大学信息失败！")
-      wx.hideLoading()
+    if(registered){
+      res = await cache.getMyInfoAndMyUniversityInfo()
+      myInfoAndMyUniversityInfo = res.data
+    }else{
       myInfoAndMyUniversityInfo = {
         "uid": parseInt(options.uid),
         "universityInfo": {
           "name": ""
         }
       }
-    }else{
-      myInfoAndMyUniversityInfo = res.data
     }
+    
     uid = myInfoAndMyUniversityInfo.uid
     cid = -1
     
-
     // 获取分类信息
     categories = [{
       name: "全部",
@@ -179,13 +171,6 @@ Page({
 
   // 搜索
   async onSearchCommodity(event){
-    res = await cache.getMyInfoAndMyUniversityInfo()
-    if(res.errno == -1){
-      this.setData({
-        showLoginPopup: true
-      })
-      return
-    }
     const keyword = event.detail.value
     wx.navigateTo({
       url: `../commodity_search/commodity_search?keyword=${keyword}`,
@@ -330,13 +315,6 @@ Page({
 
 
   async onEnterCommodityDetail(event){
-    res = await cache.getMyInfoAndMyUniversityInfo()
-    if(res.errno == -1){
-      this.setData({
-        showLoginPopup: true
-      })
-      return
-    }
     const id = event.currentTarget.dataset.id
     wx.navigateTo({
       url: `../commodity_detail/commodity_detail?id=${id}`,
@@ -346,29 +324,32 @@ Page({
 
   //底部Tab相关
   async onCommodityReleaseTab(){
-    res = await cache.getMyInfoAndMyUniversityInfo()
-    if(res.errno == -1){
+    const registered = app.globalData.registered
+    if(registered){
+      wx.navigateTo({
+        url: '../commodity_release/commodity_release',
+      })
+    }else{
       this.setData({
         showLoginPopup: true
       })
-      return
     }
-    wx.navigateTo({
-      url: '../commodity_release/commodity_release',
-    })
+    
   },
 
   async onHomeTab(){
-    res = await cache.getMyInfoAndMyUniversityInfo()
-    if(res.errno == -1){
-      this.setData({
-        showLoginPopup: true
-      })
-      return
-    }
     wx.redirectTo({
       url: '../home/home',
     })
+  },
+
+  onShowLoginPopup(){
+    const registered = app.globalData.registered
+    if(!registered){
+      this.setData({
+        showLoginPopup: true
+      })
+    }
   },
 
   onCancelLoginPopup(){
@@ -385,7 +366,7 @@ Page({
       this.setData({
         showLoginPopup: false
       })
-      wx.navigateTo({
+      wx.redirectTo({
         url: '../index_register/index_register',
       })
       

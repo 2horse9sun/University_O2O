@@ -29,14 +29,17 @@ Page({
     }
   },
 
-  async onEnter(){
-    // const userInfo = event.detail.userInfo
-    // wx.setStorageSync('userInfo', userInfo)
-    const myInfoAndMyUniversityInfo = wx.getStorageSync('myInfoAndMyUniversityInfo')
+  async onEnter(event){
+    const registered = app.globalData.registered
+    const userInfo = event.detail.userInfo
+    console.log(userInfo)
+    wx.setStorageSync('userInfo', userInfo)
+    
     // 用户已注册
-    if(myInfoAndMyUniversityInfo){
+    if(registered){
       // 更新头像
-      const avatarUrl = myInfoAndMyUniversityInfo.avatar_url
+      const myInfoAndMyUniversityInfo = wx.getStorageSync('myInfoAndMyUniversityInfo')
+      const avatarUrl = userInfo.avatarUrl
       params = {
         avatar_url: avatarUrl
       }
@@ -55,17 +58,17 @@ Page({
 
 
 
-
-  // 用户授权
-  async onAuth(event){
+  async onRegister(event){
+    const registered = app.globalData.registered
     const userInfo = event.detail.userInfo
     console.log(userInfo)
     wx.setStorageSync('userInfo', userInfo)
-    const myInfoAndMyUniversityInfo = wx.getStorageSync('myInfoAndMyUniversityInfo')
+
     // 用户已注册
-    if(myInfoAndMyUniversityInfo){
+    if(registered){
       // 更新头像
-      const avatarUrl = myInfoAndMyUniversityInfo.avatar_url
+      const myInfoAndMyUniversityInfo = wx.getStorageSync('myInfoAndMyUniversityInfo')
+      const avatarUrl = userInfo.avatarUrl
       params = {
         avatar_url: avatarUrl
       }
@@ -76,7 +79,7 @@ Page({
       })
     }else{
       // 用户未注册
-      wx.navigateTo({
+      wx.redirectTo({
         url: '../index_register/index_register',
       })
     }

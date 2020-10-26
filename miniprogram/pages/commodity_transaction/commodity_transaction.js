@@ -1,5 +1,6 @@
 // miniprogram/pages/transaction/transaction.js
 import Dialog from '@vant/weapp/dialog/dialog';
+const app = getApp()
 const api = require('../../api/api')
 const cache = require('../../cache/cache')
 let res = {}

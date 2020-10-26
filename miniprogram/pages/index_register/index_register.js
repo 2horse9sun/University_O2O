@@ -1,6 +1,7 @@
 // miniprogram/pages/index_register/index_register.js
 import Toast from '@vant/weapp/toast/toast';
 import Dialog from '@vant/weapp/dialog/dialog';
+const app = getApp()
 const api = require("../../api/api")
 const cache = require("../../cache/cache")
 const rules = require('../../utils/rules')
@@ -185,15 +186,28 @@ Page({
       return
     }
     console.log("注册成功！")
-    // 获取并缓存数据库中用户的信息
+    // 缓存数据库中用户的信息
     res = await cache.getMyInfoAndMyUniversityInfo()
     if(res.errno == -1){
       console.log("读取我的信息和我的大学信息失败！")
+      wx.showToast({
+        title: '内部错误',
+        icon: 'none',
+        duration: 2000,
+        success(res){
+          setTimeout(() => {
+            wx.redirectTo({
+              url: `../index/index`,
+            })
+          }, 1500)
+        }
+      })
       return
     }
     console.log({"我的信息和我的大学信息:":res.data})
     const myInfoAndMyUniversityInfo = res.data
     wx.hideLoading()
+    app.globalData.registered = true
     wx.showToast({
       title: '注册成功！',
       icon: 'success',

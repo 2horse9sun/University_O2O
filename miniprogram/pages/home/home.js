@@ -1,4 +1,5 @@
 // miniprogram/pages/home/home.js
+const app = getApp()
 const api = require('../../api/api')
 const cache = require('../../cache/cache')
 import Dialog from '@vant/weapp/dialog/dialog';
@@ -20,17 +21,29 @@ Page({
     wx.showLoading({
       title: '加载中',
     })
+
     // 获取我的信息和大学信息
-    res = await api.getMyInfoAndMyUniversityInfo()
-    if(res.errno == -1){
-      console.log("获取我的信息和大学信息失败！")
-      return
+    const registered = app.globalData.registered
+    let myInfoAndMyUniversityInfo = {}
+    if(registered){
+      res = await cache.getMyInfoAndMyUniversityInfo()
+      myInfoAndMyUniversityInfo = res.data
+      res = cache.setMyInfoAndMyUniversityInfo({myInfoAndMyUniversityInfo})
+      if(res.errno == -1){
+        console.log("更新我的信息和大学信息缓存失败！")
+      }
+    }else{
+      myInfoAndMyUniversityInfo = {
+        "avatar_url": "https://6472-dreamland2-a708ef-1259161827.tcb.qcloud.la/bg-image/default-avatar.PNG?sign=a081b590e23599cb28b39dcc12cd5f79&t=1603671410",
+        "name": "未注册",
+        "universityInfo":{
+          "name": "注册后可选择大学"
+        },
+        "total_transaction": 0,
+        "total_release": 0
+      }
     }
-    const myInfoAndMyUniversityInfo = res.data
-    res = cache.setMyInfoAndMyUniversityInfo({myInfoAndMyUniversityInfo})
-    if(res.errno == -1){
-      console.log("更新我的信息和大学信息缓存失败！")
-    }
+
     const userAvatarUrl = myInfoAndMyUniversityInfo.avatar_url
     const userName = myInfoAndMyUniversityInfo.name
     const universityName = myInfoAndMyUniversityInfo.universityInfo.name
@@ -49,22 +62,46 @@ Page({
   },
 
   onEnterHomeUserInfo(){
-    wx.navigateTo({
-      url: '../home_user_info/home_user_info',
-    })
+    const registered = app.globalData.registered
+    if(registered){
+      wx.navigateTo({
+        url: '../home_user_info/home_user_info',
+      })
+    }else{
+      this.setData({
+        showLoginPopup: true
+      })
+    }
+    
   },
 
   onEnterHomeTransaction(){
-    wx.navigateTo({
-      url: '../home_transaction/home_transaction',
-    })
+    const registered = app.globalData.registered
+    if(registered){
+      wx.navigateTo({
+        url: '../home_transaction/home_transaction',
+      })
+    }else{
+      this.setData({
+        showLoginPopup: true
+      })
+    }
+    
   },
 
 
   onEnterHomeRelease(){
-    wx.navigateTo({
-      url: '../home_release/home_release',
-    })
+    const registered = app.globalData.registered
+    if(registered){
+      wx.navigateTo({
+        url: '../home_release/home_release',
+      })
+    }else{
+      this.setData({
+        showLoginPopup: true
+      })
+    }
+    
   },
 
   onEnterHomeAbout(){
@@ -87,6 +124,14 @@ Page({
 
   // 订阅消息：当有人购买用户发布的商品时，推送消息给此用户
   onAuthReceiveMsg(){
+    const registered = app.globalData.registered
+    if(!registered){
+      this.setData({
+        showLoginPopup: true
+      })
+      return
+    }
+
     // 模板ID 需要在微信公众平台中配置
     const tmplId = 's9MweXoRKb_IWTm0edo6Ztso2BLcWSrYuTcNT1cDTME'
     wx.requestSubscribeMessage({
@@ -105,9 +150,16 @@ Page({
 
 
   onCommodityReleaseTab(){
-    wx.navigateTo({
-      url: '../commodity_release/commodity_release',
-    })
+    const registered = app.globalData.registered
+    if(registered){
+      wx.navigateTo({
+        url: '../commodity_release/commodity_release',
+      })
+    }else{
+      this.setData({
+        showLoginPopup: true
+      })
+    }
   },
 
   onCommodityListTab(){
@@ -115,4 +167,25 @@ Page({
       url: '../commodity_list/commodity_list',
     })
   },
+
+
+  onCancelLoginPopup(){
+    this.setData({
+      showLoginPopup: false
+    })
+  },
+
+    // 用户注册
+    async onAuth(event){
+      const userInfo = event.detail.userInfo
+      console.log(userInfo)
+      wx.setStorageSync('userInfo', userInfo)
+      this.setData({
+        showLoginPopup: false
+      })
+      wx.redirectTo({
+        url: '../index_register/index_register',
+      })
+      
+    },
 })

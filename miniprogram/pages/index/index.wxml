@@ -8,14 +8,14 @@
 
 <view class="padding">
 	<view class="box text-center">
-		<button class="cu-btn bg-gradual-black bg-black shadow round lg" style="bottom:-800rpx;width:300rpx" bind:tap="onEnter">
+		<button class="cu-btn bg-gradual-black bg-black shadow round lg" open-type="getUserInfo" style="bottom:-800rpx;width:300rpx" bindgetuserinfo="onEnter">
 			进入</button>
 	</view>
 </view>
 
 <view class="padding">
 	<view class="box text-center">
-		<button class="cu-btn bg-gradual-black bg-black shadow round lg" open-type="getUserInfo" style="bottom:-800rpx;width:300rpx" bindgetuserinfo="onAuth">
+		<button class="cu-btn bg-gradual-black bg-black shadow round lg" open-type="getUserInfo" style="bottom:-800rpx;width:300rpx" bindgetuserinfo="onRegister">
 			注册</button>
 	</view>
 </view>

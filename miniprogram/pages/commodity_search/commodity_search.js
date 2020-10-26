@@ -1,4 +1,5 @@
 // miniprogram/pages/commodity_search/commodity_search.js
+const app = getApp()
 const api = require("../../api/api")
 const cache = require("../../cache/cache")
 const MAX_COMMODITY_LIMIT_SIZE = 10

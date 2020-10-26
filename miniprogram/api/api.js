@@ -381,7 +381,7 @@ const api = {
 
   },
 
-  // 上传图片，不在api外调用
+  // 上传图片
   async uploadImg(path, suffix){
     try{
       res = await wx.cloud.uploadFile({
@@ -392,7 +392,18 @@ const api = {
     }catch(e){
       return new RespError("上传图片到云存储失败！")
     }
-    
+  },
+
+  // 删除图片
+  async delImg(params){
+    try{
+      res = await wx.cloud.deleteFile({
+        fileList: params.fileIDs,
+      })
+      return new RespSuccess(res)
+    }catch(e){
+      return new RespError("删除图片失败！")
+    }
   },
 
   
