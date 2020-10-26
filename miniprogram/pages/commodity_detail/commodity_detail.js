@@ -14,6 +14,7 @@ let commodityDetail = {}
 let commodity_id = ""
 let question_id = ""
 let start = 0
+let enteredFrom = 1
 Page({
 
   /**
@@ -64,6 +65,7 @@ Page({
     
     // 获取商品详情信息
     commodity_id = options.id
+    enteredFrom = options.enteredFrom
     params = {
       id: commodity_id
     }
@@ -387,10 +389,30 @@ Page({
 
   },
 
+
+  onShareAppMessage(event) {
+    if (event.from === 'button') {
+      // 来自页面内转发按钮
+      console.log(event.target)
+    }
+    return {
+      title: this.data.title,
+      path: `/pages/commodity_detail/commodity_detail?id=${commodity_id}&enteredFrom=2`,
+      imgUrl: this.data.swiperImgUrl[0]
+    }
+  },
+
   onNavigateBack(){
-    wx.navigateBack({
-      delta: 1
-    })
+    if(enteredFrom==1){
+      wx.navigateBack({
+        delta: 1
+      })
+    }else{
+      wx.redirectTo({
+        url: '../commodity_list/commodity_list',
+      })
+    }
+    
   },
 
   //图片预览

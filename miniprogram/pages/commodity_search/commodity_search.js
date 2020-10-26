@@ -117,7 +117,7 @@ Page({
   onEnterCommodityDetail(event){
     const id = event.currentTarget.dataset.id
     wx.navigateTo({
-      url: `../commodity_detail/commodity_detail?id=${id}`,
+      url: `../commodity_detail/commodity_detail?id=${id}&enteredFrom=1`,
     })
   },
 
