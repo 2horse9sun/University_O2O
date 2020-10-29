@@ -4,7 +4,7 @@
 </cu-custom>
 
 <view wx:if="{{commodityList.length==0}}">
-<van-empty description="暂无发布的商品" />
+<van-empty description="最近30天内暂无发布的商品" />
 </view>
 
 <view wx:for="{{commodityList}}" wx:key="_id">

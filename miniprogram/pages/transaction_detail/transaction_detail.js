@@ -173,6 +173,9 @@ Page({
 
     await this.onLoad(opts)
 
+    // 清空商品列表缓存
+    cache.clearCommodityList()
+
     Dialog.alert({
       message: "确认成功！",
       theme: 'round-button',
@@ -210,6 +213,9 @@ Page({
         
         await this.onLoad(opts)
 
+        // 清空商品列表缓存
+        cache.clearCommodityList()
+        
         Dialog.alert({
           message: "取消成功！",
           theme: 'round-button',

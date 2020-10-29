@@ -10,7 +10,8 @@ const TcbRouter = require('tcb-router')
 const db = cloud.database()
 
 const userCollection = db.collection('user')
-
+const commodityCollection = db.collection('commodity')
+const transactionCollection = db.collection('transaction')
 
 
 // 云函数入口函数
@@ -106,9 +107,45 @@ exports.main = async (event, context) => {
     
   })
 
-  // 更新自己的信息
+  // 更新自己的信息，如果变更大学则检查是否仍有未删除的商品/进行中的交易
   app.router('updateMyInfo', async (ctx, next) => {
     try{
+
+      // 检查是否仍有未删除的商品/进行中的交易
+      let new_uid = event.params.uid
+      let userInfo = await userCollection.where({
+        openid: wxContext.OPENID,
+        is_deleted: false
+      })
+      .get()
+      if(new_uid != userInfo.data[0].uid){
+        let countResult = await commodityCollection.where({
+          user_id: wxContext.OPENID,
+          is_deleted: false
+        }).count()
+        commodityCount = countResult.total
+        countResult = await transactionCollection.where({
+          buyer_id: wxContext.OPENID,
+          status: 0,
+          is_deleted: false
+        }).count()
+        transactionCount = countResult.total
+        countResult = await transactionCollection.where({
+          seller_id: wxContext.OPENID,
+          status: 0,
+          is_deleted: false
+        }).count()
+        transactionCount += countResult.total
+        if(commodityCount+transactionCount>0){
+          ctx.body = {
+            errno: -2,
+          }
+          return
+        }
+      }
+
+
+    
       res = await cloud.openapi.security.msgSecCheck({
         content: JSON.stringify(event.params)
       })

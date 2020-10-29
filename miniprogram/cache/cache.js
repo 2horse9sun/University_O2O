@@ -81,6 +81,16 @@ const cache = {
       console.log({"新数据写入商品列表缓存":commodityList})
       return new RespSuccess(commodityList)
     },
+
+    // 清空商品列表缓存
+    clearCommodityList(){
+      const commodityCategory = wx.getStorageSync('commodityCategory')
+      const len = commodityCategory.length
+      for(let i = -1;i < len;i++){
+        const str = `commodityList?cid=${i}`
+        wx.clearStorageSync(str)
+      }
+    }
 }
 
 module.exports = cache

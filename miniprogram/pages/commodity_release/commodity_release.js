@@ -235,10 +235,10 @@ Page({
           cid: cid,
           content: this.data.commodityContent,
           title: this.data.commodityTitle,
-          number: this.data.commodityNumber,
+          number: parseInt(this.data.commodityNumber),            
           origin_url: this.data.commodityPurchaseUrl?this.data.commodityPurchaseUrl:"",
-          price_origin: this.data.commodityOriginPrice,
-          price_now: this.data.commodityCurrentPrice,
+          price_origin: parseFloat(this.data.commodityOriginPrice),
+          price_now: parseFloat(this.data.commodityCurrentPrice),
           remark: this.data.commodityRemark?this.data.commodityRemark:"",
           uid: uid,
           userPrimaryKey

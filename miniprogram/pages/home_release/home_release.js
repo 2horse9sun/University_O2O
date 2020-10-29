@@ -121,7 +121,7 @@ Page({
       })
       .then(async () => {
         wx.showLoading({
-          title: '删除时间可能较长',
+          title: '请耐心等待',
         })
         params = {
           commodity_id: event.currentTarget.dataset.id
@@ -145,6 +145,8 @@ Page({
             title: '成功',
             message:'成功删除商品！',
           }).then(async () => {
+            // 清空商品列表缓存
+            cache.clearCommodityList()
             await this.onLoad()
           })
         }

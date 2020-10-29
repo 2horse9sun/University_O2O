@@ -139,9 +139,12 @@
 	</view>
 </view>
 
-
+<view wx:if="{{commodityQuestion.length==0}}">
+<van-empty description="暂时没有问题哦，快去提问吧" />
+</view>
+<view wx:if="{{commodityQuestion.length!=0}}">
 <view class="cu-load {{isLoading?'loading':'over'}}"></view>
-
+</view>
 <view class="hline"></view>
 
 <view class="cu-modal {{showAskPanel?'show':''}}">
@@ -197,6 +200,7 @@
 
 	<van-goods-action>
 		<van-goods-action-icon icon="chat-o" text="提问" bind:click="onAskQuestion" />
+		<van-goods-action-button open-type="share" text="分享" type="warning"/>
 		<van-goods-action-button text="发起交易" bind:click="onEnterTransaction" />
 	</van-goods-action>
 

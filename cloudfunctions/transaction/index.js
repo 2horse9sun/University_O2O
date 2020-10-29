@@ -105,6 +105,24 @@ exports.main = async (event, context) => {
     const sellerPrimaryKey = params.sellerPrimaryKey
     const buyerPrimaryKey = params.buyerPrimaryKey
 
+    // 防止重复下单
+    const resCheck = await transactionCollection
+    .where({
+      check: params.check,
+      status: 0,
+      commodity_id,
+      sellerPrimaryKey,
+      buyerPrimaryKey,
+      is_deleted: false
+    })
+    .get()
+    if(resCheck.data.length > 0){
+      ctx.body = {
+        errno: -3
+      }
+      return
+    }
+
     // 创建事务
     const transaction = await db.startTransaction()
     try{
@@ -116,7 +134,7 @@ exports.main = async (event, context) => {
       .get()
       const commodityDetail = resGetCommodityDetail.data
       const commodityNumber = commodityDetail.number
-      if(purchaseNumber > commodityNumber){
+      if(purchaseNumber <= 0 || purchaseNumber > commodityNumber){
         ctx.body = {
           errno: -2
         }

@@ -16,7 +16,7 @@
 </scroll-view>
 
 <view wx:if="{{transactionList.length==0}}">
-<van-empty description="暂无交易记录" />
+<van-empty description="最近30天内暂无交易记录" />
 </view>
 
 <view class="cu-list menu shadow-lg margin-top">

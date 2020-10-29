@@ -162,6 +162,119 @@ Page({
     wx.hideLoading()
   },
 
+  async onShow(){
+    
+    wx.showLoading({
+      title: '加载中',
+    })
+
+    // 获取我的信息和大学信息
+    const registered = app.globalData.registered
+    let myInfoAndMyUniversityInfo = {}
+    if(registered){
+      res = await cache.getMyInfoAndMyUniversityInfo()
+      myInfoAndMyUniversityInfo = res.data
+    }else{
+      myInfoAndMyUniversityInfo = {
+        "uid": parseInt(options.uid),
+        "universityInfo": {
+          "name": "注册后可选择大学"
+        }
+      }
+    }
+    
+    uid = myInfoAndMyUniversityInfo.uid
+    cid = -1
+    
+    // 获取分类信息
+    categories = [{
+      name: "全部",
+      cid: -1
+    }]
+    res = await cache.getCommodityCategory()
+    if(res.errno == -1){
+      console.log("获取商品分类信息失败！")
+      return
+    }
+    const commodityCategory = res.data
+    // 渲染分类tab
+    for(let i = 0;i < commodityCategory.length;i++){
+      categories.push({
+        name:commodityCategory[i].name,
+        cid: commodityCategory[i].cid
+      })
+    }
+
+    // 获取商品列表
+    start = 0
+    params = {
+      uid,
+      cid,
+      keyword: "",
+      start: start,
+      count: MAX_COMMODITY_LIMIT_SIZE,
+      is_mine: false
+    }
+    res = await cache.getCommodityListByUidAndCid(params)
+    if(res.errno == -1){
+      console.log("获取商品列表失败！")
+      return
+    }
+    let commodityList = res.data
+    start = commodityList.length
+
+    let categoryInfo = categories.map(function(item){
+      return {
+        "name": item.name
+      }
+    })
+    for(let i = 0;i < categoryInfo.length;i++){
+      switch(categoryInfo[i].name) {
+        case "全部":
+           categoryInfo[i]["icon"] = "shopfill"
+           categoryInfo[i]["color"] = "orange"
+           break
+        case "服饰":
+           categoryInfo[i]["icon"] = "clothesfill"
+           categoryInfo[i]["color"] = "red"
+           break
+        case "数码":
+          categoryInfo[i]["icon"] = "mobilefill"
+          categoryInfo[i]["color"] = "blue"
+          break
+        case "洗护/家居":
+          categoryInfo[i]["icon"] = "homefill"
+          categoryInfo[i]["color"] = "green"
+          break
+        case "书籍/学习":
+          categoryInfo[i]["icon"] = "writefill"
+          categoryInfo[i]["color"] = "yellow"
+          break
+        case "食品":
+          categoryInfo[i]["icon"] = "deliver_fill"
+          categoryInfo[i]["color"] = "green"
+          break
+        case "体育/出行":
+          categoryInfo[i]["icon"] = "peoplefill"
+          categoryInfo[i]["color"] = "purple"
+          break
+        case "虚拟产品":
+          categoryInfo[i]["icon"] = "discoverfill"
+          categoryInfo[i]["color"] = "black"
+          break
+   } 
+    }
+
+    currCategory = categoryInfo[0].name
+    this.setData({
+      commodityList,
+      categoryInfo,
+      currCategory,
+      universityName: myInfoAndMyUniversityInfo.universityInfo.name
+    })    
+    wx.hideLoading()
+  },
+
   // 表单
   onSearchInput(event){
     this.setData({

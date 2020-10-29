@@ -10,6 +10,8 @@ let commodityDetail = {}
 let seller_id = ""
 let sellerPrimaryKey = ""
 let buyerPrimaryKey = ""
+// 校验码，防止重复下单
+let check = 0
 Page({
 
   /**
@@ -30,6 +32,8 @@ Page({
     wx.showLoading({
       title: '加载中',
     })
+
+    check = new Date().getTime()
 
     // 获取商品详情信息
     commodity_id = options.commodityid
@@ -123,8 +127,18 @@ Page({
       seller_id,
       title: this.data.title,
       sellerPrimaryKey,
-      buyerPrimaryKey
+      buyerPrimaryKey,
+      check
     }
+
+    if(params.number == 0){
+      Dialog.alert({
+        message: "你不能购买0件商品！",
+        theme: 'round-button',
+      })
+    }
+    
+
     res = await api.setTransaction(params)
 
     if(res.errno != 0){
@@ -159,6 +173,8 @@ Page({
         message: '已经成功发起交易，可以到我的交易中查看',
         theme: 'round-button',
       }).then(() => {
+        // 清空商品列表缓存
+        cache.clearCommodityList()
         wx.navigateTo({
           url: `../transaction_detail/transaction_detail?enteredFrom=0&transactionNumber=${transactionNumber}`,
         })

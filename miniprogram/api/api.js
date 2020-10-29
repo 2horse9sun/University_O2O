@@ -82,6 +82,9 @@ const api = {
     }else if(res.result.errno == 87014){
       console.log("上传信息包含敏感内容！")
       return new RespError("包含敏感内容！")
+    }else if(res.result.errno == -2){
+      console.log("有未删除的商品或进行中的交易！")
+      return new RespError("有未删除的商品或进行中的交易！")
     }else{
       console.log("上传用户信息成功！")
       return new RespSuccess()
@@ -555,6 +558,9 @@ const api = {
     }else if(res.result.errno == -2){
       console.log("商品正在交易中或者库存不足！")
       return new RespError("商品正在交易中或者库存不足！")
+    }else if(res.result.errno == -3){
+      console.log("重复下单！")
+      return new RespError("不能重复下单！")
     }
     console.log("上传问题回答成功！")
     const transactionNumber = res.result.transactionNumber
