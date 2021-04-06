@@ -220,15 +220,15 @@ git clone https://github.com/2horse9sun/University_O2O.git
 把University_O2O文件夹中文件剪切到小程序项目根目录，删除University_O2O空文件夹
 ### 5.3 初始化云环境并修改参数
 
-点击开发者工具的云开发，启用云服务。新建自己的云环境，复制云环境ID，然后把`app.js`和所有`cloudfunctions`文件夹下所有云函数的`index.js`中的：
+点击开发者工具的云开发，启用云服务。新建自己的云环境，复制云环境ID，**然后把`app.js`和所有`cloudfunctions`文件夹**下所有云函数的`index.js`中的：
 
 ```javascript
 cloud.init({
-  env: "dreamland2-a708ef" // 替换成自己的云环境ID
+  env: "dreamland2-a708ef" // !!!!!!替换成自己的云环境ID !!!!!  是ID，不是云环境名称
 })
 ```
 
-的`env`的值替换成自己的云环境ID。
+的`env`的值替换成自己的云环境ID。**此处很容易漏掉`app.js`中的云环境ID配置！**
 
 右击`cloudfunctions`，选择当前云环境。
 
